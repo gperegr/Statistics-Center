@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bosch Statistics Center</title>
+    <link rel="icon" type="image/png" href="favicon.png?v=1.0">
+    <link rel="apple-touch-icon" href="favicon.png?v=1.0">
+    <!-- Load Plotly for Charts -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            chtml: { scale: 1.05 }
+        };
+    </script>
+    
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	<link rel="stylesheet" href="style.css">
+    </head>
+
+<body data-theme="light">
+    <div class="supergraphic fixed"></div>
+
+    <div class="app-container">
+        <div class="main-header">
+            <div class="top-row">
+                <div class="header-branding">
+                    <svg class="header-brand-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="60 60 440 105">
+                        <rect width="560.2" height="223.6" style="fill:none" />
+                        <path
+                            d="M248.8,110.3a13.766,13.766,0,0,0,8.8-13c0-11.7-8.3-17.5-19.7-17.5H208v63.6h32.5c10,0,19.8-7,19.8-17.7C260.3,113,248.8,110.4,248.8,110.3ZM223.6,93h11.6a5.669,5.669,0,0,1,6,6,5.927,5.927,0,0,1-6.3,5.8H223.6V93Zm11.7,37.1H223.6V117.6H235c5.7,0,8.4,2.5,8.4,6.2C243.4,128.4,240,130.1,235.3,130.1Z"
+                            style="fill:#ed0007;fill-rule:evenodd" />
+                        <path
+                            d="M294.7,78.2c-18.4,0-29.2,14.7-29.2,33.3,0,18.7,10.8,33.3,29.2,33.3,18.5,0,29.2-14.6,29.2-33.3C323.9,92.9,313.2,78.2,294.7,78.2Zm0,51.4c-9,0-13.5-8.1-13.5-18.1s4.5-18,13.5-18,13.6,8.1,13.6,18C308.3,121.6,303.7,129.6,294.7,129.6Z"
+                            style="fill:#ed0007;fill-rule:evenodd" />
+                        <path
+                            d="M357.8,104.8l-2.2-.5c-5.4-1.1-9.7-2.5-9.7-6.4,0-4.2,4.1-5.9,7.7-5.9a17.894,17.894,0,0,1,13,5.9l9.9-9.8c-4.5-5.1-11.8-10-23.2-10-13.4,0-23.6,7.5-23.6,20,0,11.4,8.2,17,18.2,19.1l2.2.5c8.3,1.7,11.4,3,11.4,7,0,3.8-3.4,6.3-8.6,6.3-6.2,0-11.8-2.7-16.1-8.2l-10.1,10c5.6,6.7,12.7,11.9,26.4,11.9,11.9,0,24.6-6.8,24.6-20.7C377.9,109.5,366.9,106.7,357.8,104.8Z"
+                            style="fill:#ed0007;fill-rule:evenodd" />
+                        <path
+                            d="M413.3,129.6c-7,0-14.3-5.8-14.3-18.5,0-11.3,6.8-17.6,13.9-17.6,5.6,0,8.9,2.6,11.5,7.1l12.8-8.5c-6.4-9.7-14-13.8-24.5-13.8-19.2,0-29.6,14.9-29.6,32.9,0,18.9,11.5,33.7,29.4,33.7,12.6,0,18.6-4.4,25.1-13.8l-12.9-8.7C422.1,126.6,419.3,129.6,413.3,129.6Z"
+                            style="fill:#ed0007;fill-rule:evenodd" />
+                        <polygon
+                            points="479.9 79.8 479.9 103.2 460.6 103.2 460.6 79.8 443.9 79.8 443.9 143.4 460.6 143.4 460.6 118.3 479.9 118.3 479.9 143.4 496.6 143.4 496.6 79.8 479.9 79.8"
+                            style="fill:#ed0007;fill-rule:evenodd" />
+                        <path
+                            d="M111.8,63.6A48.2,48.2,0,1,0,160,111.8,48.226,48.226,0,0,0,111.8,63.6Zm0,91.9a43.7,43.7,0,1,1,43.7-43.7A43.745,43.745,0,0,1,111.8,155.5Z" />
+                        <path
+                            d="M131.7,81.7h-3.3V98.2H95.3V81.7H91.9a36.063,36.063,0,0,0,0,60.2h3.4V125.4h33.1v16.5h3.3a36.063,36.063,0,0,0,0-60.2Zm-41,53.7a31.572,31.572,0,0,1,0-47.2Zm37.7-14.6H95.3V102.7h33.1Zm4.5,14.5v-10h0V98.2h0v-10a31.66,31.66,0,0,1,0,47.1Z" />
+                    </svg>
+                    <h1 class="title" data-i18n="appTitle">Statistics Center</h1>
+                </div>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="header-controls" id="headerControls">
+                    <!-- Language Selector -->
+                    <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)"
+                        data-i18n-tooltip="tipLang">
+                        <option value="en">English</option>
+                        <option value="pt">Português</option>
+                        <option value="de">Deutsch</option>
+                    </select>
+
+
+
+                    <button class="bosch-btn-secondary" onclick="saveData()" data-i18n="btnSave"
+                        data-i18n-tooltip="tipSave">Save</button>
+                    <button class="bosch-btn-secondary" onclick="loadData()" data-i18n="btnLoad"
+                        data-i18n-tooltip="tipLoad">Load</button>
+                    <button class="bosch-btn-secondary" onclick="resetApp()" data-i18n="btnReset"
+                        data-i18n-tooltip="tipReset">
+                        <span class="reset-icon">⟳</span> Reset
+                    </button>
+                    <!-- Theme Toggle -->
+                    <button class="bosch-btn-secondary" onclick="toggleTheme()" data-i18n-tooltip="tipTheme">
+                        <span id="theme-icon" style="display: flex; align-items: center;">
+                            <svg class="theme-icon-svg" viewBox="0 0 192 192">
+                                <path d="M97.75342,159.1499c-7.21631,0-14.48438-1.22217-21.48633-3.75342c-16.83789-6.08643-30.00342-18.47949-37.07178-34.89551
+	c-7.06836-16.4165-7.02344-34.49756,0.12598-50.9126c10.68213-24.5249,35.88184-39.90137,62.70947-38.25977l11.64746,0.7124
+	l-9.63525,6.58301c-9.13037,6.23828-15.82861,15.1123-19.37061,25.66309c-8.08691,24.08887,3.64258,51.31641,26.70361,61.98633
+	c10.00391,4.62793,20.95654,5.88086,31.67188,3.61914l11.41846-2.40869l-7.53955,8.90723
+	C134.49414,151.07764,116.2959,159.1499,97.75342,159.1499z M90.37402,39.74658
+	c-19.08057,2.66113-35.875,15.02881-43.71777,33.03613c-6.25781,14.3667-6.29785,30.18994-0.11279,44.5542
+	c6.18457,14.36426,17.70654,25.20898,32.44336,30.53613c18.33105,6.62744,38.76221,2.99268,53.79688-8.88232
+	c-8.48145-0.00684-16.87842-1.80713-24.76709-5.45654c-13.02539-6.02637-23.36182-16.68799-29.10498-30.02002
+	c-5.74365-13.33203-6.39111-28.16748-1.82324-41.77295C79.89404,53.38379,84.41162,45.93408,90.37402,39.74658z" />
+                            </svg>
+                        </span>
+                    </button>
+                    <!-- About Button -->
+                    <button class="bosch-btn-secondary" onclick="toggleAboutModal()" data-i18n-tooltip="tipAbout"
+                        data-i18n="btnAbout">
+                        About
+                    </button>
+                    <input type="file" id="stateFileInput" accept=".json" style="display:none;"
+                        onchange="handleStateUpload(this)">
+                </div>
+            </div>
+            <!-- Old Tab Navigation Removed (Replaced by Sidebar Dropdown) -->
+        </div>
+
+        <div class="content">
+            <div class="sidebar-wrapper">
+                <div class="sidebar-resizer" id="sidebarResizer"></div>
+                <!-- Dropdown Nav -->
+                <div class="sidebar-nav-dropdown-container" id="navDropdownContainer">
+                    <button class="nav-dropdown-toggle" id="navDropdownBtn" onclick="toggleNavDropdown()">
+                        <span id="navDropdownLabel" data-i18n="tabNormal">Normal Distribution</span>
+                        <i class="nav-arrow"></i>
+                    </button>
+                    <div class="nav-dropdown-menu" id="navDropdownMenu">
+                        <div class="nav-dropdown-item active" id="tab-normal" onclick="switchTab('normal')"
+                            data-i18n="tabNormal">Normal Distribution</div>
+                        <div class="nav-dropdown-item" id="tab-capability" onclick="switchTab('capability')"
+                            data-i18n="tabCapability">Capability</div>
+                        <div class="nav-dropdown-item" id="tab-hypothesis" onclick="switchTab('hypothesis')"
+                            data-i18n="tabHypothesis">Hypothesis Tests</div>
+                        <div class="nav-dropdown-item" id="tab-spc" onclick="switchTab('spc')" data-i18n="tabSpc">
+                            Control Charts</div>
+                        <div class="nav-dropdown-item" id="tab-multi" onclick="switchTab('multi')" data-i18n="tabMulti">
+                            Multi-Distribution</div>
+                        <div class="nav-dropdown-item" id="tab-tolerance" onclick="switchTab('tolerance')"
+                            data-i18n="tabTolerance">Tolerance Interval</div>
+                        <div class="nav-dropdown-item" id="tab-graphs" onclick="switchTab('graphs')"
+                            data-i18n="tabGraphs">Graphs</div>
+                        <div class="nav-dropdown-item" id="tab-pareto" onclick="switchTab('pareto')"
+                            data-i18n="tabPareto">Pareto</div>
+                        <div class="nav-dropdown-item" id="tab-montecarlo" onclick="switchTab('montecarlo')"
+                            data-i18n="tabMonteCarlo">Monte Carlo</div>
+
+                        <div class="nav-dropdown-item" id="tab-regression" onclick="switchTab('regression')"
+                            data-i18n="tabRegression">Regression & Correlation</div>
+                        <div class="nav-dropdown-item" id="tab-msa" onclick="switchTab('msa')" data-i18n="tabMSA">MSA /
+                            Gage R&R</div>
+                        <div class="nav-dropdown-item" id="tab-weibayes" onclick="switchTab('weibayes')"
+                            data-i18n="tabWeibayes">Weibayes</div>
+                        <div class="nav-dropdown-item" id="tab-weibull" onclick="switchTab('weibull')"
+                            data-i18n="tabWeibull" data-i18n-tooltip="tipTabWeibull">Weibull Analysis</div>
+                    </div>
+                </div>
+
+                <!-- Controls Panel -->
+                <div class="controls-panel">
+
+                    
+
+                    <!-- MAIN ANALYSIS CONTROLS (SHARED) -->
+                    <div id="main-controls">
+                        <!-- Data Settings -->
+                        <div class="control-group">
+                            <label class="control-label" data-i18n="lblDecimal">Decimal Format</label>
+                            <select id="decimalSep" onchange="reparseData()" data-i18n-tooltip="tipDecimal">
+                                <option value="." data-i18n="optDot">Dot (e.g. 1.25)</option>
+                                <option value="," data-i18n="optComma">Comma (e.g. 1,25)</option>
+                            </select>
+                            <div class="input-hint" data-i18n="hintDecimal">Adjust this if numbers aren't loading
+                                correctly.
+                            </div>
+                        </div>
+
+                        <!-- File Input -->
+                        <div class="control-group" title="Upload data here">
+                            <label class="control-label" data-i18n="lblDataSource">Data Source</label>
+                            <input type="file" id="fileInput" accept=".csv, .txt" onchange="handleFileUpload(this)"
+                                data-i18n-tooltip="tipDataSource">
+                            <div style="text-align: center; margin: 8px 0; font-size: 12px; color: var(--colorNeutralForeground2);"
+                                data-i18n="lblOr">- OR -</div>
+                            <textarea id="textInput" placeholder="Paste data here (Header row recommended)"
+                                oninput="debounceParse()" data-i18n-tooltip="tipDataSource"></textarea>
+
+                            <!-- Data Preview -->
+                            <div id="preview-wrapper" class="hidden">
+                                <div style="font-size: 12px; font-weight: 600; margin-top: 10px;"
+                                    data-i18n="lblPreview">
+                                    Data Preview (First 5 rows):</div>
+                                <div class="preview-container">
+                                    <table class="preview-table" id="previewTable">
+                                        <!-- JS populates this -->
+                                    </table>
+                                </div>
+                                <div id="data-status" class="success-msg"></div>
+                            </div>
+                        </div>
+
+                        <!-- Column Selector -->
+                        <div id="column-selector-group" class="control-group hidden">
+                            <label class="control-label" data-i18n="lblSelectCol">Select Data Column</label>
+                            <select id="columnSelect" onchange="handleColumnChange()"></select>
+                        </div>
+
+                        <!-- Parameters -->
+                        <div id="analysis-params">
+                            <!-- Standard Limits (Normal Tab) -->
+                            <div id="grp-limit-value" class="control-group">
+                                <label class="control-label" data-i18n="lblLimitValue">Limit Value (Optional)</label>
+                                <input type="number" id="limitValue" placeholder="Enter limit (e.g. 11.3)" step="any">
+                            </div>
+
+                            <div id="grp-limit-type" class="control-group">
+                                <label class="control-label" data-i18n="lblLimitType">Limit Type</label>
+                                <select id="limitType">
+                                    <option value="upper" data-i18n="optUpper">Upper Limit (USL)</option>
+                                    <option value="lower" data-i18n="optLower">Lower Limit (LSL)</option>
+                                </select>
+                            </div>
+
+                            <!-- Tolerance Interval Controls -->
+                            <div id="grp-tolerance-controls" class="hidden">
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblTolConfidence">Confidence Level (1 -
+                                        alpha)</label>
+                                    <input type="number" id="tol-confidence" value="95" step="0.5" min="50" max="99.9">
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblTolCoverage">Population Coverage
+                                        (P)</label>
+                                    <input type="number" id="tol-coverage" value="95" step="0.5" min="50" max="99.9">
+                                    <div class="input-hint" data-i18n="hintTolCoverage">Target proportion of the
+                                        population to cover.</div>
+                                </div>
+                            </div>
+
+                            <!-- Capability Specific Limits -->
+                            <div id="grp-cap-limits" class="hidden">
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblDistAssumption">Distribution
+                                        Assumption</label>
+                                    <select id="capDistributionMethod" data-i18n-tooltip="tipDistAssumption">
+                                        <option value="normal" data-i18n="optCapNormal">Normal Distribution</option>
+                                        <option value="bestfit" data-i18n="optCapBestFit">Best Fit (Non-Normal)</option>
+                                    </select>
+                                    <div class="input-hint" data-i18n="hintDistAssumption">Choose 'Best Fit' for
+                                        non-normal
+                                        data.</div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblLSL" title="Lower Spec Limit">Lower Spec
+                                        Limit (LSL)</label>
+                                    <input type="number" id="lslValue" placeholder="Optional" step="any"
+                                        data-i18n-tooltip="tipLSL">
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblUSL">Upper Spec Limit (USL)</label>
+                                    <input type="number" id="uslValue" placeholder="Optional" step="any"
+                                        data-i18n-tooltip="tipUSL">
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblTarget">Process Target</label>
+                                    <input type="number" id="targetValue" placeholder="Optional" step="any"
+                                        data-i18n-tooltip="tipTarget">
+                                </div>
+                            </div>
+
+                            <!-- Hypothesis Test Specific Controls -->
+                            <div id="grp-hypothesis-controls" class="hidden">
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblHypoResponse">Response Column</label>
+                                    <select id="hypoResponseCol" data-i18n-tooltip="tipHypoResponse"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblHypoFactor">Factor Column</label>
+                                    <select id="hypoFactorCol" onchange="updateHypothesisTestType()"
+                                        data-i18n-tooltip="tipHypoFactor"></select>
+                                </div>
+                                <div class="control-group hidden" id="grp-hypo-sample1">
+                                    <label class="control-label" data-i18n="lblHypoSample1">Sample 1 Column</label>
+                                    <select id="hypoSample1Col"></select>
+                                </div>
+                                <div class="control-group hidden" id="grp-hypo-sample2">
+                                    <label class="control-label" data-i18n="lblHypoSample2">Sample 2 Column</label>
+                                    <select id="hypoSample2Col"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblHypoTestType">Test Type</label>
+                                    <select id="hypoTestType" onchange="updateHypothesisTestType()"
+                                        data-i18n-tooltip="tipHypoTestType">
+                                        <option value="ttest1" data-i18n="optTTest1">1-Sample t-test</option>
+                                        <option value="ttest2" data-i18n="optTTest2">2-Sample t-test</option>
+                                        <option value="paired" data-i18n="optPairedTTest">Paired t-test</option>
+                                        <option value="ftest" data-i18n="optFTest">F-test (Equal Variances)</option>
+                                        <option value="anova" data-i18n="optAnova">One-Way ANOVA</option>
+                                    </select>
+                                </div>
+                                <div class="control-group" id="grp-hypo-mu">
+                                    <label class="control-label" data-i18n="lblHypoMu">Target Mean (μ)</label>
+                                    <input type="number" id="hypoMu" placeholder="0" step="any"
+                                        data-i18n-tooltip="tipHypoMu">
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblHypoAlpha">Significance Level (α)</label>
+                                    <input type="number" id="hypoAlpha" value="0.05" step="0.01" min="0.001" max="0.5"
+                                        data-i18n-tooltip="tipHypoAlpha">
+                                </div>
+                                <div class="control-group" id="grp-equal-variances">
+                                    <label class="ms-checkbox">
+                                        <input type="checkbox" id="hypoEqualVariances" checked> <span
+                                            class="checkmark"></span> <span data-i18n="lblHypoVar">Assume Equal
+                                            Variances</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- SPC Specific Controls -->
+                            <div id="grp-spc-controls" class="hidden">
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblChartType">Chart Type</label>
+                                    <select id="spcChartType" onchange="updateSpcControls()">
+                                        <option value="imr" data-i18n="optImr">Individuals & Moving Range (I-MR)
+                                        </option>
+                                        <option value="xbarr" data-i18n="optXbarr">X-bar & Range (Xbar-R)</option>
+                                    </select>
+                                </div>
+                                <div class="control-group" id="grp-spc-subgroup">
+                                    <label class="control-label" data-i18n="lblSubgroupCol">Subgroup Column</label>
+                                    <select id="spcSubgroupColumn"></select>
+                                    <div class="input-hint" data-i18n="hintSubgroup">Required for Xbar-R chart.</div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblAlarmRules">Alarm Rules</label>
+                                    <div class="checkbox-group">
+                                        <label class="ms-checkbox" data-i18n-tooltip="tipRule1">
+                                            <input type="checkbox" id="spcRule1" checked> <span
+                                                class="checkmark"></span>
+                                            <span data-i18n="rule1">Rule 1</span>
+                                        </label>
+                                        <label class="ms-checkbox" data-i18n-tooltip="tipRule2">
+                                            <input type="checkbox" id="spcRule2" checked> <span
+                                                class="checkmark"></span>
+                                            <span data-i18n="rule2">Rule 2</span>
+                                        </label>
+                                        <label class="ms-checkbox" data-i18n-tooltip="tipRule3">
+                                            <input type="checkbox" id="spcRule3"> <span class="checkmark"></span> <span
+                                                data-i18n="rule3">Rule 3</span>
+                                        </label>
+                                        <label class="ms-checkbox" data-i18n-tooltip="tipRule4">
+                                            <input type="checkbox" id="spcRule4"> <span class="checkmark"></span> <span
+                                                data-i18n="rule4">Rule 4</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GRAPHS (Desc Stats) TAB CONTROLS -->
+                            <div id="grp-graphs-controls" class="hidden">
+                                <div class="control-label" style="margin-top: 24px;" data-i18n="lblInputs">Inputs</div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblNumericCols">Numeric Columns</label>
+                                    <div id="graphs-num-cols" class="checkbox-group"
+                                        style="max-height: 150px; overflow-y: auto; border: 1px solid var(--colorNeutralStroke2); padding: 5px;">
+                                        <!-- Populated by JS -->
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblGroupCol">Group By (Optional)</label>
+                                    <select id="graphs-group-col">
+                                        <option value="" data-i18n="optNone">None</option>
+                                        <!-- Populated by JS -->
+                                    </select>
+                                </div>
+
+                                <div class="control-label" style="margin-top: 24px;" data-i18n="lblConfig">Configuration
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblStats">Statistics</label>
+                                    <div class="stats-grid">
+                                        <label class="ms-checkbox"><input type="checkbox" id="statMean" checked> <span
+                                                class="checkmark"></span> <span data-i18n="lblMean">Mean</span></label>
+                                        <label class="ms-checkbox"><input type="checkbox" id="statMedian" checked> <span
+                                                class="checkmark"></span> <span
+                                                data-i18n="lblMedian">Median</span></label>
+                                        <label class="ms-checkbox"><input type="checkbox" id="statStdDev" checked> <span
+                                                class="checkmark"></span> <span
+                                                data-i18n="lblStdDev">StdDev</span></label>
+                                        <label class="ms-checkbox"><input type="checkbox" id="statVar"> <span
+                                                class="checkmark"></span> <span
+                                                data-i18n="lblVar">Variance</span></label>
+                                        <label class="ms-checkbox"><input type="checkbox" id="statMin" checked> <span
+                                                class="checkmark"></span> <span data-i18n="lblMin">Min</span></label>
+                                        <label class="ms-checkbox"><input type="checkbox" id="statMax" checked> <span
+                                                class="checkmark"></span> <span data-i18n="lblMax">Max</span></label>
+                                        <label class="ms-checkbox"><input type="checkbox" id="statQuartiles"> <span
+                                                class="checkmark"></span> <span
+                                                data-i18n="lblQuartiles">Quartiles</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="ms-checkbox">
+                                        <input type="checkbox" id="graphNormalize"> <span class="checkmark"></span>
+                                        <span data-i18n="lblNormalize">Normalize Data</span>
+                                    </label>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblGraphTypes">Graph Types</label>
+                                    <div class="checkbox-group">
+                                        <label class="ms-checkbox"><input type="checkbox" id="showHist" checked> <span
+                                                class="checkmark"></span> <span
+                                                data-i18n="btnHistogram">Histogram</span></label>
+                                        <label class="ms-checkbox"><input type="checkbox" id="showBox" checked> <span
+                                                class="checkmark"></span> <span
+                                                data-i18n="btnBoxplot">Boxplot</span></label>
+                                        <label class="ms-checkbox"><input type="checkbox" id="showInterval"> <span
+                                                class="checkmark"></span> <span data-i18n="lblIntervalPlot">Interval
+                                                Plot</span></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PARETO TAB CONTROLS -->
+                            <div id="grp-pareto-controls" class="hidden">
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblCategoryCol">Category Column</label>
+                                    <select id="paretoCategoryCol"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblValueCol">Value Column (Optional)</label>
+                                    <select id="paretoValueCol">
+                                        <option value="" data-i18n="optNone">None (Count Frequencies)</option>
+                                    </select>
+                                    <div class="input-hint" data-i18n="hintParetoValue">Select a numeric column to sum
+                                        values instead of counting categories.</div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="ms-checkbox">
+                                        <input type="checkbox" id="paretoShowCurve" checked> <span
+                                            class="checkmark"></span>
+                                        <span data-i18n="lblParetoShowCurve">Show Cumulative Curve</span>
+                                    </label>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblParetoRefLine">Reference Line (%)</label>
+                                    <input type="number" id="paretoRefLine" value="80" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <!-- REGRESSION CONTROLS -->
+                            <div id="grp-regression-controls" class="hidden">
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblResponseVar">Response Variable
+                                        (Y)</label>
+                                    <select id="reg-response-col"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblExplanatoryVars">Explanatory Variables
+                                        (X)</label>
+                                    <div id="reg-explanatory-vars"
+                                        style="display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; border: 1px solid var(--colorNeutralStroke2); padding: 5px;">
+                                        <!-- Checkboxes populated by JS -->
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblModelType">Model Type</label>
+                                    <select id="reg-model-type">
+                                        <option value="linear" selected data-i18n="optLinearOLS">Linear (OLS)</option>
+                                        <option value="quadratic" data-i18n="optQuadratic">Quadratic</option>
+                                        <option value="quadratic_interaction" data-i18n="optQuadraticInteraction">Quadratic with interactions</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- MSA / GAGE R&R CONTROLS -->
+                            <div id="grp-msa-controls" class="hidden">
+                                <div class="control-label" style="margin-top: 24px;" data-i18n="lblInputs">Inputs</div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblMeasurementCol">Measurement
+                                        Column</label>
+                                    <select id="msaMeasurementCol"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblPartCol">Part ID Column</label>
+                                    <select id="msaPartCol"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblOperatorCol">Operator ID Column</label>
+                                    <select id="msaOperatorCol"></select>
+                                </div>
+
+                                <div class="control-label" style="margin-top: 24px;" data-i18n="lblConfig">Configuration
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblMethod">Method</label>
+                                    <select id="msaMethod">
+                                        <option value="anova" selected>ANOVA</option>
+                                        <option value="xbarr">Average and Range</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblTolerance">Process Tolerance</label>
+                                    <input type="number" id="msaTolerance" placeholder="e.g. 5.0" step="any">
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblSigmaMul">Sigma Multiplier</label>
+                                    <input type="number" id="msaSigmaMul" value="6.0" step="any">
+                                </div>
+                            </div>
+
+                            <!-- WEIBAYES CONTROLS -->
+                            <!-- WEIBAYES CONTROLS -->
+                            <div id="grp-weibayes-controls" class="hidden">
+                                <div class="control-group">
+                                    <label class="control-label" title="Calculation Method"
+                                        data-i18n="lblWbMethod">Method</label>
+                                    <select id="wb-method"
+                                        title="Choose between 1-Param Weibayes (fixed Beta) or 2-Param Regression">
+                                        <option value="manual" data-i18n="wbOptManual">Weibayes (1-Param)</option>
+                                        <option value="regression" data-i18n="wbOptRegression">Weibull Regression
+                                            (2-Param)
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="control-group hidden" id="wb-grp-fit-method">
+                                    <label class="control-label" title="Fitting Method" data-i18n="lblWbFitMethod">Fit
+                                        Method</label>
+                                    <select id="wb-fit-method"
+                                        title="Rank Regression (Standard) or Maximum Likelihood Estimation">
+                                        <option value="rr" data-i18n="wbOptRR">Rank Regression (RR)</option>
+                                        <option value="mle" data-i18n="wbOptMLE">Max Likelihood (MLE)</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" title="Shape Parameter" data-i18n="lblBeta">Beta
+                                        ($\beta$)</label>
+                                    <input type="number" id="wb-beta" value="2.0" step="0.1"
+                                        oninput="Weibayes.calculate()" title="Weibull Shape Parameter">
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" title="Confidence Level for Lower Bound Eta"
+                                        data-i18n="lblConfidence">Confidence
+                                        Level (%)</label>
+                                    <input type="number" id="wb-confidence" value="70" step="0.1" min="0.1" max="99.9"
+                                        oninput="Weibayes.calculate()" title="Confidence Level (e.g., 70% or 90%)">
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" title="Target Reliability for Bx Life Calc"
+                                        data-i18n="lblTargetRel">Target
+                                        Reliability (%)</label>
+                                    <input type="number" id="wb-target-rel" value="90" step="0.1" min="0.1" max="99.9"
+                                        oninput="Weibayes.calculate()"
+                                        title="Reliability Target (e.g. 90% for B10 Life)">
+                                </div>
+
+                                <div class="control-label" style="margin-top: 24px;" data-i18n="lblDataInput">Data
+                                    Input</div>
+                                <div class="control-group">
+                                    <div style="display:flex; gap:8px;">
+                                        <input type="number" id="wb-input-time" placeholder="Time" style="flex:1;"
+                                            title="Time to failure or suspension">
+                                        <select id="wb-input-type" style="width:80px;" title="Status: Fail or Censored">
+                                            <option value="S" data-i18n="wbOptCens">Cens.</option>
+                                            <option value="F" data-i18n="wbOptFail">Fail</option>
+                                        </select>
+                                    </div>
+                                    <button class="bosch-btn-primary" onclick="Weibayes.addDataPoint()"
+                                        style="width:100%; margin-top:8px;" title="Add data point to analysis"
+                                        data-i18n="btnAddPoint">Add
+                                        Point</button>
+                                </div>
+
+                                <!-- Mini Table for Sidebar -->
+                                <div id="wb-data-table-container" class="hidden"
+                                    style="max-height: 200px; overflow-y: auto; border: 1px solid var(--colorNeutralStroke2); border-radius: 4px; margin-top: 8px;">
+                                    <table class="results-table" style="font-size: 11px;">
+                                        <thead>
+                                            <tr>
+                                                <th style="padding: 4px;" data-i18n="lblTime">Time</th>
+                                                <th style="padding: 4px;" data-i18n="lblType">Type</th>
+                                                <th style="padding: 4px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="wb-data-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- WEIBULL ANALYSIS CONTROLS -->
+                            <div id="grp-weibull-controls" class="hidden">
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblWeibullMethod">Estimation Method</label>
+                                    <select id="weibull-method">
+                                        <option value="lsxy" data-i18n="optWeibullLsxy">Least Squares (LSXY)</option>
+                                        <option value="mle" data-i18n="optWeibullMle">Maximum Likelihood (MLE)</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblWeibullFailureCol">Failure Data
+                                        Column</label>
+                                    <select id="weibull-failure-col"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblWeibullCensorCol">Censoring Column
+                                        (Optional)</label>
+                                    <select id="weibull-censor-col"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" data-i18n="lblWeibullCensorVal">Censoring Value</label>
+                                    <input type="text" id="weibull-censor-val" placeholder="e.g., C or 1">
+                                </div>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                                <button id="btn-analyze" class="bosch-btn-primary" onclick="runAnalysis(true)"
+                                    data-i18n="btnAnalyze" data-i18n-tooltip="tipAnalyze">Analyze</button>
+                            </div>
+                            <div id="errorDisplay" class="error-msg"></div>
+                        </div>
+                    </div>
+
+                    <!-- MONTE CARLO CONTROLS -->
+                    <div id="montecarlo-controls" class="hidden">
+                        <div class="control-group">
+                            <label class="control-label" data-i18n="lblDistribution">Distribution</label>
+                            <select id="mc-dist" onchange="updateMontecarloInputs()">
+                                <option value="normal" data-i18n="distNormal">Normal</option>
+                                <option value="lognormal" data-i18n="distLognormal">Lognormal</option>
+                                <option value="weibull" data-i18n="distWeibull">Weibull</option>
+                            </select>
+                        </div>
+
+                        <!-- Dynamic Params -->
+                        <div id="mc-params-normal" class="control-group">
+                            <div class="control-group">
+                                <label class="control-label" data-i18n="lblMean">Mean (μ)</label>
+                                <input type="number" id="mc-norm-mean" value="10" step="any">
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" data-i18n="lblStdDev">Std Dev
+                                    (σ)</label>
+                                <input type="number" id="mc-norm-std" value="1" step="any" min="0">
+                            </div>
+                        </div>
+
+                        <div id="mc-params-lognormal" class="control-group hidden">
+                            <div class="control-group">
+                                <label class="control-label" data-i18n="lblLoc">Location (μ - underlying)</label>
+                                <input type="number" id="mc-log-mu" value="0" step="any">
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" data-i18n="lblScale">Scale (σ -
+                                    underlying)</label>
+                                <input type="number" id="mc-log-sigma" value="0.5" step="any" min="0">
+                            </div>
+                        </div>
+
+                        <div id="mc-params-weibull" class="control-group hidden">
+                            <div class="control-group">
+                                <label class="control-label" data-i18n="lblShape">Shape (k)</label>
+                                <input type="number" id="mc-weib-k" value="2" step="any" min="0">
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" data-i18n="lblScaleW">Scale (λ)</label>
+                                <input type="number" id="mc-weib-lambda" value="10" step="any" min="0">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" data-i18n="lblSampleSize">Sample Size (N)</label>
+                            <input type="number" id="mc-n" value="1000" min="10" step="10">
+                        </div>
+
+                        <div class="monte-carlo-buttons"
+                            style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                            <button class="bosch-btn-primary" onclick="generateMontecarlo()" data-i18n="btnGenerate"
+                                data-i18n-tooltip="tipGenerate" style="width: 100%;">Generate Data</button>
+                            <button class="bosch-btn-secondary" onclick="transferMontecarloData()"
+                                data-i18n="btnUseData" style="margin-right:0; width: 100%;">Use as Data Source</button>
+                            <button class="bosch-btn-secondary" onclick="copyMontecarloData()" data-i18n="btnCopy"
+                                data-i18n-tooltip="tipCopy" style="margin-right:0; width: 100%;">Copy Generated
+                                Values</button>
+                        </div>
+                        <div id="mc-msg" class="success-msg"
+                            style="text-align: center; margin-top: 16px; color: var(--TextFillColorPrimary); font-size: 14px;">
+                        </div>
+                    </div>
+
+                </div>
+            </div> <!-- End Sidebar Wrapper -->
+
+            <!-- Results Area -->
+            <div class="results-panel">
+                <div id="welcome-msg"
+                    style="text-align: center; color: var(--colorNeutralForeground2); margin-top: 50px;">
+                    <h3 data-i18n="msgDataStatus">Data Status</h3>
+                    <p data-i18n="msgInstruct">Upload a file, paste text, or use the Monte Carlo tab to generate
+                        data.
+                    </p>
+                </div>
+
+                <button id="sidebarToggle" class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
+                    <!-- Icon Expand (Maximize Results) -->
+                    <svg class="icon-expand" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor"
+                        stroke-width="2" fill="none">
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <polyline points="9 21 3 21 3 15"></polyline>
+                        <line x1="21" y1="3" x2="14" y2="10"></line>
+                        <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                    <!-- Icon Collapse (Restore Sidebar) -->
+                    <svg class="icon-collapse" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor"
+                        stroke-width="2" fill="none">
+                        <polyline points="4 14 10 14 10 20"></polyline>
+                        <polyline points="20 10 14 10 14 4"></polyline>
+                        <line x1="14" y1="10" x2="21" y2="3"></line>
+                        <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                </button>
+
+                <!-- ANALYSIS VIEW (Normal / Multi) -->
+                <div id="analysis-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div id="stats-container" class="stats-cards hidden"></div>
+
+                    <div id="analysis-chart-container" class="chart-container hidden">
+                        <div class="panel-title" id="mainChartTitle" data-i18n="lblAnalysisChart">Analysis Chart
+                        </div>
+                        <div id="mainChart" style="width:100%; height:450px;"></div>
+                        <div class="panel-title" data-i18n="lblCdfChart">Cumulative Histogram (CDF)</div>
+                        <div id="mainCdfChart" style="width:100%; height:350px;"></div>
+                    </div>
+
+                    <!-- Multi Dist Table Container -->
+                    <div id="multi-table-container" class="results-table-wrapper hidden">
+                        <div class="panel-title" data-i18n="lblDistComp">Comparison of Distributions</div>
+                        <table class="results-table" id="multiDistTable">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thDist">Distribution</th>
+                                    <th data-i18n="thError">Error (SSE)</th>
+                                    <th data-i18n="thParams">Parameters</th>
+                                    <th data-i18n="thEst">Est. %</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TOLERANCE INTERVAL VIEW -->
+                <div id="tolerance-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div class="results-table-wrapper hidden" id="tolerance-stats-wrapper">
+                        <div class="panel-title" data-i18n="lblTolStats">Descriptive Statistics</div>
+                        <table class="results-table" id="toleranceStatsTable">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thStatistic">Statistic</th>
+                                    <th data-i18n="thValue">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-i18n="lblN">Sample N</td>
+                                    <td id="tol-n">-</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="lblMean">Mean</td>
+                                    <td id="tol-mean">-</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="lblStdDev">Std Dev</td>
+                                    <td id="tol-std">-</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="lblMin">Min</td>
+                                    <td id="tol-min">-</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="lblMax">Max</td>
+                                    <td id="tol-max">-</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="lblSkewness">Skewness</td>
+                                    <td id="tol-skew">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="results-table-wrapper hidden" id="tolerance-normality-wrapper">
+                        <div class="panel-title" data-i18n="lblTolNormality">Normality Test</div>
+                        <table class="results-table" id="toleranceNormalityTable">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thTest">Test</th>
+                                    <th data-i18n="thStatistic">Statistic</th>
+                                    <th data-i18n="thPValue">P-Value</th>
+                                    <th data-i18n="thConclusion">Conclusion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Anderson-Darling</td>
+                                    <td id="tol-ad-stat">-</td>
+                                    <td id="tol-ad-p">-</td>
+                                    <td id="tol-ad-conclusion">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="results-table-wrapper hidden" id="tolerance-table-wrapper">
+                        <div class="panel-title" data-i18n="lblTolLimits">Tolerance Limits (Two-Sided)</div>
+                        <table class="results-table" id="toleranceTable">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thMethod">Method</th>
+                                    <th data-i18n="thLower">Lower Limit</th>
+                                    <th data-i18n="thUpper">Upper Limit</th>
+                                    <th data-i18n="thAchieved">Achieved Conf.</th>
+                                    <th data-i18n="thStatus">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" style="text-align:center; padding: 20px; color:#999;"
+                                        data-i18n="msgTolAwait">Awaiting data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="tolerance-message" class="success-msg" style="margin-top: 8px;"></div>
+                    </div>
+
+                    <div id="tolerance-chart-container" class="chart-container hidden">
+                        <div class="panel-title" data-i18n="lblTolChart">Histogram & Normal Fit</div>
+                        <div id="toleranceChart" style="width:100%; height:450px;"></div>
+                        <div class="panel-title" data-i18n="lblCdfChart">Cumulative Histogram (CDF)</div>
+                        <div id="toleranceCdfChart" style="width:100%; height:350px;"></div>
+                    </div>
+                </div>
+
+                <!-- CAPABILITY VIEW -->
+                <div id="capability-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div id="capability-chart-container" class="chart-container hidden">
+                        <div class="panel-title" id="capChartTitle" data-i18n="lblCapStats">Capability Analysis
+                        </div>
+                        <div id="capChart" style="width:100%; height:450px;"></div>
+                    </div>
+
+                    <div id="capability-results-wrapper" class="results-table-wrapper hidden" style="margin-top: 0;">
+                        <div class="panel-title">
+                            <span data-i18n="lblCapReport">Capability Analysis Report</span>
+                            <span
+                                style="font-size: 13px; color: var(--colorNeutralForeground2); font-weight: normal; margin-left: 8px;"
+                                id="cap-dist-label"></span>
+                        </div>
+
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px;">
+
+                            <!-- Process Data -->
+                            <div>
+                                <div class="cap-section-header" data-i18n="lblProcData">Process Data</div>
+                                <table class="cap-table">
+                                    <tr>
+                                        <td data-i18n="lblLSL" data-i18n-tooltip="tipLSL">LSL</td>
+                                        <td id="val-lsl">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td data-i18n="lblTarget" data-i18n-tooltip="tipTarget">Target</td>
+                                        <td id="val-target">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td data-i18n="lblUSL" data-i18n-tooltip="tipUSL">USL</td>
+                                        <td id="val-usl">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td data-i18n="lblMean">Mean</td>
+                                        <td id="val-mean">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td data-i18n="lblN">Sample N</td>
+                                        <td id="val-n">-</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Within -->
+                            <div id="cap-indices-within">
+                                <div class="cap-section-header" data-i18n="hdrWithin" data-i18n-tooltip="tipHdrWithin">
+                                    Potential (Within)</div>
+                                <table class="cap-table">
+                                    <tr>
+                                        <td data-i18n="lblSigmaWithin" data-i18n-tooltip="tipSigmaWithin">Sigma</td>
+                                        <td id="val-sig-within">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipCp">
+                                        <td>Cp</td>
+                                        <td id="val-cp">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipCpl">
+                                        <td>Cpl</td>
+                                        <td id="val-cpl">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipCpu">
+                                        <td>Cpu</td>
+                                        <td id="val-cpu">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipCpk">
+                                        <td>Cpk</td>
+                                        <td id="val-cpk">-</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Overall -->
+                            <div id="cap-indices-overall">
+                                <div class="cap-section-header" data-i18n="hdrOverall"
+                                    data-i18n-tooltip="tipHdrOverall">Overall</div>
+                                <table class="cap-table">
+                                    <tr>
+                                        <td data-i18n="lblSigmaOverall" data-i18n-tooltip="tipSigmaOverall">Sigma
+                                        </td>
+                                        <td id="val-sig-overall">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipPp">
+                                        <td>Pp</td>
+                                        <td id="val-pp">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipPpl">
+                                        <td>Ppl</td>
+                                        <td id="val-ppl">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipPpu">
+                                        <td>Ppu</td>
+                                        <td id="val-ppu">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipPpk">
+                                        <td>Ppk</td>
+                                        <td id="val-ppk">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipCpm">
+                                        <td>Cpm</td>
+                                        <td id="val-cpm">-</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Performance -->
+                            <div>
+                                <div class="cap-section-header" data-i18n="hdrPerformance">Process Performance</div>
+                                <table class="cap-table">
+                                    <tr class="header-row">
+                                        <td></td>
+                                        <td data-i18n="thPPM">PPM</td>
+                                        <td data-i18n="thPercent">%</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipPerfOverall">
+                                        <td colspan="3" style="font-weight:600;" data-i18n="hdrOverall">Overall</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:15px;" data-i18n="lblPerfLower">&lt; LSL</td>
+                                        <td id="ppm-ppl">-</td>
+                                        <td id="pct-ppl">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:15px;" data-i18n="lblPerfUpper">&gt; USL</td>
+                                        <td id="ppm-ppu">-</td>
+                                        <td id="pct-ppu">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:15px;" data-i18n="lblPerfTotal">Total</td>
+                                        <td id="ppm-ppt">-</td>
+                                        <td id="pct-ppt">-</td>
+                                    </tr>
+                                    <tr data-i18n-tooltip="tipPerfWithin">
+                                        <td colspan="3" style="font-weight:600;" data-i18n="hdrWithin">Potential
+                                            (Within)</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:15px;" data-i18n="lblPerfLower">&lt; LSL</td>
+                                        <td id="ppm-cpl">-</td>
+                                        <td id="pct-cpl">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:15px;" data-i18n="lblPerfUpper">&gt; USL</td>
+                                        <td id="ppm-cpu">-</td>
+                                        <td id="pct-cpu">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:15px;" data-i18n="lblPerfTotal">Total</td>
+                                        <td id="ppm-cpt">-</td>
+                                        <td id="pct-cpt">-</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HYPOTHESIS VIEW -->
+                <div id="hypothesis-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div class="results-table-wrapper hidden" id="hypothesis-summary-wrapper">
+                        <div class="panel-title" data-i18n="lblHypoSummary">Test Summary</div>
+                        <table class="results-table" id="hypothesisSummaryTable">
+                            <!-- JS Populates -->
+                        </table>
+                    </div>
+                    <div class="results-table-wrapper hidden" id="hypothesis-groups-wrapper">
+                        <div class="panel-title" data-i18n="lblHypoGrps">Group Statistics</div>
+                        <table class="results-table" id="hypothesisGroupsTable">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thHypoGrp">Group</th>
+                                    <th data-i18n="thHypoN">N</th>
+                                    <th data-i18n="thHypoMean">Mean</th>
+                                    <th data-i18n="thHypoStdDev">Std. Dev.</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div id="hypothesis-chart-container" class="chart-container hidden">
+                        <div id="hypothesisChart" style="width:100%; height:100%;"></div>
+                    </div>
+                </div>
+
+                <!-- SPC VIEW -->
+                <div id="spc-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div id="spc-chart-container-1" class="chart-container hidden">
+                        <div id="spcChart" style="width:100%; height:100%;"></div>
+                    </div>
+                    <div id="spc-chart-container-2" class="chart-container hidden">
+                        <div id="spcChartSecondary" style="width:100%; height:100%;"></div>
+                    </div>
+                    <div id="spc-violations-wrapper" class="results-table-wrapper hidden">
+                        <div class="panel-title" data-i18n="lblViolations">Alarm Violations</div>
+                        <table class="results-table" id="spcViolationsTable">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thPoint">Point Index</th>
+                                    <th data-i18n="thValue">Value</th>
+                                    <th data-i18n="thRule">Rule Violated</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- GRAPHS VIEW (Desc Stats) -->
+                <div id="graphs-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div id="graphs-stats-table-container" class="results-table-wrapper hidden">
+                        <div class="panel-title" data-i18n="lblStats">Statistics</div>
+                        <table class="results-table" id="graphsStatsTable">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div id="graphs-charts-container" style="display: flex; flex-direction: column; gap: 24px;">
+                        <!-- Dynamic Charts Injected Here -->
+                    </div>
+                </div>
+
+                <!-- PARETO VIEW -->
+                <div id="pareto-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div id="pareto-chart-container" class="chart-container hidden">
+                        <div class="panel-title" data-i18n="tabPareto">Pareto Analysis</div>
+                        <div id="paretoChart" style="width:100%; height:430px;"></div>
+                    </div>
+                    <div id="pareto-table-container" class="results-table-wrapper hidden">
+                        <div class="panel-title" data-i18n="lblParetoTableTitle">Pareto Ranking Table</div>
+                        <table class="results-table" id="paretoTable">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thParetoCategory">Category</th>
+                                    <th data-i18n="thParetoFrequency">Frequency</th>
+                                    <th data-i18n="thParetoPercent">%</th>
+                                    <th data-i18n="thParetoCumPercent">Cum %</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- WEIBAYES VIEW -->
+                <div id="weibayes-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <!-- Top Cards -->
+                    <div class="stats-cards hidden" id="wb-stats-cards">
+                        <div class="card">
+                            <div class="card-title" id="wb-lbl-result" data-i18n="lblEta">Characteristic Life (Eta)
+                            </div>
+                            <div class="card-value" id="wb-res-eta">--</div>
+                            <div class="card-sub" id="wb-lbl-sub" data-i18n="lblLowerBound">Lower Bound</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title" data-i18n="lblRtCalc">R(t) Calculator</div>
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+                                <input type="number" id="wb-calc-time" placeholder="Time..." style="width: 100px;">
+                                <i style="font-style:normal;">&rarr;</i>
+                                <span style="font-size: 20px; font-weight:600;" id="wb-calc-result">--%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Area -->
+                    <div class="chart-container hidden" id="wb-rel-chart-container">
+                        <div class="panel-title" data-i18n="lblRelRt">Reliability R(t)</div>
+                        <div id="wb-reliability-chart" style="width:100%; height:400px;"></div>
+                    </div>
+
+                    <div id="wb-prob-chart-container" class="chart-container hidden">
+                        <div class="panel-title" data-i18n="lblWeibullProb">Weibull Probability Plot</div>
+                        <div id="wb-probability-chart" style="width:100%; height:400px;"></div>
+                    </div>
+
+                    <!-- Math Breakdown -->
+                    <div id="wb-math-card" class="card hidden" style="display:block; min-height:auto;">
+                        <div class="panel-title" data-i18n="lblMathBreakdown">Math Breakdown</div>
+                        <div id="wb-math-content" style="font-size: 13px; line-height: 1.6; overflow-x: auto;">
+                        </div>
+                    </div>
+
+                    <!-- Interpretation -->
+                    <div id="wb-interpretation-card" class="card hidden"
+                        style="display:block; min-height:auto; border-left: 4px solid var(--theme-primary);">
+                        <div class="panel-title" data-i18n="lblWpInterpretation">Interpretation</div>
+                        <div id="wb-interpretation-content"
+                            style="font-size: 14px; line-height: 1.6; font-style: italic; color: var(--theme-primary);">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WEIBULL VIEW -->
+                <div id="weibull-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div class="stats-cards" id="weibull-summary-cards"></div>
+                    <div class="weibull-plot-row">
+                        <div class="chart-container weibull-plot-container">
+                            <div class="panel-title weibull-plot-title" data-i18n="lblWeibullProb">Weibull Probability Plot</div>
+                            <div id="weibullChart" style="width: 100%; height: 650px;"></div>
+                        </div>
+                        <div class="weibull-side-column">
+                            <div class="results-table-wrapper weibull-gof-box">
+                                <div class="panel-title" data-i18n="lblWeibullGof">Goodness of Fit</div>
+                                <table class="results-table" id="weibull-gof-table">
+                                    <thead>
+                                        <tr>
+                                            <th data-i18n="thStatistic">Statistic</th>
+                                            <th data-i18n="thValue">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <div class="results-table-wrapper weibull-percentiles-box">
+                                <div class="panel-title" data-i18n="lblWeibullPercentiles">Percentiles</div>
+                                <table class="results-table" id="weibull-percentiles-table">
+                                    <thead>
+                                        <tr>
+                                            <th data-i18n="thPercent">%</th>
+                                            <th data-i18n="lblTime">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REGRESSION VIEW -->
+                <div id="regression-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+
+
+                    <!-- Results Panel -->
+                    <div id="regression-results-wrapper" class="hidden"
+                        style="display: flex; flex-direction: column; gap: 24px;">
+                        <!-- Model Summary Cards -->
+                        <div class="stats-cards" id="reg-summary-cards"></div>
+
+                        <!-- ANOVA Table -->
+                        <div class="results-table-wrapper">
+                            <div class="panel-title" data-i18n="lblANOVA">ANOVA</div>
+                            <table class="results-table" id="reg-anova-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="thSource">Source</th>
+                                        <th data-i18n="thDF">DF</th>
+                                        <th data-i18n="thSS">SS</th>
+                                        <th data-i18n="thMS">MS</th>
+                                        <th data-i18n="thF">F</th>
+                                        <th data-i18n="thPVal">P-Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Coefficients Table -->
+                        <div class="results-table-wrapper">
+                            <div class="panel-title" data-i18n="lblCoefficients">Coefficients</div>
+                            <table class="results-table" id="reg-coef-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="thTerm">Term</th>
+                                        <th data-i18n="thCoef">Coef</th>
+                                        <th data-i18n="thSECoef">SE Coef</th>
+                                        <th data-i18n="thTValue">T-Value</th>
+                                        <th data-i18n="thPVal">P-Value</th>
+                                        <th data-i18n="thVIF">VIF</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Equation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" data-i18n="lblRegEquation">Regression Equation</h3>
+                            </div>
+                            <div id="reg-equation"
+                                style="font-family: monospace; font-size: 1.1em; padding: 10px; white-space: pre-wrap; word-break: break-word;">
+                            </div>
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3 class="chart-title" data-i18n="lblRegPlots">Regression Plots</h3>
+                            </div>
+                            <div id="regChart" style="width: 100%; height: 500px;"></div>
+                            <div id="regResidualsChart" style="width: 100%; height: 500px; margin-top: 20px;"></div>
+                        </div>
+
+                        <!-- Prediction Section -->
+                        <div class="results-table-wrapper" id="regression-prediction-section" style="margin-top: 32px;">
+                            <div class="panel-title" style="margin-bottom: 16px; color: #005FB8; font-size: 1.2em; font-weight: bold;">Prediction</div>
+                            <form id="regression-prediction-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
+                            <div style="margin-top: 16px; font-size: 1.1em; font-weight: 600;" id="regression-prediction-result"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MSA / GAGE R&R VIEW -->
+                <div id="msa-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <!-- Results Tables -->
+                    <div id="msa-results-wrapper" class="results-table-wrapper hidden">
+                        <div class="panel-title" data-i18n="lblMsaVarComp">Variance Components</div>
+                        <table class="results-table" id="msaVarCompTable">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thSource">Source</th>
+                                    <th data-i18n="thVarComp">VarComp</th>
+                                    <th data-i18n="thContrib">%Contribution (of VarComp)</th>
+                                    <th data-i18n="thStdDev">StdDev (SD)</th>
+                                    <th data-i18n="thStudyVar">Study Var (6 * SD)</th>
+                                    <th data-i18n="thPctStudyVar">%Study Var (%SV)</th>
+                                    <th data-i18n="thPctTol">%Tolerance (SV/Tol)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div style="margin-top: 10px; font-weight: 600;" id="msa-ndc-result"></div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div id="msa-chart-container" class="chart-container hidden">
+                        <div class="panel-title" data-i18n="lblMsaCharts">Gage R&R Plots</div>
+                        <div id="msaComponentsChart" style="width: 100%; height: 400px; margin-bottom: 24px;"></div>
+                        <div id="msaInteractionChart" style="width: 100%; height: 400px;"></div>
+                    </div>
+                </div>
+
+                <!-- MONTE CARLO VIEW (Existing) -->
+                <div id="montecarlo-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <div id="mc-results-container" class="chart-container hidden">
+                        <div class="panel-title" data-i18n="tabMonteCarlo">Monte Carlo Simulation</div>
+                        <div id="mcChart" style="width:100%; height:450px;"></div>
+                        <div class="panel-title" data-i18n="lblCdfChart">Cumulative Histogram (CDF)</div>
+                        <div id="mcCdfChart" style="width:100%; height:350px;"></div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- About Modal Structure -->
+    <div class="modal-overlay" id="aboutModal" onclick="if(event.target === this) toggleAboutModal()">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="toggleAboutModal()">✕</button>
+            <h2 class="modal-title" data-i18n="appTitle">Statistics Center</h2>
+            <div class="modal-version"><span data-i18n="lblVersion">Version</span> <span id="aboutVersionNumber"></span>
+            </div>
+            <div class="modal-body">
+                <p data-i18n="lblDesignedBy">Designed for Bosch Power Tools.</p>
+                <p><strong data-i18n="lblContact">Contact:</strong><br>
+                    Gabriel Peregrino<br><a href="mailto:gabriel.peregrino@br.bosch.com"
+                        style="color: #007bc0; text-decoration: none;">gabriel.peregrino@br.bosch.com</a><br><br>
+                    Daniel Vesenmaier<br><a href="mailto:daniel.vesenmaier@de.bosch.com"
+                        style="color: #007bc0; text-decoration: none;">daniel.vesenmaier@de.bosch.com</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+<script src="translations.js"></script>   
+<script src="main.js"></script>
+	
+</body>
+
+
+</html>

@@ -1,0 +1,1848 @@
+        /* --- DESIGN TOKENS --- */
+        :root {
+            /* Materials & Layering */
+            --SolidBackgroundFillColorBase: #FFFFFF;
+            /* App Background */
+            --LayerFillColorDefault: #EFF1F2;
+            /* Content/Card Background */
+            --CardBackgroundFillColorDefault: rgba(255, 255, 255, 0.7);
+
+            /* Text & Content */
+            --TextFillColorPrimary: rgba(0, 0, 0, 0.9);
+            --TextFillColorSecondary: rgba(0, 0, 0, 0.6);
+            --TextFillColorTertiary: rgba(0, 0, 0, 0.45);
+
+            /* Strokes & Dividers */
+            --CardStrokeColorDefault: rgba(0, 0, 0, 0.06);
+            /* Card Borders */
+            --ControlStrokeColorDefault: rgba(0, 0, 0, 0.06);
+            /* Input Borders */
+            --ControlStrokeColorExec: rgba(0, 0, 0, 0.06);
+            --DividerStrokeColorDefault: rgba(0, 0, 0, 0.08);
+
+            /* Controls (Inputs, Buttons) */
+            --ControlFillColorDefault: rgba(255, 255, 255, 0.7);
+
+            /* Brand / Accent Colors */
+            --SystemAccentColor: #005FB8;
+            --AccentTextFillColorPrimary: #003E92;
+            --AccentFillColorDefault: #005FB8;
+            --OnAccentFillColorText: #FFFFFF;
+
+            /* Status Colors */
+            --StatusSuccessBackground: #dff6dd;
+            --StatusSuccessForeground: #107c10;
+            --StatusDangerBackground: #fde7e9;
+            --StatusDangerForeground: #c50f1f;
+            --StatusWarningBackground: #fff4ce;
+            --StatusWarningForeground: #9d5d00;
+
+            /* Elevation / Shadows */
+            --Shadow8: 0 4px 8px rgba(0, 0, 0, 0.14);
+            /* Used for tooltips/hover */
+            --Shadow32: 0 12.8px 28.8px rgba(0, 0, 0, 0.22), 0 2.4px 5.4px rgba(0, 0, 0, 0.18);
+
+            /* Typography (Segoe UI Variable) */
+            --fontFamily: 'Bosch Sans', 'Segoe UI Variable', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            --fontSizeCaption: 12px;
+            --fontSizeBody: 14px;
+            --fontSizeBodyStrong: 14px;
+            --fontWeightBodyStrong: 600;
+            --fontSizeSubtitle: 20px;
+            --fontSizeTitle: 28px;
+            --fontSizeTitleLarge: 40px;
+            --fontSizeDisplay: 42px;
+            /* Reduced from 68px to prevent overflow */
+
+            /* Geometry */
+            --ControlCornerRadius: 4px;
+            /* Buttons, Inputs */
+            --OverlayCornerRadius: 8px;
+            /* Cards, Panels */
+            --SpacingS: 4px;
+            --SpacingM: 8px;
+            --SpacingL: 16px;
+
+
+        }
+
+        [data-theme="dark"] {
+            /* Materials & Layering */
+            --SolidBackgroundFillColorBase: #202020;
+            --LayerFillColorDefault: #2C2C2C;
+            --CardBackgroundFillColorDefault: rgba(44, 44, 44, 0.05);
+
+            /* Text & Content */
+            --TextFillColorPrimary: #FFFFFF;
+            --TextFillColorSecondary: rgba(255, 255, 255, 0.79);
+            --TextFillColorTertiary: rgba(255, 255, 255, 0.54);
+
+            /* Strokes & Dividers */
+            --CardStrokeColorDefault: rgba(255, 255, 255, 0.08);
+            --ControlStrokeColorDefault: rgba(255, 255, 255, 0.08);
+            --ControlStrokeColorExec: rgba(255, 255, 255, 0.08);
+            --DividerStrokeColorDefault: rgba(255, 255, 255, 0.08);
+
+            /* Controls */
+            --ControlFillColorDefault: rgba(255, 255, 255, 0.05);
+
+            /* Brand / Accent Colors */
+            --SystemAccentColor: #60CDFF;
+            --AccentTextFillColorPrimary: #60CDFF;
+            --AccentFillColorDefault: #60CDFF;
+            --OnAccentFillColorText: #000000;
+
+            /* Status Colors */
+            --StatusSuccessBackground: #0f3b0f;
+            --StatusSuccessForeground: #54b054;
+            --StatusDangerBackground: #3b0f0f;
+            --StatusDangerForeground: #e37d80;
+            --StatusWarningBackground: #3b3b0f;
+            --StatusWarningForeground: #fce100;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            touch-action: manipulation;
+            font-family: var(--fontFamily);
+            background-color: var(--SolidBackgroundFillColorBase);
+            color: var(--TextFillColorPrimary);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        /* Ensure consistent fonts across all inputs and tables */
+        input,
+        select,
+        textarea,
+        button,
+        table,
+        th,
+        td {
+            font-family: var(--fontFamily);
+            font-size: var(--fontSizeBody);
+            color: var(--TextFillColorPrimary);
+        }
+
+        /* Global Scrollbar Hide */
+        * {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* --- GRID SYSTEM --- */
+        .row {
+            margin-left: -15px;
+            margin-right: -15px;
+            /* Clearfix for floats */
+        }
+
+        .row:before,
+        .row:after {
+            content: " ";
+            display: table;
+        }
+
+        .row:after {
+            clear: both;
+        }
+
+        .col-sm-6 {
+            position: relative;
+            min-height: 1px;
+            padding-left: 15px;
+            padding-right: 15px;
+            float: left;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (min-width: 992px) {
+            .col-sm-6 {
+                width: 50%;
+            }
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: 'Bosch Sans';
+            font-weight: 400;
+            src: url(https://www.bosch-presse.de/pressportal/de/media/res/fonts/boschsans/web/boschsans_regular_woff2.woff2) format("woff2"),
+                url(https://www.bosch-presse.de/pressportal/de/media/res/fonts/boschsans/web/boschsans_regular_woff.woff) format("woff");
+        }
+
+        /* --- LAYOUT --- */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            width: 100%;
+            background-color: var(--SolidBackgroundFillColorBase);
+        }
+
+        @media (min-width: 768px) {
+            .main-header .top-row {
+                padding: 40px 32px;
+                /* Increased from 24px */
+            }
+        }
+
+        .main-header .top-row {
+            padding: 48px 48px;
+            /* High mobile padding, adjust if needed */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            position: relative;
+            /* Context for mobile menu */
+        }
+
+        .header-branding {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .header-brand-logo-svg {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+
+        /* Dark Mode: Make Logo White (exclude rect to keep background transparent) */
+        [data-theme="dark"] .header-brand-logo-svg path,
+        [data-theme="dark"] .header-brand-logo-svg polygon {
+            fill: #FFFFFF !important;
+        }
+
+        .theme-icon-svg {
+            width: 24px;
+            height: 24px;
+            fill: #007bc0 !important;
+            /* Forces blue in all modes per request */
+            display: block;
+        }
+
+        .theme-icon-svg path {
+            stroke: none !important;
+            /* No contour */
+        }
+
+        .title {
+            font-size: var(--fontSizeTitle);
+            font-weight: var(--fontWeightBodyStrong);
+            margin: 0;
+            color: var(--TextFillColorPrimary);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* --- PIVOT (TABS) --- */
+        .pivot-container {
+            display: flex;
+            border-bottom: 1px solid var(--DividerStrokeColorDefault);
+            background: var(--LayerFillColorDefault);
+            padding: 0 12px;
+            flex-shrink: 0;
+            overflow-x: auto;
+        }
+
+        .pivot-item {
+            background: none;
+            border: none;
+            padding: 0 12px;
+            height: 44px;
+            font-size: var(--fontSizeBody);
+            font-weight: normal;
+            color: var(--TextFillColorSecondary);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.1s ease;
+            outline: none;
+            font-family: var(--fontFamily);
+            white-space: nowrap;
+        }
+
+        .pivot-item:hover {
+            color: var(--TextFillColorPrimary);
+            background-color: rgba(0, 0, 0, 0.05);
+            /* Subtle hover */
+        }
+
+        .pivot-item.active {
+            font-weight: var(--fontWeightBodyStrong);
+            color: var(--TextFillColorPrimary);
+        }
+
+        .pivot-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2px;
+            right: 2px;
+            height: 3px;
+            background-color: var(--AccentFillColorDefault);
+            border-radius: 2px 2px 0 0;
+        }
+
+        /* --- CONTENT AREA --- */
+        .content {
+            flex: 1;
+            --contentPadding: 48px;
+            padding: 0px var(--contentPadding) var(--contentPadding) var(--contentPadding);
+            /* Top | Right | Bottom | Left */
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: var(--sidebarWidth, 320px) 1fr;
+            --sidebarWidth: 320px;
+            /* Default */
+            gap: 32px;
+            height: calc(100% - 92px);
+            /* Header + Pivot heights */
+            position: relative;
+        }
+
+        .controls-panel {
+            transition: filter 0.3s ease;
+        }
+
+        /* Blur effect for Input Panel when Dropdown is Open */
+        .sidebar-nav-dropdown-container.open+.controls-panel {
+            filter: blur(5px);
+        }
+
+        .content.full-width {
+            grid-template-columns: 1fr;
+        }
+
+        .content.full-width .controls-panel {
+            display: none;
+        }
+
+        /* --- CONTROLS SIDEBAR --- */
+        .results-table-wrapper {
+            background: #EFF1F2;
+            padding: 24px;
+            border-radius: 0;
+            box-shadow: none;
+            overflow-x: auto;
+            border: none;
+            height: fit-content;
+            position: relative;
+            /* For resizer */
+        }
+
+        .wp-schedule-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--colorNeutralStroke2);
+            background: transparent;
+        }
+
+        .wp-schedule-list .results-table th,
+        .wp-schedule-list .results-table td {
+            font-size: 12px;
+            padding: 6px;
+        }
+
+        .controls-panel {
+            background: #EFF1F2;
+            padding: 24px;
+            border-radius: 0;
+            box-shadow: none;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: none;
+            position: relative;
+            /* For resizer */
+        }
+
+        .sidebar-resizer {
+            width: 16px;
+            /* Larger hit area */
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: -8px;
+            /* Stick to right edge relative to wrapper */
+            /* Center over the edge */
+            cursor: col-resize;
+            z-index: 100;
+            user-select: none;
+            transition: background-color 0.2s;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-resizer {
+                display: none;
+            }
+        }
+
+        /* Visible guide line on hover or resize */
+        .sidebar-resizer::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--SystemAccentColor);
+            opacity: 0;
+            transition: opacity 0.2s;
+            transform: translateX(-50%);
+        }
+
+        .sidebar-resizer:hover::after,
+        .sidebar-resizer.resizing::after {
+            opacity: 0.5;
+        }
+
+        [data-theme="dark"] .controls-panel {
+            background: var(--LayerFillColorDefault);
+            border-radius: 0;
+            border: none;
+        }
+
+        .control-group {
+            margin-bottom: 32px;
+        }
+
+        .results-panel {
+            position: relative;
+            /* Context for toggle */
+        }
+
+        /* Hide toggle when welcome message is visible (Empty State) */
+        #welcome-msg:not(.hidden)~#sidebarToggle {
+            display: none !important;
+        }
+
+        /* Hide toggle when welcome message is visible (Empty State) */
+        #welcome-msg:not(.hidden)~#sidebarToggle {
+            display: none !important;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background: transparent;
+            /* Integrated look */
+            border: none;
+            color: var(--TextFillColorSecondary);
+            /* Subtle */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: none;
+            z-index: 101;
+            transition: background-color 0.2s, color 0.2s;
+            padding: 0;
+        }
+
+        .sidebar-toggle:hover {
+            background-color: var(--LayerFillColorDefault);
+            color: var(--TextFillColorPrimary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Icon Toggling */
+        .icon-collapse {
+            display: none;
+        }
+
+        .icon-expand {
+            display: block;
+        }
+
+        .content.sidebar-closed .icon-expand {
+            display: none;
+        }
+
+        .content.sidebar-closed .icon-collapse {
+            display: block;
+        }
+
+        /* Grid Transition */
+        .content {
+            transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .content.sidebar-closed {
+            grid-template-columns: 0px 1fr;
+            --sidebarWidth: 0px;
+        }
+
+        /* Hide sidebar content when closed */
+        .content.sidebar-closed .sidebar-wrapper>* {
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.2s;
+        }
+
+        .control-label {
+            display: block;
+            font-size: var(--fontSizeBody);
+            font-weight: var(--fontWeightBodyStrong);
+            margin-bottom: 8px;
+            color: var(--TextFillColorPrimary);
+        }
+
+        /* INPUTS & CONTROLS */
+        textarea {
+            width: 100%;
+            height: 7.5rem;
+            min-height: 7.5rem;
+            padding: .75rem 1rem;
+            border: none;
+            border-bottom: 1px solid #000000;
+            background-color: #e0e2e5;
+            color: var(--TextFillColorPrimary);
+            border-radius: 0;
+            font-family: inherit;
+            box-sizing: border-box;
+            resize: none;
+            overflow: auto;
+            font-size: var(--fontSizeBody);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        [data-theme="dark"] textarea {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border-bottom: 1px solid #a0a0a0;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 6px 8px;
+            border: none;
+            border-bottom: 1px solid #000000;
+            background-color: #e0e2e5;
+            color: var(--TextFillColorPrimary);
+            border-radius: 0;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: var(--fontSizeBody);
+            height: 32px;
+            outline: none;
+            transition: border-color 0.1s;
+        }
+
+        /* Fix for removing rounded corners on macOS/iOS */
+        select {
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%;
+            background-size: 0.65em auto;
+            padding-right: 1.5em;
+        }
+
+        [data-theme="dark"] input[type="number"],
+        [data-theme="dark"] input[type="text"],
+        [data-theme="dark"] select,
+        [data-theme="dark"] input[type="file"] {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border-bottom: 1px solid #a0a0a0;
+        }
+
+        [data-theme="dark"] select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
+            border-bottom: 2px solid var(--SystemAccentColor);
+            outline: none;
+        }
+
+        .input-hint {
+            font-size: var(--fontSizeCaption);
+            color: var(--TextFillColorSecondary);
+            margin-top: 4px;
+        }
+
+        /* --- BUTTONS --- */
+        .ms-Button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            min-width: 80px;
+            padding: 0 16px;
+            background-color: var(--AccentFillColorDefault);
+            color: var(--OnAccentFillColorText);
+            border: none;
+            border-radius: var(--ControlCornerRadius);
+            font-size: var(--fontSizeBody);
+            font-weight: var(--fontWeightBodyStrong);
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .bosch-btn-primary {
+            background-color: #007bc0;
+            color: #fff;
+            height: 48px;
+            padding: 3px 25px;
+            border-radius: 0;
+            transition: .5s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 400;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .bosch-btn-primary:hover {
+            background-color: #00629a;
+        }
+
+        .bosch-btn-secondary {
+            color: #000;
+            background-color: transparent;
+            border: 1px solid transparent;
+            min-height: 32px;
+            height: auto;
+            padding: 4px 8px;
+            border-radius: 0;
+            transition: .5s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.2;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: normal;
+            text-align: center;
+        }
+
+        .bosch-btn-secondary:hover {
+            background-color: transparent;
+            border-color: transparent;
+            color: #007bc0;
+        }
+
+        [data-theme="dark"] .bosch-btn-secondary {
+            color: #fff;
+        }
+
+        /* Monte Carlo and Regression Specific Button Style */
+        #montecarlo-controls .bosch-btn-secondary,
+        #grp-regression-controls .bosch-btn-secondary,
+        #grp-warranty-controls .bosch-btn-secondary {
+            border: 1px solid #007bc0;
+            min-height: 48px;
+            height: 48x;
+            line-height: 1;
+            color: #007bc0;
+            padding: 0 12px;
+        }
+
+        /* Ensure removal buttons in tables remain compact */
+        #wp-schedule-table .bosch-btn-secondary {
+            border: 1px solid transparent;
+            min-height: auto;
+            padding: 2px 8px;
+            font-size: 14px;
+            color: #007bc0;
+        }
+
+        #wp-schedule-table .bosch-btn-secondary:hover {
+            border-color: #007bc0;
+            background-color: rgba(0, 123, 192, 0.05);
+        }
+
+        .ms-Button:hover {
+            opacity: 0.9;
+        }
+
+        .ms-Button:active {
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
+
+        .ms-Button-Secondary {
+            background-color: var(--ControlFillColorDefault);
+            color: var(--TextFillColorPrimary);
+            border: 1px solid var(--ControlStrokeColorDefault);
+            border-bottom: 1px solid var(--ControlStrokeColorDefault);
+            border-radius: var(--ControlCornerRadius);
+            height: 32px;
+            padding: 0 16px;
+            font-size: var(--fontSizeBody);
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .ms-Button-Secondary:hover {
+            background-color: var(--LayerFillColorDefault);
+            border-color: var(--ControlStrokeColorDefault);
+        }
+
+        .ms-Button-Secondary.active {
+            background-color: var(--AccentFillColorDefault);
+            border-color: var(--AccentFillColorDefault);
+            color: var(--OnAccentFillColorText);
+        }
+
+        /* Header & Icon Buttons */
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--TextFillColorSecondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--ControlCornerRadius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--TextFillColorPrimary);
+        }
+
+        .header-btn {
+            background-color: var(--ControlFillColorDefault);
+            color: var(--TextFillColorPrimary);
+            border: 1px solid var(--ControlStrokeColorDefault);
+            /* Subtle border */
+            height: 32px;
+            font-size: var(--fontSizeBody);
+            border-radius: var(--ControlCornerRadius);
+            padding: 0 16px;
+            cursor: pointer;
+            font-weight: normal;
+            transition: all 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-btn:hover {
+            background-color: var(--LayerFillColorDefault);
+            border-color: var(--ControlStrokeColorDefault);
+            color: var(--TextFillColorPrimary);
+        }
+
+        .header-btn:active {
+            background-color: var(--LayerFillColorDefault);
+            transform: scale(0.98);
+            /* Subtle press effect */
+        }
+
+        /* Reset button style (Danger/Subtle) */
+        .header-btn.reset-btn:hover {
+            background-color: var(--color-danger-bg);
+            border-color: var(--color-danger);
+            color: var(--color-danger);
+        }
+
+
+        /* Base style for lang-select for both themes */
+        .lang-select {
+            -webkit-appearance: none;
+            appearance: none;
+            box-sizing: border-box;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            transition: color 0.1s ease-in-out;
+
+            /* Text-like appearance */
+            background-color: transparent;
+            border: none;
+            color: var(--TextFillColorPrimary);
+            /* Usa a cor de texto correta para o tema atual */
+
+            /* Sizing and alignment */
+            height: 32px;
+            font-size: 16px;
+            text-align: center;
+            min-width: 120px;
+
+            /* Arrow Icon - Default for Light Mode (black arrow) */
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%;
+            background-size: 0.65em auto;
+
+            /* Padding to not overlap text with arrow */
+            padding-left: 1em;
+            padding-right: 2.2em;
+        }
+
+        /* Hover/Focus state for the main select element */
+        .lang-select:hover,
+        .lang-select:focus,
+        .lang-select:active {
+            color: var(--SystemAccentColor);
+            /* The visible text in the header turns blue */
+        }
+
+        /* Dark Mode Specific Overrides */
+        [data-theme="dark"] .lang-select {
+            /* Changes the arrow icon to white for dark mode */
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        }
+
+        /* Style for the options INSIDE the dropdown list */
+        .lang-select option {
+            /* Define apenas a cor do texto, deixando o fundo nativo do navegador */
+            color: var(--TextFillColorPrimary);
+        }
+
+
+
+
+        /* --- PREVIEW TABLE --- */
+        .preview-container {
+            margin-top: 10px;
+            border: 1px solid var(--CardStrokeColorDefault);
+            background: var(--LayerFillColorDefault);
+            padding: 5px;
+            max-height: 150px;
+            overflow: auto;
+            font-size: var(--fontSizeCaption);
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--TextFillColorPrimary);
+        }
+
+        .preview-table th {
+            text-align: left;
+            background-color: var(--ControlFillColorDefault);
+            color: var(--TextFillColorSecondary);
+            padding: 4px;
+            font-weight: var(--fontWeightBodyStrong);
+            position: sticky;
+            top: 0;
+        }
+
+        .preview-table td {
+            border-bottom: 1px solid var(--DividerStrokeColorDefault);
+            padding: 4px;
+            font-family: monospace;
+        }
+
+        /* --- RESULTS AREA --- */
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        #graphs-num-cols label {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        #graphs-num-cols input {
+            margin-right: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .stats-grid label {
+            display: flex;
+            align-items: center;
+            font-size: var(--fontSizeBody);
+            white-space: nowrap;
+        }
+
+        .results-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: #EFF1F2;
+            padding: 24px;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        [data-theme="dark"] .card {
+            background: var(--LayerFillColorDefault);
+            border-radius: 0;
+            border: none;
+        }
+
+        .card-value {
+            font-size: var(--fontSizeDisplay);
+            font-weight: 500;
+            color: var(--TextFillColorPrimary);
+            margin-top: 2px;
+            word-break: break-all;
+            /* Safety for very long numbers */
+        }
+
+        .card-sub {
+            font-size: var(--fontSizeCaption);
+            color: var(--TextFillColorSecondary);
+            margin-top: 4px;
+        }
+
+        /* Analysis Results Table */
+        .results-table-wrapper {
+            background: #EFF1F2;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 24px;
+            border: none;
+            transition: none !important;
+        }
+
+        [data-theme="dark"] .results-table-wrapper {
+            background: var(--LayerFillColorDefault);
+            border-radius: 0;
+            border: none;
+        }
+
+        .results-table-wrapper:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--fontSizeBody);
+        }
+
+        .results-table th {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 2px solid var(--DividerStrokeColorDefault);
+            color: var(--TextFillColorSecondary);
+            font-weight: var(--fontWeightBodyStrong);
+        }
+
+        .results-table td {
+            padding: 8px;
+            border-bottom: 1px solid var(--DividerStrokeColorDefault);
+            color: var(--TextFillColorPrimary);
+        }
+
+        .results-table tr.best-fit-row {
+            background-color: var(--ControlFillColorDefault);
+        }
+
+        .results-table tr.best-fit-row td {
+            font-weight: var(--fontWeightBodyStrong);
+            border-left: 3px solid var(--SystemAccentColor);
+        }
+
+        .results-table tr.violation-row {
+            background-color: var(--StatusDangerBackground);
+        }
+
+        .results-table tr.violation-row td:first-child {
+            font-weight: var(--fontWeightBodyStrong);
+            color: var(--StatusDangerForeground);
+        }
+
+        .results-table .conclusion-reject {
+            font-weight: var(--fontWeightBodyStrong);
+            color: var(--StatusDangerForeground);
+        }
+
+        .results-table .conclusion-retain {
+            font-weight: var(--fontWeightBodyStrong);
+            color: var(--StatusSuccessForeground);
+        }
+
+
+        .cap-table {
+            width: 100%;
+            font-size: var(--fontSizeBody);
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .cap-table td {
+            padding: 6px;
+            border-bottom: 1px solid var(--DividerStrokeColorDefault);
+            color: var(--TextFillColorPrimary);
+        }
+
+        .cap-table .header-row td {
+            font-weight: var(--fontWeightBodyStrong);
+            background-color: var(--ControlFillColorDefault);
+            color: var(--TextFillColorPrimary);
+        }
+
+        .cap-section-header,
+        .panel-title {
+            font-weight: var(--fontWeightBodyStrong);
+            font-size: var(--fontSizeTitle);
+            color: #007bc0;
+            margin-bottom: 12px;
+            border-bottom: 2px solid var(--DividerStrokeColorDefault);
+            padding-bottom: 4px;
+        }
+
+        .chart-container {
+            background: #EFF1F2;
+            padding: 24px;
+            border-radius: 0;
+            box-shadow: none;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            border: none;
+            transition: none !important;
+        }
+
+        [data-theme="dark"] .chart-container {
+            background: var(--LayerFillColorDefault);
+            border-radius: 0;
+            border: none;
+        }
+
+        .chart-container:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* --- WEIBULL LAYOUT --- */
+        .weibull-plot-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        @media (max-width: 900px) {
+            .weibull-plot-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .weibull-plot-title {
+            margin-bottom: 0;
+        }
+
+        .weibull-plot-container {
+            padding-top: 24px;
+            height: 650px;
+        }
+
+        .weibull-side-column {
+            display: flex;
+            flex-direction: column;
+            height: 650px;
+            gap: 24px;
+        }
+
+        .weibull-side-column .results-table-wrapper {
+            overflow: auto;
+        }
+
+        .weibull-gof-box {
+            flex: 0 0 40%;
+        }
+
+        .weibull-percentiles-box {
+            flex: 0 0 60%;
+        }
+
+        /* --- GRAPHS TAB SPECIFIC --- */
+        .graphs-toolbar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--DividerStrokeColorDefault);
+        }
+
+        .settings-label {
+            font-size: var(--fontSizeCaption);
+            font-weight: var(--fontWeightBodyStrong);
+            color: var(--TextFillColorSecondary);
+            margin-right: 4px;
+        }
+
+        .settings-divider {
+            height: 24px;
+            width: 1px;
+            background-color: var(--DividerStrokeColorDefault);
+            margin: 0 8px;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            appearance: none;
+            border: none;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background: none;
+            cursor: pointer;
+            border-radius: var(--ControlCornerRadius);
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 1px solid var(--ControlStrokeColorDefault);
+            border-radius: var(--ControlCornerRadius);
+        }
+
+        input[type=range] {
+            height: 26px;
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+            width: 80px;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: var(--ControlStrokeColorDefault);
+            border-radius: 2px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: var(--AccentFillColorDefault);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+        }
+
+        /* Checkbox (Bosch UI) */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .ms-checkbox {
+            display: flex;
+            align-items: center;
+            /* Changed from flex-start to align center text */
+            position: relative;
+            cursor: pointer;
+            font-size: var(--fontSizeBody);
+            line-height: 1.5;
+            min-height: 1.5rem;
+            padding-left: 0;
+            /* Box is part of the flow or absolute? Ref uses padding-left 2rem on label */
+        }
+
+        .ms-checkbox input {
+            display: none;
+        }
+
+        .ms-checkbox .checkmark {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: none;
+            border-radius: 0;
+            margin-right: 0.5rem;
+            position: relative;
+            background-color: #e0e2e5;
+            /* Light mode base */
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        [data-theme="dark"] .ms-checkbox .checkmark {
+            background-color: #595e62;
+        }
+
+        /* Checked State */
+        .ms-checkbox input:checked+.checkmark {
+            background-color: var(--SystemAccentColor);
+            /* Bosch Blue usually, or variable */
+        }
+
+        [data-theme="dark"] .ms-checkbox input:checked+.checkmark {
+            background-color: var(--SystemAccentColor);
+        }
+
+        /* Checkmark Icon */
+        .ms-checkbox input:checked+.checkmark::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 45%;
+            width: 6px;
+            height: 12px;
+            border: solid #ffffff;
+            border-width: 0 2.5px 2.5px 0;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1px solid var(--TextFillColorSecondary);
+            font-size: 10px;
+            color: var(--TextFillColorSecondary);
+            margin-left: 6px;
+            cursor: help;
+            vertical-align: middle;
+            font-family: inherit;
+            font-weight: bold;
+        }
+
+        /* --- UTILS --- */
+        .monte-carlo-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .monte-carlo-buttons .ms-Button,
+        .monte-carlo-buttons .ms-Button-Secondary {
+            margin-top: 0;
+            width: 100%;
+        }
+
+        #grp-warranty-controls .control-group {
+            margin-bottom: 20px;
+        }
+
+        #grp-warranty-controls .control-label {
+            margin-bottom: 4px;
+        }
+
+
+        .hidden {
+            display: none !important;
+        }
+
+        .flex-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-msg {
+            color: var(--colorPaletteRedForeground1);
+            font-size: var(--fontSizeBase200);
+            margin-top: 5px;
+            font-weight: var(--fontWeightSemibold);
+        }
+
+        .success-msg {
+            color: var(--TextFillColorSecondary);
+            font-size: var(--fontSizeBase200);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .app-container {
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .graphs-toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .settings-divider {
+                display: none;
+            }
+
+            .header {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 10px 24px;
+            }
+
+            .content {
+                height: auto;
+            }
+        }
+
+
+        .supergraphic.fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 300000;
+        }
+
+        .supergraphic {
+            width: 100%;
+            height: 6px;
+            background-image: url(https://www.bosch-presse.de/pressportal/de/media/res/gfx/supergraphic.svg);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .supergraphic:before {
+            right: 0;
+            height: 100%;
+            content: "";
+            width: 21px;
+            background: #2a8c40;
+            position: absolute;
+            top: 0;
+        }
+
+        .supergraphic:after {
+            left: 0;
+            height: 100%;
+            content: "";
+            width: 21px;
+            background: #942331;
+            position: absolute;
+            top: 0;
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: 'Bosch Sans';
+            font-weight: 400;
+            src: url(https://www.bosch-presse.de/pressportal/de/media/res/fonts/boschsans/web/boschsans_regular_woff2.woff2) format("woff2"), url(https://www.bosch-presse.de/pressportal/de/media/res/fonts/boschsans/web/boschsans_regular_woff.woff) format("woff");
+        }
+
+
+        /* --- ABOUT MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 200000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--SolidBackgroundFillColorBase);
+            color: var(--TextFillColorPrimary);
+            padding: 32px;
+            border-radius: 0;
+            box-shadow: var(--Shadow32);
+            width: 400px;
+            max-width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: var(--fontSizeTitle);
+            font-weight: var(--fontWeightBodyStrong);
+            margin-bottom: 8px;
+            color: #007bc0;
+        }
+
+        .modal-version {
+            font-size: var(--fontSizeBody);
+            color: var(--TextFillColorSecondary);
+            margin-bottom: 24px;
+        }
+
+        .modal-body {
+            font-size: var(--fontSizeBody);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: var(--TextFillColorSecondary);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--TextFillColorPrimary);
+        }
+
+        /* Sidebar Layout */
+        .sidebar-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            /* Shrink to fit content */
+            align-self: start;
+            /* Don't stretch in Grid */
+            overflow: visible;
+            /* Allow dropdown to float over */
+            gap: 0;
+            /* Removed gap per user request */
+            position: relative;
+            /* Context for absolute children if needed */
+        }
+
+        .sidebar-wrapper .controls-panel {
+            flex: 0 1 auto;
+            /* Allow shrinking, don't force full height */
+            height: fit-content;
+            /* Auto adjust height */
+            padding: 24px;
+            /* Uniform Padding */
+            overflow-y: visible;
+            /* Let sidebar wrapper handle scroll if needed */
+        }
+
+        /* Dropdown Navigation */
+        .sidebar-nav-dropdown-container {
+            position: relative;
+            width: 100%;
+            z-index: 2000;
+            /* Above everything */
+        }
+
+        /* Toggle Button */
+        .nav-dropdown-toggle {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            background-color: #007bc0;
+            /* Bosch Primary Blue */
+            color: #ffffff;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-family: var(--fontFamily);
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            /* Subtle shadow below */
+            z-index: 2002;
+            /* Ensure shadow is visible above panel */
+        }
+
+        .nav-dropdown-toggle:hover {
+            background-color: #006da0;
+        }
+
+        /* Arrow */
+        .nav-arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 4px;
+            /* Slightly larger */
+            transform: rotate(45deg);
+            margin-right: 4px;
+            transition: transform 0.3s ease;
+            /* Smooth rotation */
+            margin-top: -3px;
+            /* Visual alignment */
+        }
+
+        .sidebar-nav-dropdown-container.open .nav-arrow {
+            transform: rotate(-135deg);
+            margin-top: 3px;
+        }
+
+        /* Menu */
+        .nav-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border: none;
+            /* Hidden when closed */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            /* Animation */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, border 0s 0.3s;
+            z-index: 2001;
+            /* Ensure on top of container */
+            scrollbar-width: thin;
+            -ms-overflow-style: auto;
+        }
+
+        .sidebar-nav-dropdown-container.open .nav-dropdown-menu {
+            max-height: 60vh;
+            /* Allow large expansion */
+            opacity: 1;
+            border: none;
+            overflow-y: auto;
+            transition: max-height 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, border 0s 0s;
+        }
+
+        .nav-dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            transition: background-color 0.1s;
+        }
+
+        .nav-dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Scrollbar for dropdown */
+        .nav-dropdown-menu::-webkit-scrollbar {
+            width: 8px;
+            display: block;
+        }
+
+        .nav-dropdown-menu::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+
+        .nav-dropdown-menu::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .nav-dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .nav-dropdown-item.active {
+            background-color: #e6f7ff;
+            font-weight: bold;
+            color: #007bc0;
+            border-left: 4px solid #007bc0;
+            /* Highlight indicator */
+            padding-left: 12px;
+            /* Adjust for border */
+        }
+
+
+        /* --- DARK MODE DROPDOWN --- */
+        [data-theme="dark"] .nav-arrow {
+            border-color: #ffffff;
+        }
+
+        [data-theme="dark"] .nav-dropdown-menu {
+            background-color: #2b2b2b;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            border: none;
+        }
+
+        [data-theme="dark"] .nav-dropdown-item {
+            color: #eeeeee;
+            border-bottom: 1px solid #444;
+        }
+
+        [data-theme="dark"] .nav-dropdown-item:hover {
+            background-color: #3a3a3a;
+        }
+
+        [data-theme="dark"] .nav-dropdown-item.active {
+            background-color: rgba(96, 205, 255, 0.2);
+            /* Low opacity blue */
+            color: #60CDFF;
+            /* Light Blue Accent */
+            border-left: 4px solid #60CDFF;
+        }
+
+        [data-theme="dark"] .nav-dropdown-menu::-webkit-scrollbar-thumb {
+            background-color: #555;
+        }
+
+        [data-theme="dark"] .nav-dropdown-menu::-webkit-scrollbar-track {
+            background: #2b2b2b;
+        }
+
+        /* --- MOBILE HEADER & HAMBURGER MENU --- */
+        .mobile-menu-btn {
+            display: none;
+            width: 24px;
+            height: 24px;
+            /* Even height for simpler math */
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 3001;
+            position: relative;
+            /* Context for absolute spans */
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: var(--TextFillColorPrimary);
+            border-radius: 2px;
+            transition: all 0.3s ease-in-out;
+            position: absolute;
+            left: 0;
+            transform-origin: center;
+        }
+
+        /* Initial positions */
+        .mobile-menu-btn span:nth-child(1) {
+            top: 4px;
+        }
+
+        .mobile-menu-btn span:nth-child(2) {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .mobile-menu-btn span:nth-child(3) {
+            bottom: 4px;
+        }
+
+        /* Hamburger to X Animation */
+        .mobile-menu-btn.open span:nth-child(1) {
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        .mobile-menu-btn.open span:nth-child(2) {
+            opacity: 0;
+            transform: translateY(-50%) translateX(20px);
+        }
+
+        .mobile-menu-btn.open span:nth-child(3) {
+            bottom: auto;
+            top: 50%;
+            transform: translateY(-50%) rotate(-45deg);
+        }
+
+        @media (max-width: 1050px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            /* Mobile Font Size Reductions */
+            .app-container {
+                --fontSizeDisplay: 32px;
+                --fontSizeTitle: 22px;
+                --fontSizeTitleLarge: 28px;
+            }
+
+            .gtitle {
+                font-size: 16px !important;
+            }
+
+            .sidebar-toggle {
+                display: none !important;
+            }
+
+
+
+            .main-header .top-row {
+                padding-top: 24px;
+                padding-bottom: 24px;
+            }
+
+            .header-controls {
+                display: flex;
+                /* Always flex to maintain structure */
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 100%;
+                height: 100vh;
+                background: var(--SolidBackgroundFillColorBase);
+                /* Solid background */
+                padding: 100px 32px 32px;
+                /* Top padding to clear header */
+                z-index: 3000;
+                align-items: center;
+                gap: 24px;
+
+                /* Transition Setup */
+                transform: translateX(100%);
+                visibility: hidden;
+                transition: transform 0.3s ease-in-out, visibility 0.3s ease-in-out;
+                border: none;
+                box-shadow: none;
+            }
+
+            .header-controls.show-mobile {
+                transform: translateX(0);
+                visibility: visible;
+            }
+
+            /* Responsive Adjustments */
+            .header-brand-logo-svg {
+                height: 24px;
+                /* Reduced from 32px */
+            }
+
+            .title {
+                font-size: 18px;
+                /* Reduced from default */
+            }
+
+            .header-branding {
+                gap: 12px;
+            }
+
+            /* Adjust buttons in mobile menu */
+            .header-controls .bosch-btn-secondary,
+            .header-controls .lang-select {
+                width: 100%;
+                justify-content: center;
+                height: 48px;
+                /* Taller for touch */
+            }
+
+            /* --- MOBILE VERTICAL LAYOUT --- */
+            body,
+            .app-container {
+                height: auto;
+                overflow: auto;
+            }
+
+            .content {
+                flex-direction: column;
+                height: auto;
+                overflow: visible;
+            }
+
+            .sidebar-wrapper {
+                width: 100% !important;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--DividerStrokeColorDefault);
+                position: relative;
+                top: 0;
+            }
+
+            .sidebar-resizer {
+                display: none;
+                /* No resizing on mobile */
+            }
+
+            .controls-panel {
+                width: 100% !important;
+                height: auto;
+                max-height: none;
+                overflow: visible;
+                border: none;
+            }
+
+            .main-panel {
+                width: 100%;
+                height: auto;
+                overflow: visible;
+                padding-bottom: 80px;
+                /* Space for scrolling */
+                padding-left: 24px !important;
+                padding-right: 24px !important;
+                margin: 0 !important;
+            }
+        }

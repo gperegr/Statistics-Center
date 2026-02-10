@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warranty Prediction (Monte Carlo)</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Warranty Prediction Model</h1>
+            <p class="text-slate-500">Monte Carlo Simulation (n=1,000,000)</p>
+        </header>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            
+            <!-- Controls Column -->
+            <div class="md:col-span-4 bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit">
+                <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    Input Parameters
+                </h2>
+
+                <form id="simForm" class="space-y-4">
+                    
+                    <!-- Weibull Inputs -->
+                    <div class="pt-2 border-t border-slate-100">
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Weibull Distribution (Limit)</span>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Shape (k / &beta;)</label>
+                                <input type="number" id="w_shape" step="0.1" value="2.5" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Scale (&lambda; / &eta;)</label>
+                                <input type="number" id="w_scale" step="0.1" value="1000" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lognormal Inputs -->
+                    <div class="pt-4 border-t border-slate-100">
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Lognormal Distribution (Load)</span>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Mu (&mu;)</label>
+                                <input type="number" id="l_mu" step="0.01" value="4.5" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                <p class="text-[10px] text-slate-400 mt-1">Scale parameter of underlying normal</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Sigma (&sigma;)</label>
+                                <input type="number" id="l_sigma" step="0.01" value="0.5" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                                <p class="text-[10px] text-slate-400 mt-1">Shape parameter of underlying normal</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Input -->
+                    <div class="pt-4 border-t border-slate-100">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Snapshot Year</label>
+                        <input type="number" id="years" step="1" value="10" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" required>
+                        <p class="text-[10px] text-slate-400 mt-1">Defines the specific overlap chart below</p>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow transition-transform transform active:scale-95 mt-4">
+                        Run Simulation
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Column -->
+            <div class="md:col-span-8 space-y-6">
+                
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                        <p class="text-xs font-bold text-slate-400 uppercase">Comparison Condition</p>
+                        <p class="mt-2 text-sm text-slate-600 font-mono">Lognormal × Year > Weibull</p>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                        <p class="text-xs font-bold text-slate-400 uppercase">Failures (Snapshot)</p>
+                        <h3 id="res-count" class="text-3xl font-bold text-slate-800 mt-1">-</h3>
+                        <p class="text-xs text-slate-400">out of 1,000,000 at Year <span id="snapshot-year-disp">10</span></p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                        <p class="text-xs font-bold text-slate-400 uppercase">Probability (Snapshot)</p>
+                        <h3 id="res-prob" class="text-3xl font-bold text-slate-800 mt-1">-</h3>
+                        <p class="text-xs text-slate-400">Estimated risk</p>
+                    </div>
+                </div>
+
+                <!-- Trend Chart (Years 1-5) -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-semibold text-slate-800 mb-4">Risk Prediction (Years 1-5)</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Distribution Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-semibold text-slate-800 mb-4">Distribution Overlap (Snapshot Year)</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="simulationChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-slate-500 text-center">
+                        <span class="inline-block w-3 h-3 bg-red-500 mr-1 rounded-full"></span> Lognormal (Scaled)
+                        <span class="ml-4 inline-block w-3 h-3 bg-blue-500 mr-1 rounded-full"></span> Weibull
+                    </div>
+                </div>
+
+                <!-- Details/Logs -->
+                <div id="status-area" class="bg-blue-50 text-blue-800 p-4 rounded-lg text-sm hidden">
+                    Ready to run.
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Math Functions ---
+
+        /**
+         * Generates a random number from a Standard Normal Distribution (Mean=0, Std=1)
+         * Using Box-Muller transform
+         */
+        function randn_bm() {
+            let u = 0, v = 0;
+            while(u === 0) u = Math.random(); 
+            while(v === 0) v = Math.random();
+            return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+        }
+
+        /**
+         * Generates a random number from a Lognormal Distribution
+         */
+        function getLognormal(mu, sigma) {
+            return Math.exp(mu + sigma * randn_bm());
+        }
+
+        /**
+         * Generates a random number from a Weibull Distribution
+         */
+        function getWeibull(shape, scale) {
+            const u = Math.random();
+            return scale * Math.pow(-Math.log(u), 1.0 / shape);
+        }
+
+        // --- 2. Simulation Logic ---
+
+        let distChartInstance = null;
+        let trendChartInstance = null;
+
+        document.getElementById('simForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            runSimulation();
+        });
+
+        function runSimulation() {
+            // Get Inputs
+            const wShape = parseFloat(document.getElementById('w_shape').value);
+            const wScale = parseFloat(document.getElementById('w_scale').value);
+            const lMu = parseFloat(document.getElementById('l_mu').value);
+            const lSigma = parseFloat(document.getElementById('l_sigma').value);
+            const snapshotYear = parseFloat(document.getElementById('years').value);
+
+            if([wShape, wScale, lMu, lSigma, snapshotYear].some(isNaN)) {
+                alert("Please check your input values.");
+                return;
+            }
+
+            // Update UI label
+            document.getElementById('snapshot-year-disp').innerText = snapshotYear;
+
+            const SIMULATIONS = 1000000;
+            
+            // Generate Base Data (Raw distributions)
+            const rawWeibull = new Float32Array(SIMULATIONS);
+            const rawLognormal = new Float32Array(SIMULATIONS);
+            
+            for(let i=0; i<SIMULATIONS; i++){
+                rawWeibull[i] = getWeibull(wShape, wScale);
+                rawLognormal[i] = getLognormal(lMu, lSigma);
+            }
+
+            // --- Part A: Trend Analysis (Years 1-5) ---
+            const trendYears = [1, 2, 3, 4, 5];
+            const trendProbabilities = [];
+
+            trendYears.forEach(year => {
+                let failures = 0;
+                for(let i=0; i<SIMULATIONS; i++){
+                    if( (rawLognormal[i] * year) > rawWeibull[i] ) {
+                        failures++;
+                    }
+                }
+                trendProbabilities.push((failures / SIMULATIONS * 100));
+            });
+            
+            renderTrendChart(trendYears, trendProbabilities);
+
+
+            // --- Part B: Snapshot Analysis (User Input Year) ---
+            let snapshotFailures = 0;
+            const lognormalScaledData = new Float32Array(SIMULATIONS);
+            let maxVal = 0;
+
+            for(let i=0; i<SIMULATIONS; i++){
+                const wVal = rawWeibull[i];
+                const lScaled = rawLognormal[i] * snapshotYear;
+                
+                lognormalScaledData[i] = lScaled;
+
+                if (lScaled > wVal) snapshotFailures++;
+                
+                // Track max for histogram bounds
+                if (lScaled > maxVal) maxVal = lScaled;
+                if (wVal > maxVal) maxVal = wVal;
+            }
+
+            // Update KPI
+            document.getElementById('res-count').innerText = snapshotFailures.toLocaleString();
+            const prob = (snapshotFailures / SIMULATIONS * 100).toFixed(2);
+            const probEl = document.getElementById('res-prob');
+            probEl.innerText = prob + "%";
+            
+            if(prob > 50) probEl.className = "text-3xl font-bold text-red-600 mt-1";
+            else if (prob > 10) probEl.className = "text-3xl font-bold text-amber-500 mt-1";
+            else probEl.className = "text-3xl font-bold text-emerald-600 mt-1";
+
+            // Update Status
+            document.getElementById('status-area').classList.remove('hidden');
+            document.getElementById('status-area').innerHTML = `<strong>Simulation Complete:</strong> Calculated risk trend for years 1-5 and detailed distribution for year ${snapshotYear}.`;
+
+            // Render Distribution Chart
+            renderDistributionChart(rawWeibull, lognormalScaledData, maxVal);
+        }
+
+        // --- Chart 1: Distribution Overlap (Histogram as Lines) ---
+        function renderDistributionChart(wData, lData, overallMax) {
+            const ctx = document.getElementById('simulationChart').getContext('2d');
+            if (distChartInstance) distChartInstance.destroy();
+
+            const binCount = 50; 
+            const binWidth = overallMax / binCount;
+            const wBins = new Array(binCount).fill(0);
+            const lBins = new Array(binCount).fill(0);
+            const labels = [];
+
+            // Generate Labels
+            for(let i=0; i<binCount; i++) {
+                labels.push((i * binWidth).toFixed(0));
+            }
+
+            // Populate Bins
+            for(let i=0; i<wData.length; i++) {
+                let binIdx = Math.floor(wData[i] / binWidth);
+                if(binIdx >= binCount) binIdx = binCount - 1;
+                wBins[binIdx]++;
+            }
+
+            for(let i=0; i<lData.length; i++) {
+                let binIdx = Math.floor(lData[i] / binWidth);
+                if(binIdx >= binCount) binIdx = binCount - 1;
+                lBins[binIdx]++;
+            }
+
+            distChartInstance = new Chart(ctx, {
+                type: 'line', // Changed from bar to line
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Weibull (Threshold)',
+                            data: wBins,
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: true,
+                            tension: 0.4 // Smooth curve
+                        },
+                        {
+                            label: 'Lognormal (Scaled Load)',
+                            data: lBins,
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: true,
+                            tension: 0.4 // Smooth curve
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Value' },
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: { display: true, text: 'Frequency' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Chart 2: Trend Prediction (Years 1-5) ---
+        function renderTrendChart(years, probabilities) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            if (trendChartInstance) trendChartInstance.destroy();
+
+            trendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years.map(y => 'Year ' + y),
+                    datasets: [{
+                        label: 'Failure Probability (%)',
+                        data: probabilities,
+                        borderColor: 'rgba(79, 70, 229, 1)', // Indigo
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: 'rgba(79, 70, 229, 1)',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Probability (%)' },
+                            beginAtZero: true,
+                            suggestedMax: Math.max(...probabilities) * 1.2
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `Risk: ${context.raw.toFixed(2)}%`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
