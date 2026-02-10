@@ -16,10 +16,10 @@
             chtml: { scale: 1.05 }
         };
     </script>
-    
+
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-	<link rel="stylesheet" href="style.css">
-    </head>
+    <link rel="stylesheet" href="style.css">
+</head>
 
 <body data-theme="light">
     <div class="supergraphic fixed"></div>
@@ -141,18 +141,20 @@
                             data-i18n="tabWeibayes">Weibayes</div>
                         <div class="nav-dropdown-item" id="tab-weibull" onclick="switchTab('weibull')"
                             data-i18n="tabWeibull" data-i18n-tooltip="tipTabWeibull">Weibull Analysis</div>
+                        <div class="nav-dropdown-item" id="tab-warranty" onclick="switchTab('warranty')"
+                            data-i18n="tabWarranty" data-i18n-tooltip="tipTabWarranty">Warranty Prediction</div>
                     </div>
                 </div>
 
                 <!-- Controls Panel -->
                 <div class="controls-panel">
 
-                    
+
 
                     <!-- MAIN ANALYSIS CONTROLS (SHARED) -->
                     <div id="main-controls">
                         <!-- Data Settings -->
-                        <div class="control-group">
+                        <div id="grp-decimal-settings" class="control-group">
                             <label class="control-label" data-i18n="lblDecimal">Decimal Format</label>
                             <select id="decimalSep" onchange="reparseData()" data-i18n-tooltip="tipDecimal">
                                 <option value="." data-i18n="optDot">Dot (e.g. 1.25)</option>
@@ -164,7 +166,7 @@
                         </div>
 
                         <!-- File Input -->
-                        <div class="control-group" title="Upload data here">
+                        <div id="grp-file-input" class="control-group" title="Upload data here">
                             <label class="control-label" data-i18n="lblDataSource">Data Source</label>
                             <input type="file" id="fileInput" accept=".csv, .txt" onchange="handleFileUpload(this)"
                                 data-i18n-tooltip="tipDataSource">
@@ -459,7 +461,8 @@
                                     <select id="reg-model-type">
                                         <option value="linear" selected data-i18n="optLinearOLS">Linear (OLS)</option>
                                         <option value="quadratic" data-i18n="optQuadratic">Quadratic</option>
-                                        <option value="quadratic_interaction" data-i18n="optQuadraticInteraction">Quadratic with interactions</option>
+                                        <option value="quadratic_interaction" data-i18n="optQuadraticInteraction">
+                                            Quadratic with interactions</option>
                                     </select>
                                 </div>
                             </div>
@@ -600,6 +603,43 @@
                                 <div class="control-group">
                                     <label class="control-label" data-i18n="lblWeibullCensorVal">Censoring Value</label>
                                     <input type="text" id="weibull-censor-val" placeholder="e.g., C or 1">
+                                </div>
+                            </div>
+
+                            <!-- WARRANTY PREDICTION CONTROLS -->
+                            <div id="grp-warranty-controls" class="hidden">
+                                <div class="control-section">
+                                    <div class="panel-subtitle" data-i18n="lblWeibullLimit">Weibull Distribution (Limit)
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" data-i18n="lblShape">Shape (k)</label>
+                                        <input type="number" id="warranty-weibull-shape" value="2.5" step="0.1">
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" data-i18n="lblScaleW">Scale (λ)</label>
+                                        <input type="number" id="warranty-weibull-scale" value="1000">
+                                    </div>
+                                </div>
+
+                                <div class="control-section">
+                                    <div class="panel-subtitle" data-i18n="lblLognormalLoad">
+                                        Lognormal Distribution (Load)</div>
+                                    <div class="control-group">
+                                        <label class="control-label" data-i18n="lblLoc">Mu (μ)</label>
+                                        <input type="number" id="warranty-lognormal-mu" value="4.5" step="0.1">
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" data-i18n="lblScale">Sigma (σ)</label>
+                                        <input type="number" id="warranty-lognormal-sigma" value="0.5" step="0.1">
+                                    </div>
+                                </div>
+
+                                <div class="control-section">
+                                    <div class="panel-subtitle" data-i18n="lblConfig">Configuration</div>
+                                    <div class="control-group">
+                                        <label class="control-label" data-i18n="lblSnapshotYear">Snapshot Year</label>
+                                        <input type="number" id="warranty-snapshot-year" value="10" min="1" max="100">
+                                    </div>
                                 </div>
                             </div>
 
@@ -1131,7 +1171,8 @@
                     <div class="stats-cards" id="weibull-summary-cards"></div>
                     <div class="weibull-plot-row">
                         <div class="chart-container weibull-plot-container">
-                            <div class="panel-title weibull-plot-title" data-i18n="lblWeibullProb">Weibull Probability Plot</div>
+                            <div class="panel-title weibull-plot-title" data-i18n="lblWeibullProb">Weibull Probability
+                                Plot</div>
                             <div id="weibullChart" style="width: 100%; height: 650px;"></div>
                         </div>
                         <div class="weibull-side-column">
@@ -1230,9 +1271,13 @@
 
                         <!-- Prediction Section -->
                         <div class="results-table-wrapper" id="regression-prediction-section" style="margin-top: 32px;">
-                            <div class="panel-title" style="margin-bottom: 16px; color: #005FB8; font-size: 1.2em; font-weight: bold;">Prediction</div>
-                            <form id="regression-prediction-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
-                            <div style="margin-top: 16px; font-size: 1.1em; font-weight: 600;" id="regression-prediction-result"></div>
+                            <div class="panel-title"
+                                style="margin-bottom: 16px; color: #005FB8; font-size: 1.2em; font-weight: bold;">
+                                Prediction</div>
+                            <form id="regression-prediction-form"
+                                style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
+                            <div style="margin-top: 16px; font-size: 1.1em; font-weight: 600;"
+                                id="regression-prediction-result"></div>
                         </div>
                     </div>
                 </div>
@@ -1277,6 +1322,30 @@
                     </div>
                 </div>
 
+                <!-- WARRANTY PREDICTION VIEW -->
+                <div id="warranty-view" class="hidden" style="display: flex; flex-direction: column; gap: 24px;">
+                    <!-- KPI Cards Row -->
+                    <div class="stats-cards">
+                        <div class="card">
+                            <div class="card-title" data-i18n="lblProbSnapshot">Probability (Snapshot)</div>
+                            <div class="card-value" id="warranty-val-prob">-</div>
+                            <div class="card-sub"><span data-i18n="lblProbAtYear">Probability at Year</span> <span
+                                    id="warranty-val-snapshot-year-display">10</span> (%)</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="chart-container">
+                        <div class="panel-title" data-i18n="lblRiskPrediction">Risk Prediction (Years 1-5)</div>
+                        <div id="warrantyTrendChart" style="width: 100%; height: 400px;"></div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="panel-title" data-i18n="lblDistOverlap">Distribution Overlap (Snapshot Year)</div>
+                        <div id="warrantyOverlapChart" style="width: 100%; height: 400px;"></div>
+                    </div>
+                </div>
+
 
 
             </div>
@@ -1305,9 +1374,9 @@
     </div>
 
 
-<script src="translations.js"></script>   
-<script src="main.js"></script>
-	
+    <script src="translations.js"></script>
+    <script src="main.js"></script>
+
 </body>
 
 

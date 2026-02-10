@@ -923,16 +923,26 @@
             border-radius: 0;
             box-shadow: none;
             border: none;
+
+            /* Subtle separation */
             min-height: 120px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
+        .card-title {
+            font-size: var(--fontSizeBodyStrong);
+            font-weight: 600;
+            color: var(--TextFillColorSecondary);
+            margin-bottom: 8px;
+        }
+
         [data-theme="dark"] .card {
             background: var(--LayerFillColorDefault);
             border-radius: 0;
             border: none;
+
         }
 
         .card-value {
@@ -941,7 +951,6 @@
             color: var(--TextFillColorPrimary);
             margin-top: 2px;
             word-break: break-all;
-            /* Safety for very long numbers */
         }
 
         .card-sub {
@@ -964,6 +973,7 @@
             background: var(--LayerFillColorDefault);
             border-radius: 0;
             border: none;
+
         }
 
         .results-table-wrapper:hover {
@@ -1058,6 +1068,8 @@
             display: flex;
             flex-direction: column;
             border: none;
+
+            /* Subtle separation */
             transition: none !important;
         }
 
@@ -1065,12 +1077,9 @@
             background: var(--LayerFillColorDefault);
             border-radius: 0;
             border: none;
+
         }
 
-        .chart-container:hover {
-            transform: none !important;
-            box-shadow: none !important;
-        }
 
         /* --- WEIBULL LAYOUT --- */
         .weibull-plot-row {
@@ -1294,6 +1303,26 @@
             margin-bottom: 4px;
         }
 
+
+        .control-section {
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+        }
+
+        .control-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .panel-subtitle {
+            font-size: var(--fontSizeBodyStrong);
+            font-weight: 600;
+            color: var(--TextFillColorSecondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 11px;
+        }
 
         .hidden {
             display: none !important;
