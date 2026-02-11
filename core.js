@@ -237,6 +237,8 @@ window.onload = function () {
 // --- RESET LOGIC ---
 // --- RESET LOGIC ---
 function resetApp() {
+    location.reload();
+    return;
     dataset = {};
     rawDataset = {};
     mcData = [];
