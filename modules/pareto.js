@@ -30,7 +30,7 @@ const Pareto = {
 
         // Translate the "None" option
         const noneOpt = valSelect.querySelector('option[value=""]');
-        if (noneOpt && translations[currentLang].optNone) noneOpt.textContent = translations[currentLang].optNone;
+        if (noneOpt && translations[currentLang].optNoneFreq) noneOpt.textContent = translations[currentLang].optNoneFreq;
     },
 
     analyze: function () {

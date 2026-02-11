@@ -26,6 +26,7 @@ const SPC = {
 
     analyzeIMR: function (data) {
         if (data.length < 2) throw new Error("I-MR chart requires at least 2 data points.");
+        const tr = translations[currentLang];
         const meanI = getMean(data);
 
         const mr = [];
@@ -50,14 +51,15 @@ const SPC = {
         const violations = this.checkRules(data, meanI, sigma);
 
         // Plot
-        this.plotChart('spcChart', 'Individual (I) Chart', data, meanI, ucl_I, lcl_I, violations.map(v => v.index));
-        this.plotChart('spcChartSecondary', 'Moving Range (MR) Chart', mr, meanMR, ucl_MR, lcl_MR, [], 1);
+        this.plotChart('spcChart', tr.lblChartI || 'Individual (I) Chart', data, meanI, ucl_I, lcl_I, violations.map(v => v.index));
+        this.plotChart('spcChartSecondary', tr.lblChartMR || 'Moving Range (MR) Chart', mr, meanMR, ucl_MR, lcl_MR, [], 1);
         this.displayViolations(violations);
     },
 
     analyzeXbarR: function (data) {
         const subgroupColName = document.getElementById('spcSubgroupColumn').value;
         if (!subgroupColName) throw new Error("Subgroup column is required for Xbar-R chart.");
+        const tr = translations[currentLang];
 
         const subgroups = {};
         const subgroupData = rawDataset[subgroupColName];
@@ -110,8 +112,8 @@ const SPC = {
         const violations = this.checkRules(xbars, xbarDouble, sigma, subgroupStats.map(s => s.key));
 
         // Plot
-        this.plotChart('spcChart', 'X-bar Chart', xbars, xbarDouble, ucl_xbar, lcl_xbar, violations.map(v => v.index), 0, subgroupStats.map(s => s.key));
-        this.plotChart('spcChartSecondary', 'Range (R) Chart', ranges, rbar, ucl_r, lcl_r, [], 0, subgroupStats.map(s => s.key));
+        this.plotChart('spcChart', tr.lblChartXbar || 'X-bar Chart', xbars, xbarDouble, ucl_xbar, lcl_xbar, violations.map(v => v.index), 0, subgroupStats.map(s => s.key));
+        this.plotChart('spcChartSecondary', tr.lblChartR || 'Range (R) Chart', ranges, rbar, ucl_r, lcl_r, [], 0, subgroupStats.map(s => s.key));
         this.displayViolations(violations);
     },
 
@@ -189,32 +191,33 @@ const SPC = {
 
     plotChart: function (divId, title, data, cl, ucl, lcl, violationIndices = [], startIndex = 0, labels = null) {
         const theme = getChartTheme(document.body.getAttribute('data-theme'));
+        const tr = translations[currentLang];
         const x_axis = labels ? labels : Array.from({ length: data.length }, (_, i) => i + 1 + startIndex);
 
         const traces = [
             // UCL line
-            { x: x_axis, y: Array(data.length).fill(ucl), mode: 'lines', name: 'UCL', line: { color: theme.dangercolor, dash: 'dash' } },
+            { x: x_axis, y: Array(data.length).fill(ucl), mode: 'lines', name: tr.lblUCL || 'UCL', line: { color: theme.dangercolor, dash: 'dash' } },
             // CL line
-            { x: x_axis, y: Array(data.length).fill(cl), mode: 'lines', name: 'CL', line: { color: theme.font.color, width: 1 } },
+            { x: x_axis, y: Array(data.length).fill(cl), mode: 'lines', name: tr.lblCL || 'CL', line: { color: theme.font.color, width: 1 } },
             // LCL line
-            { x: x_axis, y: Array(data.length).fill(lcl), mode: 'lines', name: 'LCL', line: { color: theme.dangercolor, dash: 'dash' } },
+            { x: x_axis, y: Array(data.length).fill(lcl), mode: 'lines', name: tr.lblLCL || 'LCL', line: { color: theme.dangercolor, dash: 'dash' } },
             // Data points (in control)
-            { x: x_axis, y: data, mode: 'lines+markers', name: 'Data', line: { color: theme.theme_primary || '#0078d4' }, marker: { size: 6 } },
+            { x: x_axis, y: data, mode: 'lines+markers', name: tr.lblProcData || 'Data', line: { color: theme.theme_primary || '#0078d4' }, marker: { size: 6 } },
         ];
 
         if (violationIndices.length > 0) {
             const violation_x = violationIndices.map(i => x_axis[i]);
             const violation_y = violationIndices.map(i => data[i]);
             traces.push({
-                x: violation_x, y: violation_y, mode: 'markers', name: 'Violation',
+                x: violation_x, y: violation_y, mode: 'markers', name: tr.lblViolation || 'Violation',
                 marker: { color: theme.dangercolor, size: 10, symbol: 'x' }
             });
         }
 
         const layout = {
             title,
-            xaxis: { title: 'Sample Index', gridcolor: theme.gridcolor, type: labels ? 'category' : 'linear' },
-            yaxis: { title: 'Value', gridcolor: theme.gridcolor, zeroline: false },
+            xaxis: { title: tr.lblSampleIndex || 'Sample Index', gridcolor: theme.gridcolor, type: labels ? 'category' : 'linear' },
+            yaxis: { title: tr.lblValue || 'Value', gridcolor: theme.gridcolor, zeroline: false },
             showlegend: true, legend: { orientation: 'h', y: -0.2 },
             font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor,
             margin: { t: 50, r: 20, l: 60, b: 50 }

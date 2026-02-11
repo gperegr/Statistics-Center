@@ -208,7 +208,7 @@ const Distribution = {
             y: [0, 0],
             type: 'scatter',
             mode: 'lines',
-            name: tr.lblTolLimitNormal || 'Normal Limits',
+            name: tr.lblTolLimits || 'Normal Limits',
             line: { color: theme.successcolor, width: 2, dash: 'dash' },
             visible: 'legendonly',
             hoverinfo: 'skip'
@@ -219,7 +219,7 @@ const Distribution = {
                 y: [0, 0],
                 type: 'scatter',
                 mode: 'lines',
-                name: tr.lblTolLimitRange || 'Range Limits',
+                name: tr.lblTolMethodNonParam || 'Range Limits',
                 line: { color: theme.warningcolor, width: 2, dash: 'dot' },
                 visible: 'legendonly',
                 hoverinfo: 'skip'
@@ -299,13 +299,13 @@ const Distribution = {
         const thead = document.querySelector('#multiDistTable thead tr');
         // Update table header to include AD and P-Value
         thead.innerHTML = `
-                <th>Distribution</th>
-                <th>Parameters</th>
-                <th>Error (SSE)</th>
-                <th>AD Stat</th>
-                <th>P-Value</th>
-                <th>${!isNaN(limit) ? (limitType === 'upper' ? `Est. % > ${limit}` : `Est. % < ${limit}`) : 'Est. % (N/A)'}</th>
-                <th>Conclusion</th>
+                <th>${tr.thDist || 'Distribution'}</th>
+                <th>${tr.thParams || 'Parameters'}</th>
+                <th>${tr.thError || 'Error (SSE)'}</th>
+                <th>${tr.thAdStat || 'AD Stat'}</th>
+                <th>${tr.thPValue || 'P-Value'}</th>
+                <th>${!isNaN(limit) ? (limitType === 'upper' ? `${tr.thEstPercent} > ${limit}` : `${tr.thEstPercent} < ${limit}`) : `${tr.thEstPercent} (N/A)`}</th>
+                <th>${tr.thConclusion || 'Conclusion'}</th>
             `;
 
         tbody.innerHTML = '';
@@ -396,7 +396,7 @@ const Distribution = {
 
             const pValStr = fit.pValue !== null ? fit.pValue.toFixed(4) : "N/A";
             const pMsg = fit.pValue !== null
-                ? (fit.pValue < 0.05 ? `<span class="conclusion-reject">Reject (<0.05)</span>` : `<span class="conclusion-retain">Good Fit</span>`)
+                ? (fit.pValue < 0.05 ? `<span class="conclusion-reject">${tr.lblReject || 'Reject (<0.05)'}</span>` : `<span class="conclusion-retain">${tr.lblGoodFit || 'Good Fit'}</span>`)
                 : "N/A";
 
             const percStr = fit.percentage !== null ? (fit.percentage * 100).toFixed(4) + "%" : "N/A";
@@ -517,13 +517,13 @@ const Distribution = {
 
         const shapes = !isNaN(limit) ? [{ type: 'line', x0: limit, x1: limit, y0: 0, y1: 1, yref: 'paper', line: { color: theme.font.color, width: 2, dash: 'dash' } }] : [];
 
-        const title = currentMode === 'normal' ? `Normal Probability Plot: ${selectedColumnName}` : `${translations[currentLang].lblDistComp}: ${selectedColumnName}`;
+        const title = currentMode === 'normal' ? `${tr.distNormal} Probability Plot: ${selectedColumnName}` : `${translations[currentLang].lblDistComp}: ${selectedColumnName}`;
         const titleEl = document.getElementById('mainChartTitle');
         if (titleEl) titleEl.textContent = title;
 
         if (typeof Plotly !== 'undefined') {
             Plotly.newPlot('mainChart', traces, {
-                title: "", xaxis: { title: 'Value', gridcolor: theme.gridcolor, range: xRange || undefined }, yaxis: { title: 'Density', gridcolor: theme.gridcolor },
+                title: "", xaxis: { title: tr.lblValue || 'Value', gridcolor: theme.gridcolor, range: xRange || undefined }, yaxis: { title: tr.lblDensity || 'Density', gridcolor: theme.gridcolor },
                 showlegend: true, shapes: shapes, font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor,
                 margin: { t: 50, r: 20, l: 50, b: 50 }, legend: { orientation: 'h', y: -0.2 }
             }, { responsive: true });

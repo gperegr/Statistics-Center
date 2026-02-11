@@ -161,16 +161,17 @@ const Capability = {
 
         const xVals = Array.from({ length: 201 }, (_, i) => plotMin + (i / 200) * (plotMax - plotMin));
         const theme = getChartTheme(document.body.getAttribute('data-theme'));
+        const tr = translations[currentLang];
 
         const traces = [
-            { x: data, type: 'histogram', name: 'Data', histnorm: 'probability density', marker: { color: theme.theme_primary, opacity: 0.4 } }
+            { x: data, type: 'histogram', name: tr.lblProcData || 'Data', histnorm: 'probability density', marker: { color: theme.theme_primary, opacity: 0.4 } }
         ];
 
         if (method === 'normal') {
-            traces.push({ x: xVals, y: xVals.map(x => pdf(x, sigmaOverall)), type: 'scatter', mode: 'lines', name: 'Overall', line: { color: theme.dangercolor, width: 2 } });
-            traces.push({ x: xVals, y: xVals.map(x => pdf(x, sigmaWithin)), type: 'scatter', mode: 'lines', name: 'Within', line: { color: theme.font.color, width: 2, dash: 'dash' } });
+            traces.push({ x: xVals, y: xVals.map(x => pdf(x, sigmaOverall)), type: 'scatter', mode: 'lines', name: tr.lblOverall || 'Overall', line: { color: theme.dangercolor, width: 2 } });
+            traces.push({ x: xVals, y: xVals.map(x => pdf(x, sigmaWithin)), type: 'scatter', mode: 'lines', name: tr.lblWithin || 'Within', line: { color: theme.font.color, width: 2, dash: 'dash' } });
         } else {
-            traces.push({ x: xVals, y: xVals.map(x => pdf(x)), type: 'scatter', mode: 'lines', name: 'Best Fit', line: { color: theme.dangercolor, width: 2 } });
+            traces.push({ x: xVals, y: xVals.map(x => pdf(x)), type: 'scatter', mode: 'lines', name: tr.lblBestFit || 'Best Fit', line: { color: theme.dangercolor, width: 2 } });
         }
 
         const shapes = [];
@@ -185,15 +186,15 @@ const Capability = {
         }
         if (target !== null && !isNaN(target)) {
             shapes.push({ type: 'line', x0: target, x1: target, y0: 0, y1: 0.5, yref: 'paper', line: { color: theme.font.color, width: 2, dash: 'dot' } });
-            annotations.push({ x: target, y: 0.5, yref: 'paper', text: 'Target', showarrow: false, yshift: 10, xshift: -30 });
+            annotations.push({ x: target, y: 0.5, yref: 'paper', text: tr.optTarget || 'Target', showarrow: false, yshift: 10, xshift: -30 });
         }
 
         const capTitleEl = document.getElementById('capChartTitle');
-        if (capTitleEl) capTitleEl.textContent = `Capability Analysis: ${selectedColumnName}`;
+        if (capTitleEl) capTitleEl.textContent = `${tr.lblCapAnalysis || 'Capability Analysis'}: ${selectedColumnName}`;
 
         if (typeof Plotly !== 'undefined') {
             Plotly.newPlot('capChart', traces, {
-                title: "", xaxis: { title: 'Value', gridcolor: theme.gridcolor, range: [plotMin, plotMax] }, yaxis: { title: 'Density', gridcolor: theme.gridcolor },
+                title: "", xaxis: { title: tr.lblValue || 'Value', gridcolor: theme.gridcolor, range: [plotMin, plotMax] }, yaxis: { title: tr.lblDensity || 'Density', gridcolor: theme.gridcolor },
                 showlegend: true, shapes: shapes, annotations: annotations, font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor,
                 margin: { t: 50, r: 20, l: 50, b: 50 }, legend: { orientation: 'h', y: -0.2 }
             }, { responsive: true });

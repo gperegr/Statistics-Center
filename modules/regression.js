@@ -69,6 +69,9 @@ const Regression = {
     },
 
     upgradeDOM: function () {
+        const lang = document.documentElement.getAttribute('lang') || 'en';
+        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key]) : key;
+
         // --- Optimization Section (inserted after prediction section) ---
         if (!document.getElementById('regression-optimization-section')) {
             const predSection = document.getElementById('regression-prediction-section');
@@ -77,7 +80,7 @@ const Regression = {
             optSection.id = 'regression-optimization-section';
             optSection.style.marginTop = '32px';
             optSection.innerHTML = `
-                <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">Optimization</div>
+                <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">${t('lblOptimization') || 'Optimization'}</div>
                 <form id="regression-optimization-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
                 <div id="regression-optimization-result" style="margin-top: 16px; font-size: 1.1em; font-weight: 600;"></div>
             `;
@@ -88,8 +91,7 @@ const Regression = {
         const resultsWrapper = document.getElementById('regression-results-wrapper');
         if (!resultsWrapper) return;
 
-        const lang = document.documentElement.getAttribute('lang') || 'en';
-        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key]) : key;
+
 
         // Inject new Chart/Table structure if not present
         if (!document.getElementById('regStandardizedEffectsChart')) {
@@ -159,7 +161,7 @@ const Regression = {
 
                 <!-- Prediction Section -->
                 <div class="results-table-wrapper" id="regression-prediction-section" style="margin-top: 32px;">
-                    <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">Prediction</div>
+                    <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">${t('lblPrediction')}</div>
                     <form id="regression-prediction-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
                     <div style="margin-top: 16px; font-size: 1.1em; font-weight: 600;" id="regression-prediction-result"></div>
                 </div>
@@ -171,7 +173,7 @@ const Regression = {
                 predSection.id = 'regression-prediction-section';
                 predSection.style.marginTop = '32px';
                 predSection.innerHTML = `
-                    <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">Prediction</div>
+                    <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">${t('lblPrediction')}</div>
                     <form id="regression-prediction-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
                     <div style="margin-top: 16px; font-size: 1.1em; font-weight: 600;" id="regression-prediction-result"></div>
                 `;
@@ -428,6 +430,8 @@ const Regression = {
     },
 
     updateUI: function (model) {
+        const lang = document.documentElement.getAttribute('lang') || 'en';
+        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key]) : key;
         const optForm = document.getElementById('regression-optimization-form');
         const optResult = document.getElementById('regression-optimization-result');
         if (optForm && model && model.linearXCols && Array.isArray(model.linearXCols)) {
@@ -438,7 +442,7 @@ const Regression = {
             goalGroup.style.flexDirection = 'column';
             goalGroup.style.minWidth = '160px';
             const goalLabel = document.createElement('label');
-            goalLabel.textContent = 'Goal';
+            goalLabel.textContent = t('lblGoal') || 'Goal';
             goalLabel.style.fontWeight = '700';
             goalLabel.style.fontSize = '1.1em';
             goalLabel.style.marginBottom = '4px';
@@ -447,10 +451,14 @@ const Regression = {
             const goalSelect = document.createElement('select');
             goalSelect.id = 'reg-opt-goal';
             goalSelect.style.fontSize = '1em';
-            ['Maximize', 'Minimize', 'Target'].forEach(opt => {
+            [
+                { val: 'maximize', text: t('optMaximize') || 'Maximize' },
+                { val: 'minimize', text: t('optMinimize') || 'Minimize' },
+                { val: 'target', text: t('optTarget') || 'Target' }
+            ].forEach(opt => {
                 const o = document.createElement('option');
-                o.value = opt.toLowerCase();
-                o.textContent = opt;
+                o.value = opt.val;
+                o.textContent = opt.text;
                 goalSelect.appendChild(o);
             });
             goalGroup.appendChild(goalSelect);
@@ -462,7 +470,7 @@ const Regression = {
             targetGroup.style.minWidth = '120px';
             targetGroup.style.marginLeft = '16px';
             const targetLabel = document.createElement('label');
-            targetLabel.textContent = 'Target Value';
+            targetLabel.textContent = t('lblTargetValue') || 'Target Value';
             targetLabel.style.fontWeight = '700';
             targetLabel.style.fontSize = '1.1em';
             targetLabel.style.marginBottom = '4px';
@@ -484,7 +492,7 @@ const Regression = {
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'bosch-btn-primary';
-            btn.textContent = 'Calculate Optimal Variables';
+            btn.textContent = t('btnCalcOpt') || 'Calculate Optimal Variables';
             btn.onclick = async (e) => {
                 e.preventDefault();
                 const vars = model.linearXCols.filter(col => {
@@ -617,10 +625,10 @@ const Regression = {
                 if (bestCombo) {
                     const yName = model.yCol || 'Y';
                     let result = '';
-                    if (goalSelect.value === 'maximize') result += 'Maximum ' + yName + ': ' + bestY.toFixed(4) + '<br>';
-                    else if (goalSelect.value === 'minimize') result += 'Minimum ' + yName + ': ' + bestY.toFixed(4) + '<br>';
-                    else if (goalSelect.value === 'target') result += 'Closest ' + yName + ': ' + bestY.toFixed(4) + '<br>';
-                    result += '<div style="margin-top: 16px; font-weight: 700;">Variable values:</div>';
+                    if (goalSelect.value === 'maximize') result += (t('lblMaxY') || 'Maximum {0}').replace('{0}', yName) + ': ' + bestY.toFixed(4) + '<br>';
+                    else if (goalSelect.value === 'minimize') result += (t('lblMinY') || 'Minimum {0}').replace('{0}', yName) + ': ' + bestY.toFixed(4) + '<br>';
+                    else if (goalSelect.value === 'target') result += (t('lblClosestY') || 'Closest {0}').replace('{0}', yName) + ': ' + bestY.toFixed(4) + '<br>';
+                    result += '<div style="margin-top: 16px; font-weight: 700;">' + (t('lblVarValues') || 'Variable values:') + '</div>';
                     result += '<table style="margin-top: 8px; border-collapse: collapse;">';
                     Object.entries(bestCombo).forEach(([k, v]) => {
                         result += '<tr><td style="padding: 4px 12px; font-weight: 600; color: #005FB8;">' + k + '</td>';
@@ -629,7 +637,7 @@ const Regression = {
                     result += '</table>';
                     optResult.innerHTML = result;
                 } else {
-                    optResult.textContent = 'No solution found.';
+                    optResult.textContent = t('msgNoSolution') || 'No solution found.';
                 }
             };
             optForm.appendChild(btn);
@@ -720,7 +728,7 @@ const Regression = {
             if (!model || !model.terms || model.terms.length === 0) {
                 const msg = document.createElement('div');
                 msg.style.margin = '16px 0';
-                msg.textContent = 'No model available for prediction.';
+                msg.textContent = t('msgNoModelPred') || 'No model available for prediction.';
                 predForm.appendChild(msg);
             } else {
                 if (model.linearXCols && Array.isArray(model.linearXCols)) {
@@ -760,7 +768,7 @@ const Regression = {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'bosch-btn-primary';
-                btn.textContent = 'Predict';
+                btn.textContent = t('btnPredict') || 'Predict';
                 btn.onclick = () => {
                     let y = (model.terms.find((t, i) => t === 'Intercept') !== undefined) ? model.Beta[model.terms.findIndex(t => t === 'Intercept')][0] : 0;
                     const inputVals = {};
@@ -796,7 +804,7 @@ const Regression = {
                         resultDiv.style.fontWeight = '600';
                         predForm.parentElement.appendChild(resultDiv);
                     }
-                    resultDiv.textContent = 'Predicted Y: ' + y.toFixed(4);
+                    resultDiv.textContent = (t('lblPredictedY') || 'Predicted Y: ') + y.toFixed(4);
                 };
                 predForm.appendChild(btn);
             }
@@ -953,7 +961,7 @@ const Regression = {
                     z: z_grid, x: x1_grid, y: x2_grid, type: 'contour',
                     colorscale: 'RdBu', reversescale: true
                 }], {
-                    title: `Contour Plot of ${yName} vs ${sigVar1.name}, ${sigVar2.name}`,
+                    title: `${t('lblContourPlot') || 'Contour Plot'}: ${yName} vs ${sigVar1.name}, ${sigVar2.name}`,
                     xaxis: { title: sigVar1.name, gridcolor: theme.gridcolor },
                     yaxis: { title: sigVar2.name, gridcolor: theme.gridcolor },
                     font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor

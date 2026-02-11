@@ -79,8 +79,8 @@ const Hypothesis = {
                 groups["All Data"] = responseData;
 
             } else if (testType === 'ttest2') {
-                if (!sample1Col || !sample2Col) throw new Error("Please select two distinct columns for the 2-sample t-test.");
-                if (sample1Col === sample2Col) throw new Error("Please select two distinct columns for the 2-sample t-test.");
+                if (!sample1Col || !sample2Col) throw new Error(translations[currentLang].errDistinctCols || "Please select two distinct columns.");
+                if (sample1Col === sample2Col) throw new Error(translations[currentLang].errDistinctCols || "Please select two distinct columns.");
                 const g1 = dataset[sample1Col];
                 const g2 = dataset[sample2Col];
                 const equalVars = document.getElementById('hypoEqualVariances').checked;
@@ -90,8 +90,8 @@ const Hypothesis = {
                 groups[sample2Col] = g2;
 
             } else if (testType === 'paired') {
-                if (!sample1Col || !sample2Col) throw new Error("Please select two distinct columns for the paired t-test.");
-                if (sample1Col === sample2Col) throw new Error("Please select two distinct columns for the paired t-test.");
+                if (!sample1Col || !sample2Col) throw new Error(translations[currentLang].errDistinctCols || "Please select two distinct columns.");
+                if (sample1Col === sample2Col) throw new Error(translations[currentLang].errDistinctCols || "Please select two distinct columns.");
                 const g1 = dataset[sample1Col];
                 const g2 = dataset[sample2Col];
                 results = this.runPairedTTest(g1, g2);
@@ -100,8 +100,8 @@ const Hypothesis = {
                 groups[sample2Col] = g2;
 
             } else if (testType === 'ftest') {
-                if (!sample1Col || !sample2Col) throw new Error("Please select two distinct columns for the F-test.");
-                if (sample1Col === sample2Col) throw new Error("Please select two distinct columns for the F-test.");
+                if (!sample1Col || !sample2Col) throw new Error(translations[currentLang].errDistinctCols || "Please select two distinct columns.");
+                if (sample1Col === sample2Col) throw new Error(translations[currentLang].errDistinctCols || "Please select two distinct columns.");
                 const g1 = dataset[sample1Col];
                 const g2 = dataset[sample2Col];
                 results = this.runFTest(g1, g2);
@@ -236,7 +236,7 @@ const Hypothesis = {
         const var1 = getStd(g1, mean1) ** 2;
         const var2 = getStd(g2, mean2) ** 2;
         if (var1 === 0 || var2 === 0) {
-            throw new Error(translations[currentLang].errFTestZeroVar || "F-test requires non-zero variance in both groups.");
+            throw new Error(translations[currentLang].errNonZeroVar || "F-test requires non-zero variance in both groups.");
         }
 
         const F = var1 / var2;
@@ -339,6 +339,7 @@ const Hypothesis = {
 
     plotChart: function (groups) {
         const theme = getChartTheme(document.body.getAttribute('data-theme'));
+        const tr = translations[currentLang];
         const traces = [];
         Object.keys(groups).forEach(key => {
             traces.push({
@@ -352,8 +353,8 @@ const Hypothesis = {
         });
 
         const layout = {
-            title: 'Group Comparison',
-            yaxis: { title: 'Value', zeroline: false, gridcolor: theme.gridcolor },
+            title: tr.lblGroupComp || 'Group Comparison',
+            yaxis: { title: tr.lblValue || 'Value', zeroline: false, gridcolor: theme.gridcolor },
             xaxis: { gridcolor: theme.gridcolor },
             font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor,
             margin: { t: 50, r: 20, l: 50, b: 50 },

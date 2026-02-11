@@ -17,7 +17,7 @@ const WarrantyPrediction = {
         const snapshotYear = parseInt(document.getElementById('warranty-snapshot-year').value);
 
         if (isNaN(shape) || isNaN(scale) || isNaN(mu) || isNaN(sigma) || isNaN(snapshotYear)) {
-            alert("Please provide valid inputs for the distributions and snapshot year.");
+            alert(translations[currentLang].errWarrantyInputs || "Please provide valid inputs.");
             return;
         }
 

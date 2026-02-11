@@ -69,7 +69,7 @@ window.analyzeMsa = function () {
 
     // Fix: MSA Robustness Check
     if (!Number.isInteger(nRep)) {
-        showError(`Warning: Data is unbalanced (Total rows / (Parts * Operators) = ${nRep.toFixed(2)}). MSA calculations assume balanced data and may be inaccurate.`);
+        showError(`${translations[currentLang].errMsaUnbalanced || 'Warning: Data is unbalanced'} (${nRep.toFixed(2)}).`);
         // Continue but warn
     }
 
@@ -320,7 +320,7 @@ function renderMsaCharts(res, structure, parts, operators) {
     const layoutComponents = {
         title: translations[currentLang].msaCompPlot,
         barmode: 'group',
-        yaxis: { title: 'Percent %', gridcolor: theme.gridcolor },
+        yaxis: { title: translations[currentLang].lblPercentAxis || 'Percent %', gridcolor: theme.gridcolor },
         font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor
     };
     Plotly.newPlot('msaComponentsChart', [trace1, trace2], layoutComponents, { responsive: true });
@@ -346,7 +346,7 @@ function renderMsaCharts(res, structure, parts, operators) {
     const layoutInt = {
         title: translations[currentLang].msaInteractPlot,
         xaxis: { title: translations[currentLang].lblPartCol, gridcolor: theme.gridcolor },
-        yaxis: { title: 'Average Measurement', gridcolor: theme.gridcolor },
+        yaxis: { title: translations[currentLang].lblAvgMeas || 'Average Measurement', gridcolor: theme.gridcolor },
         font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor
     };
     Plotly.newPlot('msaInteractionChart', tracesInt, layoutInt, { responsive: true });
