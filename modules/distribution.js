@@ -496,6 +496,7 @@ const Distribution = {
     },
 
     plotMultiDistribution: function (data, limit, fits) {
+        const tr = translations[currentLang] || translations.en;
         const minVal = getMin(data), maxVal = getMax(data);
         const range = maxVal - minVal, buffer = (range === 0) ? 1 : range * 0.2;
 
@@ -517,7 +518,10 @@ const Distribution = {
 
         const shapes = !isNaN(limit) ? [{ type: 'line', x0: limit, x1: limit, y0: 0, y1: 1, yref: 'paper', line: { color: theme.font.color, width: 2, dash: 'dash' } }] : [];
 
-        const title = currentMode === 'normal' ? `${tr.distNormal} Probability Plot: ${selectedColumnName}` : `${translations[currentLang].lblDistComp}: ${selectedColumnName}`;
+        const title = (typeof currentMode !== 'undefined' && currentMode === 'normal')
+            ? `${tr.distNormal} Probability Plot: ${typeof selectedColumnName !== 'undefined' ? selectedColumnName : ''}`
+            : `${tr.lblDistComp}: ${typeof selectedColumnName !== 'undefined' ? selectedColumnName : ''}`;
+
         const titleEl = document.getElementById('mainChartTitle');
         if (titleEl) titleEl.textContent = title;
 
@@ -529,7 +533,6 @@ const Distribution = {
             }, { responsive: true });
             setTimeout(() => Plotly.Plots.resize('mainChart'), 50);
 
-            const tr = translations[currentLang] || translations.en;
             const cdf = getCdfSeries(data);
             const cdfTrace = {
                 x: cdf.x,

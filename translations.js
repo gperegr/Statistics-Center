@@ -481,6 +481,24 @@ const translations = {
         regRowTotal: "Total",
         optLinearOLS: "Linear (OLS)",
 
+        // Regression Prediction & Optimization (New)
+        lblPrediction: "Prediction",
+        lblPredictedY: "Predicted Y: ",
+        msgNoModelPred: "No model available for prediction.",
+        btnPredict: "Predict",
+        lblOptimization: "Optimization",
+        lblGoal: "Goal",
+        optMaximize: "Maximize",
+        optMinimize: "Minimize",
+        optTarget: "Target",
+        lblTargetValue: "Target Value",
+        btnCalcOpt: "Calculate Optimal Variables",
+        lblMaxY: "Maximum {0}",
+        lblMinY: "Minimum {0}",
+        lblClosestY: "Closest {0}",
+        lblVarValues: "Variable values:",
+        msgNoSolution: "No solution found.",
+
         // Weibayes Specific
         tabWeibayes: "Weibayes",
         lblWbMethod: "Method",
@@ -958,6 +976,24 @@ const translations = {
         regRowTotal: "Total",
         optLinearOLS: "Linear (MQO)",
 
+        // Regression Prediction & Optimization (New - PT)
+        lblPrediction: "Predição",
+        lblPredictedY: "Y Predito: ",
+        msgNoModelPred: "Nenhum modelo disponível para predição.",
+        btnPredict: "Prever",
+        lblOptimization: "Otimização",
+        lblGoal: "Objetivo",
+        optMaximize: "Maximizar",
+        optMinimize: "Minimizar",
+        optTarget: "Alvo",
+        lblTargetValue: "Valor Alvo",
+        btnCalcOpt: "Calcular Variáveis Ótimas",
+        lblMaxY: "Máximo {0}",
+        lblMinY: "Mínimo {0}",
+        lblClosestY: "{0} Mais Próximo",
+        lblVarValues: "Valores das variáveis:",
+        msgNoSolution: "Nenhuma solução encontrada.",
+
         // MSA / Gage R&R
         tabMSA: "MSA / Gage R&R",
         lblMeasurementCol: "Coluna de Medição",
@@ -1347,6 +1383,24 @@ const translations = {
         rule2: "9 Punkte auf einer Seite",
         rule3: "6 Punkte im Trend",
         rule4: "14 Punkte abwechselnd",
+
+        // Regression Prediction & Optimization (New - DE)
+        lblPrediction: "Vorhersage",
+        lblPredictedY: "Vorhergesagtes Y: ",
+        msgNoModelPred: "Kein Modell für Vorhersage verfügbar.",
+        btnPredict: "Vorhersagen",
+        lblOptimization: "Optimierung",
+        lblGoal: "Ziel",
+        optMaximize: "Maximieren",
+        optMinimize: "Minimieren",
+        optTarget: "Zielwert",
+        lblTargetValue: "Zielwert",
+        btnCalcOpt: "Optimale Variablen berechnen",
+        lblMaxY: "Maximum {0}",
+        lblMinY: "Minimum {0}",
+        lblClosestY: "Nächstgelegenes {0}",
+        lblVarValues: "Variablenwerte:",
+        msgNoSolution: "Keine Lösung gefunden.",
 
         // Tooltips
         tipSave: "Analysestand in Datei speichern",

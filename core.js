@@ -1120,6 +1120,13 @@ function runAnalysis(userInitiated = false) {
             break;
         case 'weibull':
             if (!userInitiated) {
+                // Fix: If we have a calculated model, rebuild the UI (charts with new theme) instead of hiding
+                if (typeof window.hasWeibullModel === 'function' && window.hasWeibullModel()) {
+                    document.getElementById('weibull-view').classList.remove('hidden');
+                    document.getElementById('welcome-msg').classList.add('hidden');
+                    if (typeof window.replotWeibull === 'function') window.replotWeibull();
+                    return;
+                }
                 document.getElementById('weibull-view').classList.add('hidden');
                 document.getElementById('welcome-msg').classList.remove('hidden');
                 return;

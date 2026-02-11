@@ -19,7 +19,7 @@ const Regression = {
         const modelType = document.getElementById('reg-model-type').value;
 
         const lang = document.documentElement.getAttribute('lang') || 'en';
-        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key]) : key;
+        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key] || key) : key;
 
         if (!yCol || linearXCols.length === 0) {
             showError(t('msgSelectRegVars'));
@@ -70,24 +70,9 @@ const Regression = {
 
     upgradeDOM: function () {
         const lang = document.documentElement.getAttribute('lang') || 'en';
-        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key]) : key;
+        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key] || key) : key;
 
         // --- Optimization Section (inserted after prediction section) ---
-        if (!document.getElementById('regression-optimization-section')) {
-            const predSection = document.getElementById('regression-prediction-section');
-            const optSection = document.createElement('div');
-            optSection.className = 'results-table-wrapper';
-            optSection.id = 'regression-optimization-section';
-            optSection.style.marginTop = '32px';
-            optSection.innerHTML = `
-                <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">${t('lblOptimization') || 'Optimization'}</div>
-                <form id="regression-optimization-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
-                <div id="regression-optimization-result" style="margin-top: 16px; font-size: 1.1em; font-weight: 600;"></div>
-            `;
-            if (predSection && predSection.parentElement) {
-                predSection.parentElement.insertBefore(optSection, predSection.nextSibling);
-            }
-        }
         const resultsWrapper = document.getElementById('regression-results-wrapper');
         if (!resultsWrapper) return;
 
@@ -160,7 +145,7 @@ const Regression = {
                 </div>
 
                 <!-- Prediction Section -->
-                <div class="results-table-wrapper" id="regression-prediction-section" style="margin-top: 32px;">
+                <div class="results-table-wrapper" id="regression-prediction-section">
                     <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">${t('lblPrediction')}</div>
                     <form id="regression-prediction-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
                     <div style="margin-top: 16px; font-size: 1.1em; font-weight: 600;" id="regression-prediction-result"></div>
@@ -171,13 +156,28 @@ const Regression = {
                 const predSection = document.createElement('div');
                 predSection.className = 'results-table-wrapper';
                 predSection.id = 'regression-prediction-section';
-                predSection.style.marginTop = '32px';
                 predSection.innerHTML = `
                     <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">${t('lblPrediction')}</div>
                     <form id="regression-prediction-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
                     <div style="margin-top: 16px; font-size: 1.1em; font-weight: 600;" id="regression-prediction-result"></div>
                 `;
                 resultsWrapper.appendChild(predSection);
+            }
+        }
+
+        // --- Optimization Section (inserted after prediction section) ---
+        if (!document.getElementById('regression-optimization-section')) {
+            const predSection = document.getElementById('regression-prediction-section');
+            const optSection = document.createElement('div');
+            optSection.className = 'results-table-wrapper';
+            optSection.id = 'regression-optimization-section';
+            optSection.innerHTML = `
+                <div class="panel-title" style="margin-bottom: 16px; color: #005FB8;">${t('lblOptimization') || 'Optimization'}</div>
+                <form id="regression-optimization-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;"></form>
+                <div id="regression-optimization-result" style="margin-top: 16px; font-size: 1.1em; font-weight: 600;"></div>
+            `;
+            if (predSection && predSection.parentElement) {
+                predSection.parentElement.insertBefore(optSection, predSection.nextSibling);
             }
         }
 
@@ -295,7 +295,7 @@ const Regression = {
 
     checkForOutliers: function () {
         const lang = document.documentElement.getAttribute('lang') || 'en';
-        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key]) : key;
+        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key] || key) : key;
 
         if (!this.currentModel) {
             showError(t('msgRunAnalysisFirst'));
@@ -381,7 +381,7 @@ const Regression = {
 
     stepwiseTermRemoval: function () {
         const lang = document.documentElement.getAttribute('lang') || 'en';
-        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key]) : key;
+        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key] || key) : key;
 
         if (!this.currentModel) {
             showError(t('msgRunAnalysisFirst'));
@@ -431,7 +431,7 @@ const Regression = {
 
     updateUI: function (model) {
         const lang = document.documentElement.getAttribute('lang') || 'en';
-        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key]) : key;
+        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key] || key) : key;
         const optForm = document.getElementById('regression-optimization-form');
         const optResult = document.getElementById('regression-optimization-result');
         if (optForm && model && model.linearXCols && Array.isArray(model.linearXCols)) {
@@ -702,23 +702,47 @@ const Regression = {
             outlierWrapper.classList.add('hidden');
         }
 
-        let equation = `${model.yCol} = `;
+        // Build LaTeX Equation
+        let equation = `$$ \\text{${model.yCol}} = `;
         model.terms.forEach((term, i) => {
             const beta = model.Beta[i][0];
             const isFirst = i === 0;
             let termStr = '';
-            const displayTerm = (term === 'Intercept') ? (tr.regIntercept || 'Intercept') : term;
+
+            // Clean term name for LaTeX text mode (handle special chars if needed)
+            const displayTerm = (term === 'Intercept')
+                ? (tr.regIntercept || 'Intercept')
+                : term.replace(/_/g, '\\_'); // Escape underscores just in case
 
             if (isFirst) {
-                termStr = (term === 'Intercept') ? beta.toFixed(4) : `${beta.toFixed(4)}*${displayTerm}`;
+                if (term === 'Intercept') {
+                    termStr = beta.toFixed(4);
+                } else {
+                    termStr = `${beta.toFixed(4)} \\cdot \\text{${displayTerm}}`;
+                }
             } else {
                 const sign = beta >= 0 ? ' + ' : ' - ';
                 const absBeta = Math.abs(beta).toFixed(4);
-                termStr = (term === 'Intercept') ? `${sign}${absBeta}` : `${sign}${absBeta}*${displayTerm}`;
+                if (term === 'Intercept') {
+                    termStr = `${sign}${absBeta}`;
+                } else {
+                    termStr = `${sign}${absBeta} \\cdot \\text{${displayTerm}}`;
+                }
             }
             equation += termStr;
         });
-        document.getElementById('reg-equation').textContent = equation;
+        equation += ' $$';
+
+        const eqEl = document.getElementById('reg-equation');
+        eqEl.innerHTML = equation;
+
+        // Trigger MathJax
+        if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+            MathJax.typesetPromise([eqEl]).catch((err) => console.error('MathJax error:', err));
+        } else if (typeof MathJax !== 'undefined' && MathJax.Hub) {
+            // Fallback for MathJax 2.x if present instead of 3.x
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, eqEl]);
+        }
 
         this.plotCharts(model);
 
@@ -848,7 +872,7 @@ const Regression = {
         const seBetaPredictors = hasIntercept ? seBeta.slice(1) : seBeta;
 
         const lang = document.documentElement.getAttribute('lang') || 'en';
-        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key]) : key;
+        const t = (key) => (typeof translations !== 'undefined' && translations[lang]) ? (translations[lang][key] || translations['en'][key] || key) : key;
 
         const effects = betaPredictors.map((b, i) => (seBetaPredictors[i] > 0) ? Math.abs(b[0] / seBetaPredictors[i]) : 0);
 
@@ -909,7 +933,10 @@ const Regression = {
             }, { responsive: true });
 
             const contourChartDiv = document.getElementById('regContourChart');
-            if (contourChartDiv) Plotly.purge(contourChartDiv);
+            if (contourChartDiv) {
+                Plotly.purge(contourChartDiv);
+                contourChartDiv.style.display = 'none'; // Hide by default to avoid empty space
+            }
             const factorialPlotsContainer = document.getElementById('regFactorialPlotsContainer');
             if (factorialPlotsContainer) {
                 Array.from(factorialPlotsContainer.children).forEach(child => {
@@ -921,7 +948,7 @@ const Regression = {
             }
 
             if (xNames.length >= 2) {
-                contourChartDiv.style.display = 'block';
+                if (contourChartDiv) contourChartDiv.style.display = 'block'; // Show only if needed
                 const pValuesX = hasIntercept ? pValues.slice(1, xNames.length + 1) : pValues.slice(0, xNames.length);
                 const varsWithP = xNames.map((name, i) => ({ name, p: pValuesX[i] })).sort((a, b) => a.p - b.p);
                 const sigVar1 = varsWithP[0], sigVar2 = varsWithP[1];

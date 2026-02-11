@@ -343,4 +343,6 @@ const Weibull = {
 // Global Exposure
 window.analyzeWeibull = () => Weibull.analyze();
 window.resetWeibullUI = () => Weibull.resetUI();
-window.weibullCurrentModel = Weibull.currentModel;
+window.weibullCurrentModel = Weibull.currentModel; // Initial reference (warning: stale if reassigned)
+window.hasWeibullModel = () => !!Weibull.currentModel;
+window.replotWeibull = () => { if (Weibull.currentModel) Weibull.updateUI(Weibull.currentModel); };
