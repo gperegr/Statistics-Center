@@ -89,7 +89,8 @@ const WarrantyPrediction = {
             xaxis: {
                 title: translations[currentLang].lblYear,
                 gridcolor: theme.gridcolor,
-                zerolinecolor: theme.gridcolor
+                zerolinecolor: theme.gridcolor,
+                dtick: 1
             },
             yaxis: {
                 title: translations[currentLang].lblRiskProb,

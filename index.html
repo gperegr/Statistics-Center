@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bosch Statistics Center</title>
-    <link rel="icon" type="image/png" href="favicon.png?v=1.0">
-    <link rel="apple-touch-icon" href="favicon.png?v=1.0">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png?v=1.0">
+    <link rel="apple-touch-icon" href="assets/images/favicon.png?v=1.0">
     <!-- Load Plotly for Charts -->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
@@ -199,12 +199,14 @@
                         <div id="analysis-params">
                             <!-- Standard Limits (Normal Tab) -->
                             <div id="grp-limit-value" class="control-group">
-                                <label class="control-label" data-i18n="lblLimitValue">Limit Value (Optional)</label>
+                                <label class="control-label" data-i18n="lblLimitValue"
+                                    data-i18n-tooltip="tipLimitValue">Limit Value (Optional)</label>
                                 <input type="number" id="limitValue" placeholder="Enter limit (e.g. 11.3)" step="any">
                             </div>
 
                             <div id="grp-limit-type" class="control-group">
-                                <label class="control-label" data-i18n="lblLimitType">Limit Type</label>
+                                <label class="control-label" data-i18n="lblLimitType"
+                                    data-i18n-tooltip="tipLimitType">Limit Type</label>
                                 <select id="limitType">
                                     <option value="upper" data-i18n="optUpper">Upper Limit (USL)</option>
                                     <option value="lower" data-i18n="optLower">Lower Limit (LSL)</option>
@@ -214,12 +216,14 @@
                             <!-- Tolerance Interval Controls -->
                             <div id="grp-tolerance-controls" class="hidden">
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblTolConfidence">Confidence Level (1 -
+                                    <label class="control-label" data-i18n="lblTolConfidence"
+                                        data-i18n-tooltip="tipTolConfidence">Confidence Level (1 -
                                         alpha)</label>
                                     <input type="number" id="tol-confidence" value="95" step="0.5" min="50" max="99.9">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblTolCoverage">Population Coverage
+                                    <label class="control-label" data-i18n="lblTolCoverage"
+                                        data-i18n-tooltip="tipTolCoverage">Population Coverage
                                         (P)</label>
                                     <input type="number" id="tol-coverage" value="95" step="0.5" min="50" max="99.9">
                                     <div class="input-hint" data-i18n="hintTolCoverage">Target proportion of the
@@ -270,11 +274,13 @@
                                         data-i18n-tooltip="tipHypoFactor"></select>
                                 </div>
                                 <div class="control-group hidden" id="grp-hypo-sample1">
-                                    <label class="control-label" data-i18n="lblHypoSample1">Sample 1 Column</label>
+                                    <label class="control-label" data-i18n="lblHypoSample1"
+                                        data-i18n-tooltip="tipDataSource">Sample 1 Column</label>
                                     <select id="hypoSample1Col"></select>
                                 </div>
                                 <div class="control-group hidden" id="grp-hypo-sample2">
-                                    <label class="control-label" data-i18n="lblHypoSample2">Sample 2 Column</label>
+                                    <label class="control-label" data-i18n="lblHypoSample2"
+                                        data-i18n-tooltip="tipDataSource">Sample 2 Column</label>
                                     <select id="hypoSample2Col"></select>
                                 </div>
                                 <div class="control-group">
@@ -310,7 +316,8 @@
                             <!-- SPC Specific Controls -->
                             <div id="grp-spc-controls" class="hidden">
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblChartType">Chart Type</label>
+                                    <label class="control-label" data-i18n="lblChartType"
+                                        data-i18n-tooltip="tipChartType">Chart Type</label>
                                     <select id="spcChartType" onchange="updateSpcControls()">
                                         <option value="imr" data-i18n="optImr">Individuals & Moving Range (I-MR)
                                         </option>
@@ -318,7 +325,8 @@
                                     </select>
                                 </div>
                                 <div class="control-group" id="grp-spc-subgroup">
-                                    <label class="control-label" data-i18n="lblSubgroupCol">Subgroup Column</label>
+                                    <label class="control-label" data-i18n="lblSubgroupCol"
+                                        data-i18n-tooltip="tipSubgroupCol">Subgroup Column</label>
                                     <select id="spcSubgroupColumn"></select>
                                     <div class="input-hint" data-i18n="hintSubgroup">Required for Xbar-R chart.</div>
                                 </div>
@@ -351,14 +359,16 @@
                             <div id="grp-graphs-controls" class="hidden">
                                 <div class="control-label" style="margin-top: 24px;" data-i18n="lblInputs">Inputs</div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblNumericCols">Numeric Columns</label>
+                                    <label class="control-label" data-i18n="lblNumericCols"
+                                        data-i18n-tooltip="tipNumCols">Numeric Columns</label>
                                     <div id="graphs-num-cols" class="checkbox-group"
                                         style="max-height: 150px; overflow-y: auto; border: 1px solid var(--colorNeutralStroke2); padding: 5px;">
                                         <!-- Populated by JS -->
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblGroupCol">Group By (Optional)</label>
+                                    <label class="control-label" data-i18n="lblGroupCol"
+                                        data-i18n-tooltip="tipGroupCol">Group By (Optional)</label>
                                     <select id="graphs-group-col">
                                         <option value="" data-i18n="optNone">None</option>
                                         <!-- Populated by JS -->
@@ -417,11 +427,13 @@
                             <!-- PARETO TAB CONTROLS -->
                             <div id="grp-pareto-controls" class="hidden">
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblCategoryCol">Category Column</label>
+                                    <label class="control-label" data-i18n="lblCategoryCol"
+                                        data-i18n-tooltip="tipCategoryCol">Category Column</label>
                                     <select id="paretoCategoryCol"></select>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblValueCol">Value Column (Optional)</label>
+                                    <label class="control-label" data-i18n="lblValueCol"
+                                        data-i18n-tooltip="tipValueCol">Value Column (Optional)</label>
                                     <select id="paretoValueCol">
                                         <option value="" data-i18n="optNone">None (Count Frequencies)</option>
                                     </select>
@@ -436,7 +448,8 @@
                                     </label>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblParetoRefLine">Reference Line (%)</label>
+                                    <label class="control-label" data-i18n="lblParetoRefLine"
+                                        data-i18n-tooltip="tipParetoRef">Reference Line (%)</label>
                                     <input type="number" id="paretoRefLine" value="80" min="0" max="100">
                                 </div>
                             </div>
@@ -444,12 +457,14 @@
                             <!-- REGRESSION CONTROLS -->
                             <div id="grp-regression-controls" class="hidden">
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblResponseVar">Response Variable
+                                    <label class="control-label" data-i18n="lblResponseVar"
+                                        data-i18n-tooltip="tipResponseVar">Response Variable
                                         (Y)</label>
                                     <select id="reg-response-col"></select>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblExplanatoryVars">Explanatory Variables
+                                    <label class="control-label" data-i18n="lblExplanatoryVars"
+                                        data-i18n-tooltip="tipExplanatoryVars">Explanatory Variables
                                         (X)</label>
                                     <div id="reg-explanatory-vars"
                                         style="display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; border: 1px solid var(--colorNeutralStroke2); padding: 5px;">
@@ -457,7 +472,8 @@
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblModelType">Model Type</label>
+                                    <label class="control-label" data-i18n="lblModelType"
+                                        data-i18n-tooltip="tipModelType">Model Type</label>
                                     <select id="reg-model-type">
                                         <option value="linear" selected data-i18n="optLinearOLS">Linear (OLS)</option>
                                         <option value="quadratic" data-i18n="optQuadratic">Quadratic</option>
@@ -471,34 +487,40 @@
                             <div id="grp-msa-controls" class="hidden">
                                 <div class="control-label" style="margin-top: 24px;" data-i18n="lblInputs">Inputs</div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblMeasurementCol">Measurement
+                                    <label class="control-label" data-i18n="lblMeasurementCol"
+                                        data-i18n-tooltip="tipMeasCol">Measurement
                                         Column</label>
                                     <select id="msaMeasurementCol"></select>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblPartCol">Part ID Column</label>
+                                    <label class="control-label" data-i18n="lblPartCol"
+                                        data-i18n-tooltip="tipPartCol">Part ID Column</label>
                                     <select id="msaPartCol"></select>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblOperatorCol">Operator ID Column</label>
+                                    <label class="control-label" data-i18n="lblOperatorCol"
+                                        data-i18n-tooltip="tipOpCol">Operator ID Column</label>
                                     <select id="msaOperatorCol"></select>
                                 </div>
 
                                 <div class="control-label" style="margin-top: 24px;" data-i18n="lblConfig">Configuration
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblMethod">Method</label>
+                                    <label class="control-label" data-i18n="lblMethod"
+                                        data-i18n-tooltip="tipMsaMethod">Method</label>
                                     <select id="msaMethod">
                                         <option value="anova" selected>ANOVA</option>
                                         <option value="xbarr">Average and Range</option>
                                     </select>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblTolerance">Process Tolerance</label>
+                                    <label class="control-label" data-i18n="lblTolerance"
+                                        data-i18n-tooltip="tipMsaTol">Process Tolerance</label>
                                     <input type="number" id="msaTolerance" placeholder="e.g. 5.0" step="any">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblSigmaMul">Sigma Multiplier</label>
+                                    <label class="control-label" data-i18n="lblSigmaMul"
+                                        data-i18n-tooltip="tipMsaSigma">Sigma Multiplier</label>
                                     <input type="number" id="msaSigmaMul" value="6.0" step="any">
                                 </div>
                             </div>
@@ -507,10 +529,9 @@
                             <!-- WEIBAYES CONTROLS -->
                             <div id="grp-weibayes-controls" class="hidden">
                                 <div class="control-group">
-                                    <label class="control-label" title="Calculation Method"
-                                        data-i18n="lblWbMethod">Method</label>
-                                    <select id="wb-method"
-                                        title="Choose between 1-Param Weibayes (fixed Beta) or 2-Param Regression">
+                                    <label class="control-label" data-i18n="lblWbMethod"
+                                        data-i18n-tooltip="tipWbMethod">Method</label>
+                                    <select id="wb-method">
                                         <option value="manual" data-i18n="wbOptManual">Weibayes (1-Param)</option>
                                         <option value="regression" data-i18n="wbOptRegression">Weibull Regression
                                             (2-Param)
@@ -518,34 +539,33 @@
                                     </select>
                                 </div>
                                 <div class="control-group hidden" id="wb-grp-fit-method">
-                                    <label class="control-label" title="Fitting Method" data-i18n="lblWbFitMethod">Fit
+                                    <label class="control-label" data-i18n="lblWbFitMethod"
+                                        data-i18n-tooltip="tipWbFitMethod">Fit
                                         Method</label>
-                                    <select id="wb-fit-method"
-                                        title="Rank Regression (Standard) or Maximum Likelihood Estimation">
+                                    <select id="wb-fit-method">
                                         <option value="rr" data-i18n="wbOptRR">Rank Regression (RR)</option>
                                         <option value="mle" data-i18n="wbOptMLE">Max Likelihood (MLE)</option>
                                     </select>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" title="Shape Parameter" data-i18n="lblBeta">Beta
+                                    <label class="control-label" data-i18n="lblBeta" data-i18n-tooltip="tipWbBeta">Beta
                                         ($\beta$)</label>
                                     <input type="number" id="wb-beta" value="2.0" step="0.1"
-                                        oninput="Weibayes.calculate()" title="Weibull Shape Parameter">
+                                        oninput="Weibayes.calculate()">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" title="Confidence Level for Lower Bound Eta"
-                                        data-i18n="lblConfidence">Confidence
+                                    <label class="control-label" data-i18n="lblConfidence"
+                                        data-i18n-tooltip="tipWbConfidence">Confidence
                                         Level (%)</label>
                                     <input type="number" id="wb-confidence" value="70" step="0.1" min="0.1" max="99.9"
-                                        oninput="Weibayes.calculate()" title="Confidence Level (e.g., 70% or 90%)">
+                                        oninput="Weibayes.calculate()">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" title="Target Reliability for Bx Life Calc"
-                                        data-i18n="lblTargetRel">Target
+                                    <label class="control-label" data-i18n="lblTargetRel"
+                                        data-i18n-tooltip="tipWbTargetRel">Target
                                         Reliability (%)</label>
                                     <input type="number" id="wb-target-rel" value="90" step="0.1" min="0.1" max="99.9"
-                                        oninput="Weibayes.calculate()"
-                                        title="Reliability Target (e.g. 90% for B10 Life)">
+                                        oninput="Weibayes.calculate()">
                                 </div>
 
                                 <div class="control-label" style="margin-top: 24px;" data-i18n="lblDataInput">Data
@@ -553,8 +573,9 @@
                                 <div class="control-group">
                                     <div style="display:flex; gap:8px;">
                                         <input type="number" id="wb-input-time" placeholder="Time" style="flex:1;"
-                                            title="Time to failure or suspension">
-                                        <select id="wb-input-type" style="width:80px;" title="Status: Fail or Censored">
+                                            data-i18n-tooltip="tipWbInputTime">
+                                        <select id="wb-input-type" style="width:80px;"
+                                            data-i18n-tooltip="tipWbInputType">
                                             <option value="S" data-i18n="wbOptCens">Cens.</option>
                                             <option value="F" data-i18n="wbOptFail">Fail</option>
                                         </select>
@@ -584,24 +605,28 @@
                             <!-- WEIBULL ANALYSIS CONTROLS -->
                             <div id="grp-weibull-controls" class="hidden">
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblWeibullMethod">Estimation Method</label>
+                                    <label class="control-label" data-i18n="lblWeibullMethod"
+                                        data-i18n-tooltip="tipWeibullMethod">Estimation Method</label>
                                     <select id="weibull-method">
                                         <option value="lsxy" data-i18n="optWeibullLsxy">Least Squares (LSXY)</option>
                                         <option value="mle" data-i18n="optWeibullMle">Maximum Likelihood (MLE)</option>
                                     </select>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblWeibullFailureCol">Failure Data
+                                    <label class="control-label" data-i18n="lblWeibullFailureCol"
+                                        data-i18n-tooltip="tipWeibullFailure">Failure Data
                                         Column</label>
                                     <select id="weibull-failure-col"></select>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblWeibullCensorCol">Censoring Column
+                                    <label class="control-label" data-i18n="lblWeibullCensorCol"
+                                        data-i18n-tooltip="tipWeibullCensor">Censoring Column
                                         (Optional)</label>
                                     <select id="weibull-censor-col"></select>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" data-i18n="lblWeibullCensorVal">Censoring Value</label>
+                                    <label class="control-label" data-i18n="lblWeibullCensorVal"
+                                        data-i18n-tooltip="tipWeibullCensorVal">Censoring Value</label>
                                     <input type="text" id="weibull-censor-val" placeholder="e.g., C or 1">
                                 </div>
                             </div>
@@ -612,11 +637,13 @@
                                     <div class="panel-subtitle" data-i18n="lblWeibullLimit">Weibull Distribution (Limit)
                                     </div>
                                     <div class="control-group">
-                                        <label class="control-label" data-i18n="lblShape">Shape (k)</label>
+                                        <label class="control-label" data-i18n="lblShape"
+                                            data-i18n-tooltip="tipWarrantyShape">Shape (k)</label>
                                         <input type="number" id="warranty-weibull-shape" value="2.5" step="0.1">
                                     </div>
                                     <div class="control-group">
-                                        <label class="control-label" data-i18n="lblScaleW">Scale (λ)</label>
+                                        <label class="control-label" data-i18n="lblScaleW"
+                                            data-i18n-tooltip="tipWarrantyScale">Scale (λ)</label>
                                         <input type="number" id="warranty-weibull-scale" value="1000">
                                     </div>
                                 </div>
@@ -625,11 +652,13 @@
                                     <div class="panel-subtitle" data-i18n="lblLognormalLoad">
                                         Lognormal Distribution (Load)</div>
                                     <div class="control-group">
-                                        <label class="control-label" data-i18n="lblLoc">Mu (μ)</label>
+                                        <label class="control-label" data-i18n="lblLoc"
+                                            data-i18n-tooltip="tipWarrantyMu">Mu (μ)</label>
                                         <input type="number" id="warranty-lognormal-mu" value="4.5" step="0.1">
                                     </div>
                                     <div class="control-group">
-                                        <label class="control-label" data-i18n="lblScale">Sigma (σ)</label>
+                                        <label class="control-label" data-i18n="lblScale"
+                                            data-i18n-tooltip="tipWarrantySigma">Sigma (σ)</label>
                                         <input type="number" id="warranty-lognormal-sigma" value="0.5" step="0.1">
                                     </div>
                                 </div>
@@ -637,7 +666,8 @@
                                 <div class="control-section">
                                     <div class="panel-subtitle" data-i18n="lblConfig">Configuration</div>
                                     <div class="control-group">
-                                        <label class="control-label" data-i18n="lblSnapshotYear">Snapshot Year</label>
+                                        <label class="control-label" data-i18n="lblSnapshotYear"
+                                            data-i18n-tooltip="tipSnapshotYear">Snapshot Year</label>
                                         <input type="number" id="warranty-snapshot-year" value="10" min="1" max="100">
                                     </div>
                                 </div>
@@ -654,7 +684,8 @@
                     <!-- MONTE CARLO CONTROLS -->
                     <div id="montecarlo-controls" class="hidden">
                         <div class="control-group">
-                            <label class="control-label" data-i18n="lblDistribution">Distribution</label>
+                            <label class="control-label" data-i18n="lblDistribution"
+                                data-i18n-tooltip="tipMcDist">Distribution</label>
                             <select id="mc-dist" onchange="updateMontecarloInputs()">
                                 <option value="normal" data-i18n="distNormal">Normal</option>
                                 <option value="lognormal" data-i18n="distLognormal">Lognormal</option>
@@ -665,11 +696,12 @@
                         <!-- Dynamic Params -->
                         <div id="mc-params-normal" class="control-group">
                             <div class="control-group">
-                                <label class="control-label" data-i18n="lblMean">Mean (μ)</label>
+                                <label class="control-label" data-i18n="lblMean" data-i18n-tooltip="tipMcMean">Mean
+                                    (μ)</label>
                                 <input type="number" id="mc-norm-mean" value="10" step="any">
                             </div>
                             <div class="control-group">
-                                <label class="control-label" data-i18n="lblStdDev">Std Dev
+                                <label class="control-label" data-i18n="lblStdDev" data-i18n-tooltip="tipMcStd">Std Dev
                                     (σ)</label>
                                 <input type="number" id="mc-norm-std" value="1" step="any" min="0">
                             </div>
@@ -677,11 +709,13 @@
 
                         <div id="mc-params-lognormal" class="control-group hidden">
                             <div class="control-group">
-                                <label class="control-label" data-i18n="lblLoc">Location (μ - underlying)</label>
+                                <label class="control-label" data-i18n="lblLoc" data-i18n-tooltip="tipMcLogMu">Location
+                                    (μ - underlying)</label>
                                 <input type="number" id="mc-log-mu" value="0" step="any">
                             </div>
                             <div class="control-group">
-                                <label class="control-label" data-i18n="lblScale">Scale (σ -
+                                <label class="control-label" data-i18n="lblScale"
+                                    data-i18n-tooltip="tipMcLogSigma">Scale (σ -
                                     underlying)</label>
                                 <input type="number" id="mc-log-sigma" value="0.5" step="any" min="0">
                             </div>
@@ -689,17 +723,20 @@
 
                         <div id="mc-params-weibull" class="control-group hidden">
                             <div class="control-group">
-                                <label class="control-label" data-i18n="lblShape">Shape (k)</label>
+                                <label class="control-label" data-i18n="lblShape" data-i18n-tooltip="tipMcK">Shape
+                                    (k)</label>
                                 <input type="number" id="mc-weib-k" value="2" step="any" min="0">
                             </div>
                             <div class="control-group">
-                                <label class="control-label" data-i18n="lblScaleW">Scale (λ)</label>
+                                <label class="control-label" data-i18n="lblScaleW" data-i18n-tooltip="tipMcLambda">Scale
+                                    (λ)</label>
                                 <input type="number" id="mc-weib-lambda" value="10" step="any" min="0">
                             </div>
                         </div>
 
                         <div class="control-group">
-                            <label class="control-label" data-i18n="lblSampleSize">Sample Size (N)</label>
+                            <label class="control-label" data-i18n="lblSampleSize" data-i18n-tooltip="tipMcN">Sample
+                                Size (N)</label>
                             <input type="number" id="mc-n" value="1000" min="10" step="10">
                         </div>
 
@@ -1135,6 +1172,16 @@
                                 <i style="font-style:normal;">&rarr;</i>
                                 <span style="font-size: 20px; font-weight:600;" id="wb-calc-result">--%</span>
                             </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title" data-i18n="lblBxLife">Bx Life</div>
+                            <div class="card-value-group" style="display:flex; align-items:baseline; gap:6px;">
+                                <span id="wb-res-bx-type"
+                                    style="font-size:16px; font-weight:600; color:var(--TextFillColorSecondary);">B10</span>
+                                <span style="font-size:16px; color:var(--TextFillColorSecondary);">=</span>
+                                <span id="wb-res-bx-val" class="card-value">--</span>
+                            </div>
+                            <div class="card-sub" data-i18n="lblDaysCycles">Days/Cycles</div>
                         </div>
                     </div>
 

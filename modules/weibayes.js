@@ -56,6 +56,11 @@ const Weibayes = {
             if (cards) cards.classList.remove('hidden');
             if (rChart) rChart.classList.remove('hidden');
             if (tblContainer) tblContainer.classList.remove('hidden');
+
+            // Explicitly hide the main "Data Status" message when local data exists
+            const welcome = document.getElementById('welcome-msg');
+            if (welcome) welcome.classList.add('hidden');
+
         } else {
             if (cards) cards.classList.add('hidden');
             if (rChart) rChart.classList.add('hidden');
@@ -63,6 +68,10 @@ const Weibayes = {
             if (mCard) mCard.classList.add('hidden');
             if (tblContainer) tblContainer.classList.add('hidden');
             if (iCard) iCard.classList.add('hidden');
+
+            // Show welcome message if no data
+            const welcome = document.getElementById('welcome-msg');
+            if (welcome) welcome.classList.remove('hidden');
         }
     },
 
@@ -114,7 +123,7 @@ const Weibayes = {
 
     addDataPoint: function () {
         const tInput = document.getElementById('wb-input-time');
-        const t = parseFloat(tInput.value);
+        const t = parseNumber(tInput.value);
         const type = document.getElementById('wb-input-type').value;
 
         if (isNaN(t) || t <= 0) {
@@ -171,8 +180,8 @@ const Weibayes = {
     },
 
     calculate: function () {
-        let beta = parseFloat(document.getElementById('wb-beta').value);
-        let conf = parseFloat(document.getElementById('wb-confidence').value) / 100;
+        let beta = parseNumber(document.getElementById('wb-beta').value);
+        let conf = parseNumber(document.getElementById('wb-confidence').value) / 100;
 
         if (isNaN(beta) || this.data.length === 0) {
             document.getElementById('wb-res-eta').innerText = "--";
@@ -220,13 +229,24 @@ const Weibayes = {
             etaN = this.calculatedEta;
         }
 
-        this.renderMath({
-            method, beta, etaLB, sumTBeta, chiCrit, df, confidence: conf,
-            etaNominal: etaN, regMethod: regMethodName
-        });
+        try {
+            this.renderMath({
+                method, beta, etaLB, sumTBeta, chiCrit, df, confidence: conf,
+                etaNominal: etaN, regMethod: regMethodName
+            });
+        } catch (e) {
+            console.error("MathJax render error:", e);
+        }
 
-        document.getElementById('welcome-msg').classList.add('hidden');
-        document.getElementById('weibayes-view').classList.remove('hidden');
+        console.log('Weibayes: Hiding welcome-msg and showing view');
+        const welcome = document.getElementById('welcome-msg');
+        const view = document.getElementById('weibayes-view');
+
+        if (welcome) welcome.classList.add('hidden');
+        else console.error('Weibayes: welcome-msg element not found');
+
+        if (view) view.classList.remove('hidden');
+        else console.error('Weibayes: weibayes-view element not found');
 
         this.drawReliabilityChart(etaLB, etaN, beta, conf);
 
@@ -344,13 +364,14 @@ const Weibayes = {
     },
 
     updateQuickCalc: function () {
-        const t = parseFloat(document.getElementById('wb-calc-time').value);
-        if (!t || !this.currentEta) {
+        const t = parseNumber(document.getElementById('wb-calc-time').value);
+        // Ensure parameters are available
+        if (!t || t <= 0 || !this.currentEta || !this.currentBeta) {
             document.getElementById('wb-calc-result').innerText = "--%";
             return;
         }
         const R = Math.exp(- Math.pow(t / this.currentEta, this.currentBeta));
-        document.getElementById('wb-calc-result').innerText = (R * 100).toFixed(1) + "%";
+        document.getElementById('wb-calc-result').innerText = (R * 100).toFixed(4) + "%";
     },
 
     renderMath: function (params) {
@@ -391,13 +412,22 @@ const Weibayes = {
         }
 
         container.innerHTML = html;
-        if (window.MathJax) MathJax.typesetPromise([container]);
+        if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+            MathJax.typesetPromise([container]).catch(err => console.log('MathJax error:', err));
+        }
     },
 
     drawReliabilityChart: function (etaLB, etaNom, beta, confidence) {
+        console.log("Weibayes: drawReliabilityChart called with", { etaLB, etaNom, beta, confidence });
+
         const theme = getChartTheme(document.body.getAttribute('data-theme'));
         const times = this.data.map(d => d.time).filter(x => x > 0);
-        if (times.length === 0) return;
+
+        console.log("Weibayes: Found times", times);
+        if (times.length === 0) {
+            console.warn("Weibayes: No times found, chart skipped");
+            return;
+        }
 
         const minT = Math.min(...times) / 2;
         const maxT = Math.max(...times) * 2;
@@ -408,7 +438,7 @@ const Weibayes = {
 
         const logMin = Math.log10(minT || 1);
         const logMax = Math.log10(maxT || 1000);
-        const steps = 50;
+        const steps = 100;
 
         for (let i = 0; i <= steps; i++) {
             const lx = logMin + (i / steps) * (logMax - logMin);
@@ -418,32 +448,55 @@ const Weibayes = {
             const R_LB = Math.exp(- Math.pow(x / etaLB, beta));
             yLB.push(R_LB);
 
-            const R_Nom = Math.exp(- Math.pow(x / etaNom, beta));
-            yNom.push(R_Nom);
+            if (etaNom) {
+                const R_Nom = Math.exp(- Math.pow(x / etaNom, beta));
+                yNom.push(R_Nom);
+            }
         }
 
-        const traceLB = {
+        console.log("Weibayes: Generated points:", xVals.length);
+
+        const traces = [];
+
+        traces.push({
             x: xVals, y: yLB, mode: 'lines',
             name: `LB ${(confidence * 100).toFixed(0)}%`,
             line: { color: theme.theme_primary, width: 3 }
-        };
-        const traceNom = {
-            x: xVals, y: yNom, mode: 'lines',
-            name: 'Nominal',
-            line: { color: '#888', dash: 'dash' }
-        };
+        });
+
+        if (etaNom) {
+            traces.push({
+                x: xVals, y: yNom, mode: 'lines',
+                name: 'Nominal',
+                line: { color: theme.font.color, dash: 'dash', width: 2 }
+            });
+        }
+
+        console.log("Weibayes: Traces created:", traces);
 
         const layout = {
-            margin: { t: 20, r: 20, l: 50, b: 40 },
-            xaxis: { type: 'log', title: 'Time (Log)', gridcolor: theme.gridcolor },
+            margin: { t: 30, r: 20, l: 60, b: 50 },
+            xaxis: { type: 'log', title: 'Time (Log Scale)', gridcolor: theme.gridcolor },
             yaxis: { range: [0, 1.05], title: 'Reliability R(t)', gridcolor: theme.gridcolor },
             showlegend: true,
             paper_bgcolor: theme.paper_bgcolor,
             plot_bgcolor: theme.plot_bgcolor,
-            font: theme.font
+            font: theme.font,
+            legend: { orientation: 'h', y: -0.2 }
         };
 
-        Plotly.newPlot('wb-reliability-chart', [traceLB, traceNom], layout, { responsive: true });
+        if (typeof Plotly !== 'undefined') {
+            console.log("Weibayes: Calling Plotly.newPlot");
+            Plotly.newPlot('wb-reliability-chart', traces, layout, { responsive: true }).then(() => {
+                console.log("Weibayes: Plotly promise resolved");
+                requestAnimationFrame(() => {
+                    Plotly.Plots.resize('wb-reliability-chart');
+                    console.log("Weibayes: Plotly resized");
+                });
+            }).catch(err => console.error("Weibayes: Plotly error", err));
+        } else {
+            console.error('Weibayes: Plotly is not defined');
+        }
     },
 
     drawProbabilityChart: function (failures, slope, intercept) {

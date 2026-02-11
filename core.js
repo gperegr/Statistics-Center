@@ -1078,6 +1078,15 @@ function runAnalysis(userInitiated = false) {
         return;
     }
     console.log("runAnalysis called, currentMode:", currentMode);
+
+    // Weibayes can run without external data (manual entry), so we skip the global dataset check for it
+    if (currentMode === 'weibayes') {
+        document.getElementById('welcome-msg').classList.add('hidden'); // Ensure welcome is hidden
+        document.getElementById('weibayes-view').classList.remove('hidden'); // Ensure view is shown
+        if (typeof Weibayes !== 'undefined') Weibayes.calculate();
+        return;
+    }
+
     const hasData = Object.keys(dataset).length > 0;
     console.log("hasData:", hasData, "dataset keys:", Object.keys(dataset));
 
@@ -1194,6 +1203,9 @@ function initApp() {
             changeLanguage(savedLang);
         }
 
+        // Initialize Custom Tooltips
+        initCustomTooltips();
+
         // Set Version
         document.title = `Bosch Statistics Center ${APP_VERSION}`;
         const versionEl = document.getElementById('aboutVersionNumber');
@@ -1235,3 +1247,63 @@ window.runAnalysis = runAnalysis;
 window.renderCards = renderCards;
 window.getChartTheme = getChartTheme;
 window.showError = showError;
+
+// --- CUSTOM TOOLTIPS ---
+function initCustomTooltips() {
+    // Create tooltip element
+    const tooltip = document.createElement('div');
+    tooltip.id = 'custom-tooltip-container';
+    tooltip.className = 'tooltip-bubble';
+    document.body.appendChild(tooltip);
+
+    let hoverTimeout;
+
+    document.addEventListener('mouseover', function (e) {
+        // Find triggers
+        const target = e.target.closest('[data-tooltip-text], .info-icon');
+
+        if (target) {
+            const text = target.getAttribute('data-tooltip-text');
+            if (!text) return;
+
+            hoverTimeout = setTimeout(() => {
+                tooltip.textContent = text;
+                tooltip.style.opacity = '1';
+
+                // Positioning
+                const rect = target.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect(); // Need dimensions
+
+                // Default: Top Center
+                let top = rect.top - tooltipRect.height - 8;
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+
+                // Reposition if off-screen
+                if (top < 0) {
+                    top = rect.bottom + 8; // Flip to bottom
+                }
+                if (left < 0) left = 10;
+                if (left + tooltipRect.width > window.innerWidth) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+
+                tooltip.style.top = `${top}px`;
+                tooltip.style.left = `${left}px`;
+            }, 500); // 0.5s Delay (User Refinement)
+        }
+    });
+
+    document.addEventListener('mouseout', function (e) {
+        const target = e.target.closest('[data-tooltip-text], .info-icon');
+        if (target) {
+            clearTimeout(hoverTimeout);
+            tooltip.style.opacity = '0';
+            // Hide after transition
+            setTimeout(() => {
+                if (tooltip.style.opacity === '0') {
+                    tooltip.style.top = '-9999px';
+                }
+            }, 200);
+        }
+    });
+}

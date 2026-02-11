@@ -564,18 +564,16 @@ const Regression = {
                         }
                     }
                 } else {
-                    if (typeof window.nelderMeadOptimize === 'undefined') {
-                        await new Promise((resolve, reject) => {
-                            const script = document.createElement('script');
-                            script.src = 'nelderMead.js';
-                            script.onload = () => resolve();
-                            script.onerror = () => reject('Failed to load optimization script.');
-                            document.head.appendChild(script);
-                        });
+                    // Optimization using global nelderMeadOptimize from utils.js
+                    if (typeof nelderMeadOptimize === 'undefined') {
+                        showError("Optimization function missing (utils.js not loaded?)");
+                        return;
                     }
+
                     const lowerBounds = vars.map(col => ranges[col].min);
                     const upperBounds = vars.map(col => ranges[col].max);
                     const initial = vars.map(col => (ranges[col].min + ranges[col].max) / 2);
+
                     function predictY(arr) {
                         let y = (model.terms.find((t, i) => t === 'Intercept') !== undefined) ? model.Beta[model.terms.findIndex(t => t === 'Intercept')][0] : 0;
                         const inputVals = {};
@@ -600,17 +598,19 @@ const Regression = {
                         });
                         return y;
                     }
+
                     let resultObj;
                     if (goalSelect.value === 'maximize') {
-                        resultObj = window.nelderMeadOptimize(arr => -predictY(arr), initial, lowerBounds, upperBounds, 200);
+                        resultObj = nelderMeadOptimize(arr => -predictY(arr), initial, lowerBounds, upperBounds, 200);
                         bestY = -resultObj.y;
                     } else if (goalSelect.value === 'minimize') {
-                        resultObj = window.nelderMeadOptimize(arr => predictY(arr), initial, lowerBounds, upperBounds, 200);
+                        resultObj = nelderMeadOptimize(arr => predictY(arr), initial, lowerBounds, upperBounds, 200);
                         bestY = resultObj.y;
                     } else if (goalSelect.value === 'target') {
-                        resultObj = window.nelderMeadOptimize(arr => Math.abs(predictY(arr) - target), initial, lowerBounds, upperBounds, 200);
+                        resultObj = nelderMeadOptimize(arr => Math.abs(predictY(arr) - target), initial, lowerBounds, upperBounds, 200);
                         bestY = predictY(resultObj.x);
                     }
+
                     bestCombo = {};
                     vars.forEach((col, idx) => { bestCombo[col] = resultObj.x[idx]; });
                 }

@@ -274,6 +274,61 @@ const translations = {
         tipRule3: "6 consecutive points trending up or down",
         tipRule4: "14 consecutive points alternating up and down",
 
+        // MISSING TOOLTIPS (EN)
+        tipLimitValue: "Enter a specific limit value (e.g. 10.5) for comparison.",
+        tipLimitType: "Choose which side of the limit to check (Upper or Lower).",
+        tipTolConfidence: "Confidence level that the interval covers the specified proportion.",
+        tipTolCoverage: "Proportion of the population to be covered by the interval.",
+
+        tipChartType: "Select the type of Control Chart.",
+        tipSubgroupCol: "Column identifying the subgroup for each measurement.",
+
+        tipNumCols: "Select one or more numeric columns to analyze.",
+        tipGroupCol: "Optional column to group data by (e.g. Machine, Operator).",
+
+        tipCategoryCol: "Column containing category names (text).",
+        tipValueCol: "Optional column with values to sum. If empty, counts frequency.",
+        tipParetoRef: "Cumulative percentage line to highlight (e.g. 80/20 rule).",
+
+        tipResponseVar: "Dependent variable (Y) to predict.",
+        tipExplanatoryVars: "Independent variables (X) used for prediction.",
+        tipModelType: "Mathematical model for the regression.",
+
+        tipMeasCol: "Column containing the measurement values.",
+        tipPartCol: "Column identifying the parts measured.",
+        tipOpCol: "Column identifying the operators performing measurements.",
+        tipMsaMethod: "Calculation method: ANOVA (preferred) or X-bar range.",
+        tipMsaTol: "Process tolerance window (USL - LSL).",
+        tipMsaSigma: "Number of standard deviations for Study Variation (usually 6).",
+
+        tipWbMethod: "Weibayes (1-param) fixes Beta. Regression (2-param) calculates both.",
+        tipWbFitMethod: "Rank Regression is standard. MLE for larger datasets.",
+        tipWbBeta: "Assumed Shape parameter (Slope) based on historical data.",
+        tipWbConfidence: "Confidence level for the Lower Bound Eta calculation.",
+        tipWbTargetRel: "Reliability target for calculating B-Life (e.g. B10).",
+        tipWbInputTime: "Time to failure or suspension.",
+        tipWbInputType: "Status: 'F' for Failure, 'S' for Suspension (Censored).",
+
+        tipWeibullMethod: "LSXY (Rank Regression) is best for small samples. MLE is better for large datasets.",
+        tipWeibullFailure: "Column containing time-to-failure numeric data.",
+        tipWeibullCensor: "Optional column to identify suspensions (units that did not fail).",
+        tipWeibullCensorVal: "Value in the column that indicates a suspension/censored unit (e.g. 'S', 'C').",
+
+        tipWarrantyShape: "Weibull Shape (k) for the limit distribution.",
+        tipWarrantyScale: "Weibull Scale (λ) for the limit distribution.",
+        tipWarrantyMu: "Lognormal Mu (μ) for the load distribution.",
+        tipWarrantySigma: "Lognormal Sigma (σ) for the load distribution.",
+        tipSnapshotYear: "Year to take a snapshot for distribution overlap analysis.",
+
+        tipMcDist: "Statistical distribution to sample from.",
+        tipMcMean: "Mean value for Normal distribution.",
+        tipMcStd: "Standard deviation for Normal distribution.",
+        tipMcLogMu: "Location parameter (Mu) of the underlying Normal.",
+        tipMcLogSigma: "Scale parameter (Sigma) of the underlying Normal.",
+        tipMcK: "Shape parameter (k) for Weibull.",
+        tipMcLambda: "Scale parameter (λ) for Weibull.",
+        tipMcN: "Number of data points to generate.",
+
         lblSetup: "Experiment Setup",
         thFactorName: "Factor Name",
         thLowLevel: "Low (-)",
@@ -724,6 +779,61 @@ const translations = {
         tipRule2: "9 pontos consecutivos do mesmo lado da linha central",
         tipRule3: "6 pontos consecutivos em tendência de alta ou baixa",
         tipRule4: "14 pontos consecutivos alternando para cima e para baixo",
+
+        // MISSING TOOLTIPS (PT)
+        tipLimitValue: "Insira um valor limite específico (ex: 10.5) para comparação.",
+        tipLimitType: "Escolha qual lado do limite verificar (Superior ou Inferior).",
+        tipTolConfidence: "Nível de confiança de que o intervalo cobre a proporção especificada.",
+        tipTolCoverage: "Proporção da população a ser coberta pelo intervalo.",
+
+        tipChartType: "Selecione o tipo de Carta de Controle.",
+        tipSubgroupCol: "Coluna identificando o subgrupo para cada medição.",
+
+        tipNumCols: "Selecione uma ou mais colunas numéricas para analisar.",
+        tipGroupCol: "Coluna opcional para agrupar dados (ex: Máquina, Operador).",
+
+        tipCategoryCol: "Coluna contendo nomes das categorias (texto).",
+        tipValueCol: "Coluna opcional com valores para somar. Se vazio, conta frequência.",
+        tipParetoRef: "Linha de porcentagem acumulada para destacar (ex: regra 80/20).",
+
+        tipResponseVar: "Variável dependente (Y) para prever.",
+        tipExplanatoryVars: "Variáveis independentes (X) usadas para previsão.",
+        tipModelType: "Modelo matemático para a regressão.",
+
+        tipMeasCol: "Coluna contendo os valores de medição.",
+        tipPartCol: "Coluna identificando as peças medidas.",
+        tipOpCol: "Coluna identificando os operadores realizando medições.",
+        tipMsaMethod: "Método de cálculo: ANOVA (preferido) ou X-barra amplitude.",
+        tipMsaTol: "Janela de tolerância do processo (LSE - LSI).",
+        tipMsaSigma: "Número de desvios padrão para Variação do Estudo (geralmente 6).",
+
+        tipWbMethod: "Weibayes (1-param) fixa Beta. Regressão (2-param) calcula ambos.",
+        tipWbFitMethod: "Regressão de Rank é padrão. MLE para grandes conjuntos de dados.",
+        tipWbBeta: "Parâmetro de Forma (Inclinação) assumido com base em histórico.",
+        tipWbConfidence: "Nível de confiança para o cálculo do limite inferior de Eta.",
+        tipWbTargetRel: "Confiabilidade alvo para calcular Vida-B (ex: B10).",
+        tipWbInputTime: "Tempo até falha ou suspensão.",
+        tipWbInputType: "Status: 'F' para Falha, 'S' para Suspensão (Censurado).",
+
+        tipWeibullMethod: "LSXY (Regressão de Rank) é melhor para poucas amostras. MLE é melhor para muitos dados.",
+        tipWeibullFailure: "Coluna contendo tempo até a falha (numérico).",
+        tipWeibullCensor: "Coluna opcional para identificar suspensões (peças que não falharam).",
+        tipWeibullCensorVal: "Valor na coluna que indica suspensão (ex: 'S', 'C').",
+
+        tipWarrantyShape: "Forma Weibull (k) para a distribuição limite.",
+        tipWarrantyScale: "Escala Weibull (λ) para a distribuição limite.",
+        tipWarrantyMu: "Mu Lognormal (μ) para a distribuição de carga.",
+        tipWarrantySigma: "Sigma Lognormal (σ) para a distribuição de carga.",
+        tipSnapshotYear: "Ano de referência para análise de sobreposição.",
+
+        tipMcDist: "Distribuição estatística para amostragem.",
+        tipMcMean: "Média para distribuição Normal.",
+        tipMcStd: "Desvio padrão para distribuição Normal.",
+        tipMcLogMu: "Parâmetro de localização (Mu) da Normal subjacente.",
+        tipMcLogSigma: "Parâmetro de escala (Sigma) da Normal subjacente.",
+        tipMcK: "Parâmetro de Forma (k) para Weibull.",
+        tipMcLambda: "Parâmetro de Escala (λ) para Weibull.",
+        tipMcN: "Número de pontos de dados a gerar.",
 
         lblSetup: "Configuração do Experimento",
         thFactorName: "Nome do Fator",
@@ -1284,6 +1394,61 @@ const translations = {
         tipRule3: "6 aufeinanderfolgende Punkte im Trend nach oben oder unten",
         tipRule4: "14 aufeinanderfolgende Punkte, die sich abwechselnd auf und ab bewegen",
 
+        // MISSING TOOLTIPS (DE - Placeholder EN)
+        tipLimitValue: "Enter a specific limit value (e.g. 10.5) for comparison.",
+        tipLimitType: "Choose which side of the limit to check (Upper or Lower).",
+        tipTolConfidence: "Confidence level that the interval covers the specified proportion.",
+        tipTolCoverage: "Proportion of the population to be covered by the interval.",
+
+        tipChartType: "Select the type of Control Chart.",
+        tipSubgroupCol: "Column identifying the subgroup for each measurement.",
+
+        tipNumCols: "Select one or more numeric columns to analyze.",
+        tipGroupCol: "Optional column to group data by (e.g. Machine, Operator).",
+
+        tipCategoryCol: "Column containing category names (text).",
+        tipValueCol: "Optional column with values to sum. If empty, counts frequency.",
+        tipParetoRef: "Cumulative percentage line to highlight (e.g. 80/20 rule).",
+
+        tipResponseVar: "Dependent variable (Y) to predict.",
+        tipExplanatoryVars: "Independent variables (X) used for prediction.",
+        tipModelType: "Mathematical model for the regression.",
+
+        tipMeasCol: "Column containing the measurement values.",
+        tipPartCol: "Column identifying the parts measured.",
+        tipOpCol: "Column identifying the operators performing measurements.",
+        tipMsaMethod: "Calculation method: ANOVA (preferred) or X-bar range.",
+        tipMsaTol: "Process tolerance window (USL - LSL).",
+        tipMsaSigma: "Number of standard deviations for Study Variation (usually 6).",
+
+        tipWbMethod: "Weibayes (1-param) fixes Beta. Regression (2-param) calculates both.",
+        tipWbFitMethod: "Rank Regression is standard. MLE for larger datasets.",
+        tipWbBeta: "Assumed Shape parameter (Slope) based on historical data.",
+        tipWbConfidence: "Confidence level for the Lower Bound Eta calculation.",
+        tipWbTargetRel: "Reliability target for calculating B-Life (e.g. B10).",
+        tipWbInputTime: "Time to failure or suspension.",
+        tipWbInputType: "Status: 'F' for Failure, 'S' for Suspension (Censored).",
+
+        tipWeibullMethod: "LSXY (Rangregression) ist am besten für kleine Stichproben. MLE ist besser für große Datensätze.",
+        tipWeibullFailure: "Spalte mit numerischen Werten für Zeit bis zum Ausfall.",
+        tipWeibullCensor: "Optionale Spalte zur Identifizierung von Aussetzungen (nicht ausgefallene Einheiten).",
+        tipWeibullCensorVal: "Wert in der Spalte, der eine Aussetzung/Zensur anzeigt (z. B. 'S', 'C').",
+
+        tipWarrantyShape: "Weibull Shape (k) for the limit distribution.",
+        tipWarrantyScale: "Weibull Scale (λ) for the limit distribution.",
+        tipWarrantyMu: "Lognormal Mu (μ) for the load distribution.",
+        tipWarrantySigma: "Lognormal Sigma (σ) for the load distribution.",
+        tipSnapshotYear: "Year to take a snapshot for distribution overlap analysis.",
+
+        tipMcDist: "Statistical distribution to sample from.",
+        tipMcMean: "Mean value for Normal distribution.",
+        tipMcStd: "Standard deviation for Normal distribution.",
+        tipMcLogMu: "Location parameter (Mu) of the underlying Normal.",
+        tipMcLogSigma: "Scale parameter (Sigma) of the underlying Normal.",
+        tipMcK: "Shape parameter (k) for Weibull.",
+        tipMcLambda: "Scale parameter (λ) for Weibull.",
+        tipMcN: "Number of data points to generate.",
+
         lblSetup: "Versuchseinrichtung",
         thFactorName: "Faktorname",
         thLowLevel: "Niedrig (-)",
@@ -1381,7 +1546,9 @@ function changeLanguage(lang) {
         const key = el.getAttribute('data-i18n-tooltip');
         if (translations[lang][key]) {
             const text = translations[lang][key];
-            el.setAttribute('title', text);
+            // Use data-tooltip-text for custom tooltips, remove title to avoid native one
+            el.setAttribute('data-tooltip-text', text);
+            el.removeAttribute('title');
         }
     });
 

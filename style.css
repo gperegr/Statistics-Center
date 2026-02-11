@@ -1875,3 +1875,54 @@
                 margin: 0 !important;
             }
         }
+
+        /* --- GLOBAL UTILITIES --- */
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- CUSTOM TOOLTIPS --- */
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            background-color: transparent;
+            border: 1px solid var(--TextFillColorSecondary);
+            color: var(--TextFillColorSecondary);
+            border-radius: 50%;
+            font-size: 10px;
+            margin-left: 6px;
+            cursor: help;
+            font-style: normal;
+            font-weight: bold;
+            font-family: monospace;
+            transition: all 0.2s ease;
+        }
+
+        .info-icon:hover {
+            background-color: var(--MajorHColorDefault);
+            color: #FFF;
+            border-color: var(--MajorHColorDefault);
+        }
+
+        #custom-tooltip-container {
+            position: fixed;
+            z-index: 100000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            max-width: 300px;
+        }
+
+        .tooltip-bubble {
+            background-color: var(--SolidBackgroundFillColorBase);
+            color: var(--TextFillColorPrimary);
+            border: 1px solid var(--DividerStrokeColorDefault);
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
