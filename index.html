@@ -59,12 +59,26 @@
                 </button>
                 <div class="header-controls" id="headerControls">
                     <!-- Language Selector -->
-                    <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)"
-                        data-i18n-tooltip="tipLang">
-                        <option value="en">English</option>
-                        <option value="pt">Português</option>
-                        <option value="de">Deutsch</option>
-                    </select>
+                    <div class="language-menu-container" id="languageMenuContainer">
+                        <button class="language-trigger-btn" id="languageMenuBtn" onclick="toggleLanguagePopup()"
+                            data-i18n-tooltip="tipLang" aria-label="Select language" aria-expanded="false"
+                            aria-controls="languagePopup">
+                            <img class="lang-icon" src="assets/images/globe-language.svg" alt="" aria-hidden="true">
+                            <span id="languageCurrentCode">EN</span>
+                        </button>
+                        <div class="language-popup" id="languagePopup">
+                            <button class="language-popup-close" onclick="closeLanguagePopup()" aria-label="Close">&times;</button>
+                            <div class="language-popup-title" data-i18n="lblSelectLanguage">Select a language</div>
+                            <div class="language-popup-select-wrap">
+                                <select class="language-popup-select" id="langSelect"
+                                    onchange="changeLanguage(this.value); closeLanguagePopup();">
+                                    <option value="en">English</option>
+                                    <option value="pt">Português</option>
+                                    <option value="de">Deutsch</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
 
 

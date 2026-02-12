@@ -91,6 +91,20 @@ function toggleNavDropdown() {
     }
 }
 
+function toggleLanguagePopup(forceOpen) {
+    const container = document.getElementById('languageMenuContainer');
+    const btn = document.getElementById('languageMenuBtn');
+    if (!container || !btn) return;
+
+    const nextState = typeof forceOpen === 'boolean' ? forceOpen : !container.classList.contains('open');
+    container.classList.toggle('open', nextState);
+    btn.setAttribute('aria-expanded', nextState ? 'true' : 'false');
+}
+
+function closeLanguagePopup() {
+    toggleLanguagePopup(false);
+}
+
 // Close dropdown when clicking outside
 window.addEventListener('click', function (e) {
     const container = document.getElementById('navDropdownContainer');
@@ -100,6 +114,17 @@ window.addEventListener('click', function (e) {
         if (!container.contains(e.target) && (!btn || !btn.contains(e.target))) {
             container.classList.remove('open');
         }
+    }
+
+    const langContainer = document.getElementById('languageMenuContainer');
+    if (langContainer && langContainer.classList.contains('open') && !langContainer.contains(e.target)) {
+        closeLanguagePopup();
+    }
+});
+
+window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        closeLanguagePopup();
     }
 });
 

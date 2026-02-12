@@ -234,6 +234,7 @@ const translations = {
         tipReset: "Reset application to default",
         tipTheme: "Toggle light/dark theme",
         tipLang: "Select language",
+        lblSelectLanguage: "Select a language",
         tipTabNormal: "Standard process capability analysis",
         tipTabCapability: "Detailed Capability (Cp, Cpk, Pp, Ppk)",
         tipTabHypothesis: "Compare group means (t-test, ANOVA)",
@@ -1886,6 +1887,7 @@ const translations = {
         tipReset: "Reiniciar App",
         tipTheme: "Mudar Tema",
         tipLang: "Mudar Idioma",
+        lblSelectLanguage: "Selecione um idioma",
 
         // NEW KEYS (PT)
         lblDensity: "Densidade",
@@ -2173,6 +2175,7 @@ const translations = {
         tipReset: "App zurücksetzen",
         tipTheme: "Thema wechseln",
         tipLang: "Sprache wählen",
+        lblSelectLanguage: "Sprache auswählen",
         tipTabNormal: "Prozessfähigkeitsanalyse",
         tipTabCapability: "Detaillierte Fähigkeit (Cp, Cpk...)",
         tipTabHypothesis: "Gruppenmittelwerte vergleichen",
@@ -2469,6 +2472,11 @@ function changeLanguage(lang) {
     localStorage.setItem('appLang', lang);
     document.documentElement.setAttribute('lang', lang); // Important: Update global lang attribute
     document.getElementById('langSelect').value = lang;
+    const languageCurrentCode = document.getElementById('languageCurrentCode');
+    if (languageCurrentCode) {
+        const codes = { en: 'EN', pt: 'PT', de: 'DE' };
+        languageCurrentCode.textContent = codes[lang] || String(lang).toUpperCase();
+    }
     // Translate text content
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');

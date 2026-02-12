@@ -783,57 +783,189 @@
         }
 
 
-        /* Base style for lang-select for both themes */
-        .lang-select {
-            -webkit-appearance: none;
+        .language-menu-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .language-trigger-btn {
+            color: #000;
+            background-color: transparent;
+            border: 1px solid transparent;
+            min-height: 32px;
+            padding: 4px 8px;
+            border-radius: 0;
+            transition: .25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.2;
+            cursor: pointer;
+        }
+
+        .language-trigger-btn:hover {
+            color: #007bc0;
+        }
+
+        [data-theme="dark"] .language-trigger-btn {
+            color: #fff;
+        }
+
+        .lang-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            object-fit: contain;
+            filter: brightness(0) saturate(100%) invert(31%) sepia(96%) saturate(1868%) hue-rotate(176deg) brightness(94%) contrast(101%);
+        }
+
+        .language-popup {
+            position: absolute;
+            top: calc(100% + 18px);
+            left: 50%;
+            width: 314px;
+            background: #efefef;
+            border: none;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translate(-50%, -6px);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+            z-index: 3100;
+        }
+
+        .language-menu-container.open .language-popup {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translate(-50%, 0);
+            margin-bottom: 0px;
+        }
+
+        .language-popup::before {
+            content: "";
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background: #efefef;
+            transform: translateX(-50%) rotate(45deg);
+        }
+
+        .language-popup-close {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            color: #1a1a1a;
+            font-size: 30px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .language-popup-title {
+            font-size: 16px;
+            line-height: 1.25;
+            color: #121212;
+            margin: 18px 0 14px;
+            font-weight: 400;
+        }
+
+        .language-popup-select-wrap {
+            position: relative;
+            margin-bottom: 28px;
+        }
+
+        .language-popup-select {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 0;
+            background-color: #d7d8da;
+            color: #111;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 0 56px 0 18px;
             appearance: none;
-            box-sizing: border-box;
-            font-family: inherit;
+            -webkit-appearance: none;
+            -moz-appearance: none;
             cursor: pointer;
             outline: none;
-            transition: color 0.1s ease-in-out;
-
-            /* Text-like appearance */
-            background-color: transparent;
-            border: none;
-            color: var(--TextFillColorPrimary);
-            /* Usa a cor de texto correta para o tema atual */
-
-            /* Sizing and alignment */
-            height: 32px;
-            font-size: 16px;
-            text-align: center;
-            min-width: 120px;
-
-            /* Arrow Icon - Default for Light Mode (black arrow) */
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='30' viewBox='0 0 18 30'%3E%3Cpath d='M3 10l6-6 6 6' fill='none' stroke='%23111' stroke-width='2'/%3E%3Cpath d='M3 20l6 6 6-6' fill='none' stroke='%23111' stroke-width='2'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 0.7em top 50%;
-            background-size: 0.65em auto;
-
-            /* Padding to not overlap text with arrow */
-            padding-left: 1em;
-            padding-right: 2.2em;
+            background-position: right 16px center;
+            background-size: 18px 30px;
         }
 
-        /* Hover/Focus state for the main select element */
-        .lang-select:hover,
-        .lang-select:focus,
-        .lang-select:active {
-            color: var(--SystemAccentColor);
-            /* The visible text in the header turns blue */
+        /* Firefox hardening for language popup controls */
+        #languageMenuContainer {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
         }
 
-        /* Dark Mode Specific Overrides */
-        [data-theme="dark"] .lang-select {
-            /* Changes the arrow icon to white for dark mode */
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        #languageMenuBtn {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            border: 1px solid transparent;
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0;
+            outline: none;
+            overflow: visible;
         }
 
-        /* Style for the options INSIDE the dropdown list */
-        .lang-select option {
-            /* Define apenas a cor do texto, deixando o fundo nativo do navegador */
-            color: var(--TextFillColorPrimary);
+        #languageMenuBtn::-moz-focus-inner,
+        .language-popup-close::-moz-focus-inner {
+            border: 0;
+            padding: 0;
+        }
+
+        #languagePopup {
+            position: absolute;
+            top: calc(100% + 18px);
+            left: 50%;
+            transform: translate(-50%, -6px);
+            z-index: 3100;
+        }
+
+        #languageMenuContainer.open #languagePopup {
+            transform: translate(-50%, 0);
+        }
+
+        [data-theme="dark"] .language-popup {
+            background: #2c2c2c;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="dark"] .language-popup::before {
+            background: #2c2c2c;
+        }
+
+        [data-theme="dark"] .language-popup-title,
+        [data-theme="dark"] .language-popup-close {
+            color: #f3f2f1;
+        }
+
+        [data-theme="dark"] .language-popup-select {
+            background-color: #3a3a3a;
+            color: #f3f2f1;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='30' viewBox='0 0 18 30'%3E%3Cpath d='M3 10l6-6 6 6' fill='none' stroke='%23f3f2f1' stroke-width='2'/%3E%3Cpath d='M3 20l6 6 6-6' fill='none' stroke='%23f3f2f1' stroke-width='2'/%3E%3C/svg%3E");
         }
 
 
@@ -1822,11 +1954,22 @@
 
             /* Adjust buttons in mobile menu */
             .header-controls .bosch-btn-secondary,
-            .header-controls .lang-select {
+            .header-controls .language-menu-container,
+            .header-controls .language-trigger-btn {
                 width: 100%;
                 justify-content: center;
                 height: 48px;
                 /* Taller for touch */
+            }
+
+            .header-controls .language-menu-container {
+                position: relative;
+            }
+
+            .header-controls .language-popup {
+                left: 50%;
+                width: 100%;
+                max-width: 420px;
             }
 
             /* --- MOBILE VERTICAL LAYOUT --- */
