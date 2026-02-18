@@ -846,6 +846,8 @@
             pointer-events: auto;
             transform: translate(-50%, 0);
             margin-bottom: 0px;
+            padding-top: opx;
+            padding-bottom: 0px;
         }
 
         .language-popup::before {
@@ -878,7 +880,7 @@
             font-size: 16px;
             line-height: 1.25;
             color: #121212;
-            margin: 18px 0 14px;
+            margin: 0px 0 14px;
             font-weight: 400;
         }
 
@@ -1091,6 +1093,22 @@
             margin-top: 4px;
         }
 
+        .card-split {
+            display: flex;
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .card-split-item {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
+        .card-split-item-right {
+            padding-left: 16px;
+            border-left: 1px solid var(--DividerStrokeColorDefault);
+        }
+
         /* Analysis Results Table */
         .results-table-wrapper {
             background: #EFF1F2;
@@ -1210,6 +1228,37 @@
             border-radius: 0;
             border: none;
 
+        }
+
+        .reg-contour-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 18px;
+            margin: 4px 0 8px;
+        }
+
+        .reg-contour-label {
+            font-weight: var(--fontWeightBodyStrong);
+            color: var(--TextFillColorPrimary);
+            margin-right: 8px;
+        }
+
+        .reg-contour-select {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 220px;
+        }
+
+        .reg-contour-select span {
+            white-space: nowrap;
+            color: var(--TextFillColorSecondary);
+            font-size: var(--fontSizeCaption);
+        }
+
+        .reg-contour-select select {
+            min-width: 160px;
         }
 
 

@@ -1,13 +1,26 @@
 # Bosch Power Tools | Statistics Center
 
-A browser-based application for statistical analysis. This tool provides a suite of interactive modules for data analysis, visualization, and process control, designed for engineers, analysts, and data scientists. It operates entirely offline.
+A browser-based application for statistical analysis. This tool provides a suite of interactive modules for data analysis, visualization, and process control, designed for engineers, analysts, and data scientists. It runs as a static site; full offline use requires local copies of external dependencies (Plotly, Plotly Kaleido, jStat, MathJax, and Bosch Sans fonts).
 
 This project was originally designed for internal use at Bosch and has been prepared here as a standalone, open-source repository.
 
 # Features
 
-The application is a comprehensive tool that includes a wide array of statistical modules:
-<!-- ... (Features list remains the same) ... -->
+The application is a comprehensive tool that includes:
+
+- Data input via paste and CSV upload with column parsing
+- Descriptive statistics, histograms, box plots, and CDF plots
+- Distribution fitting and tolerance interval analysis
+- Process capability analysis with Cp/Cpk metrics
+- SPC charts with subgroup handling and control limits
+- Hypothesis testing utilities
+- Regression analysis with diagnostics, residual plots, and contour plots
+- Pareto analysis
+- Monte Carlo simulation
+- Reliability tools (Weibull and Weibayes)
+- MSA analysis (components and interaction charts)
+- Warranty risk prediction and overlap analysis
+- Light/dark themes and multi-language UI (EN, PT, DE)
 
 # Project Structure
 
@@ -15,24 +28,26 @@ The project has been refactored into a modular architecture for better maintaina
 
 ```
 Statistics-Center/
-├── index.html
-├── style.css
-├── core.js
-├── utils.js
-├── translations.js
-└── modules/
-    ├── capability.js
-    ├── distribution.js
-    ├── graphs.js
-    ├── hypothesis.js
-    ├── montecarlo.js
-    ├── msa.js
-    ├── pareto.js
-    ├── regression.js
-    ├── spc.js
-    ├── warranty.js
-    ├── weibayes.js
-    └── weibull.js
+  index.html
+  style.css
+  core.js
+  utils.js
+  translations.js
+  assets/
+    images/
+  modules/
+    capability.js
+    distribution.js
+    graphs.js
+    hypothesis.js
+    montecarlo.js
+    msa.js
+    pareto.js
+    regression.js
+    spc.js
+    warranty.js
+    weibayes.js
+    weibull.js
 ```
 
 # Libraries Used
@@ -41,9 +56,17 @@ The application is built with vanilla JavaScript and does not require a web serv
 
   `Plotly.js:` For all interactive charting and data visualization.
 
+  `Plotly Kaleido:` For reliable chart export to PNG and SVG.
+
   `jStat.js:` For core statistical calculations and distributions.
 
   `MathJax:` For rendering mathematical formulas and symbols beautifully.
+
+# Export Formats
+
+Charts can be downloaded from the Plotly modebar in:
+
+  `PNG` and `SVG`
 
 # Design System
 

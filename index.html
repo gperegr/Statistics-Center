@@ -9,6 +9,8 @@
     <link rel="apple-touch-icon" href="assets/images/favicon.png?v=1.0">
     <!-- Load Plotly for Charts -->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- Kaleido plugin for reliable PNG export -->
+    <script src="https://cdn.plot.ly/plotly-kaleido-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
     <script>
         window.MathJax = {
@@ -1389,9 +1391,17 @@
                     <div class="stats-cards">
                         <div class="card">
                             <div class="card-title" data-i18n="lblProbSnapshot">Probability (Snapshot)</div>
-                            <div class="card-value" id="warranty-val-prob">-</div>
-                            <div class="card-sub"><span data-i18n="lblProbAtYear">Probability at Year</span> <span
-                                    id="warranty-val-snapshot-year-display">10</span> (%)</div>
+                            <div class="card-split">
+                                <div class="card-split-item">
+                                    <div class="card-value" id="warranty-val-prob">-</div>
+                                    <div class="card-sub"><span data-i18n="lblProbAtYear">Probability at Year</span> <span
+                                            id="warranty-val-snapshot-year-display">10</span> (%)</div>
+                                </div>
+                                <div class="card-split-item card-split-item-right">
+                                    <div class="card-value" id="warranty-val-prob-ppm">-</div>
+                                    <div class="card-sub"><span data-i18n="thPPM">PPM</span></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

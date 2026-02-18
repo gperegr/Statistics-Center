@@ -137,10 +137,34 @@ const Regression = {
                 <!-- Charts -->
                 <div class="chart-container">
                     <div class="panel-title" data-i18n="regPlots">${t('regPlots')}</div>
+                    <div id="regContourControls" class="reg-contour-controls" style="display: none;">
+                        <span class="reg-contour-label" data-i18n="regContourVars">${t('regContourVars') || 'Contour variables'}</span>
+                        <label class="reg-contour-select">
+                            <span data-i18n="regContourX">${t('regContourX') || 'X variable'}</span>
+                            <select id="regContourX"></select>
+                        </label>
+                        <label class="reg-contour-select">
+                            <span data-i18n="regContourY">${t('regContourY') || 'Y variable'}</span>
+                            <select id="regContourY"></select>
+                        </label>
+                    </div>
                     <div id="regStandardizedEffectsChart" style="width: 100%; height: 450px; margin-top: 60px;"></div>
                     <div id="regResidualsProbabilityChart" style="width: 100%; height: 450px; margin-top: 60px;"></div>
                     <div id="regResidualsOrderChart" style="width: 100%; height: 450px; margin-top: 60px;"></div>
-                    <div id="regContourChart" style="width: 100%; height: 500px; margin-top: 60px;"></div>
+                    <div id="regContourBlock" style="margin-top: 60px;">
+                        <div id="regContourControls" class="reg-contour-controls" style="display: none;">
+                            <span class="reg-contour-label" data-i18n="regContourVars">${t('regContourVars') || 'Contour variables'}</span>
+                            <label class="reg-contour-select">
+                                <span data-i18n="regContourX">${t('regContourX') || 'X variable'}</span>
+                                <select id="regContourX"></select>
+                            </label>
+                            <label class="reg-contour-select">
+                                <span data-i18n="regContourY">${t('regContourY') || 'Y variable'}</span>
+                                <select id="regContourY"></select>
+                            </label>
+                        </div>
+                        <div id="regContourChart" style="width: 100%; height: 500px; margin-top: 12px;"></div>
+                    </div>
                     <div id="regFactorialPlotsContainer" style="width: 100%; display: flex; flex-wrap: wrap; gap: 24px; margin-top: 30px;"></div>
                 </div>
 
@@ -163,6 +187,57 @@ const Regression = {
                 `;
                 resultsWrapper.appendChild(predSection);
             }
+        }
+
+        // Ensure contour controls exist (for existing DOM)
+        const chartContainer = resultsWrapper.querySelector('.chart-container');
+        if (chartContainer) {
+            let contourBlock = chartContainer.querySelector('#regContourBlock');
+            let contourChart = chartContainer.querySelector('#regContourChart');
+            let contourControls = chartContainer.querySelector('#regContourControls');
+
+            if (!contourControls) {
+                contourControls = document.createElement('div');
+                contourControls.id = 'regContourControls';
+                contourControls.className = 'reg-contour-controls';
+                contourControls.style.display = 'none';
+                contourControls.innerHTML = `
+                    <span class="reg-contour-label" data-i18n="regContourVars">${t('regContourVars') || 'Contour variables'}</span>
+                    <label class="reg-contour-select">
+                        <span data-i18n="regContourX">${t('regContourX') || 'X variable'}</span>
+                        <select id="regContourX"></select>
+                    </label>
+                    <label class="reg-contour-select">
+                        <span data-i18n="regContourY">${t('regContourY') || 'Y variable'}</span>
+                        <select id="regContourY"></select>
+                    </label>
+                `;
+            }
+
+            if (!contourBlock) {
+                contourBlock = document.createElement('div');
+                contourBlock.id = 'regContourBlock';
+                contourBlock.style.marginTop = '60px';
+                if (contourChart) {
+                    chartContainer.insertBefore(contourBlock, contourChart);
+                    contourBlock.appendChild(contourChart);
+                } else {
+                    chartContainer.appendChild(contourBlock);
+                }
+            }
+
+            // Always ensure controls live directly above the contour chart
+            if (contourControls.parentElement !== contourBlock) {
+                contourBlock.insertBefore(contourControls, contourBlock.firstChild);
+            }
+
+            // Clean up any stray duplicate controls (in case of older DOM)
+            const allControls = chartContainer.querySelectorAll('#regContourControls');
+            allControls.forEach(ctrl => {
+                if (ctrl !== contourControls && ctrl.parentElement !== contourBlock) {
+                    ctrl.remove();
+                }
+            });
         }
 
         // --- Optimization Section (inserted after prediction section) ---
@@ -263,6 +338,56 @@ const Regression = {
             const tValues = Beta.map((b, i) => (SE_Beta[i] > 0) ? b[0] / SE_Beta[i] : 0);
             const pValues = tValues.map(t => 2 * (1 - jStat.studentt.cdf(Math.abs(t), dfError)));
 
+            // Compute VIFs for each term (Intercept has no VIF)
+            const vifs = (function computeVIFs() {
+                const n = X.length;
+                const pCols = X[0].length;
+                const v = new Array(pCols).fill(null);
+                for (let i = 0; i < pCols; i++) {
+                    if (terms[i] === 'Intercept') {
+                        v[i] = null;
+                        continue;
+                    }
+                    if (pCols <= 1) {
+                        v[i] = 1;
+                        continue;
+                    }
+                    const yCol = X.map(row => [row[i]]);
+                    const Xo = X.map(row => row.filter((_, idx) => idx !== i));
+                    if (Xo[0].length === 0) {
+                        v[i] = 1;
+                        continue;
+                    }
+                    try {
+                        const XoT = matrixTranspose(Xo);
+                        const XoTXo = matrixMultiply(XoT, Xo);
+                        const XoTXo_inv = matrixInverse(XoTXo);
+                        if (XoTXo_inv.length === 0) {
+                            v[i] = Infinity;
+                            continue;
+                        }
+                        const XoTy = matrixMultiply(XoT, yCol);
+                        const betaO = matrixMultiply(XoTXo_inv, XoTy);
+                        const yHat = matrixMultiply(Xo, betaO);
+                        const yMean = getMean(yCol.map(r => r[0]));
+                        let sse = 0;
+                        let sst = 0;
+                        for (let r = 0; r < n; r++) {
+                            const resid = yCol[r][0] - yHat[r][0];
+                            sse += resid * resid;
+                            const dy = yCol[r][0] - yMean;
+                            sst += dy * dy;
+                        }
+                        const r2 = (sst > 0) ? 1 - (sse / sst) : 1;
+                        const denom = 1 - r2;
+                        v[i] = (denom > 0) ? (1 / denom) : Infinity;
+                    } catch (e) {
+                        v[i] = Infinity;
+                    }
+                }
+                return v;
+            })();
+
             const standardizedResiduals = Residuals.map(r => (stdErrorEst > 0) ? r / stdErrorEst : 0);
             const outliers = [];
             const outlierThreshold = 2.0;
@@ -280,9 +405,37 @@ const Regression = {
                 }
             });
 
+            // Predicted R-sq using PRESS (leave-one-out) with leverage from hat matrix
+            let R2_pred = null;
+            if (SST > 0) {
+                let press = 0;
+                let invalid = false;
+                for (let i = 0; i < X.length; i++) {
+                    const row = X[i];
+                    const tmp = new Array(row.length).fill(0);
+                    for (let c = 0; c < row.length; c++) {
+                        let sum = 0;
+                        for (let k = 0; k < row.length; k++) sum += row[k] * XtX_inv[k][c];
+                        tmp[c] = sum;
+                    }
+                    let h = 0;
+                    for (let c = 0; c < row.length; c++) h += tmp[c] * row[c];
+                    const denom = 1 - h;
+                    if (denom <= 0 || !isFinite(denom)) {
+                        invalid = true;
+                        break;
+                    }
+                    const adjResid = Residuals[i] / denom;
+                    press += adjResid * adjResid;
+                }
+                if (!invalid && isFinite(press)) {
+                    R2_pred = 1 - (press / SST);
+                }
+            }
+
             return {
-                yCol, linearXCols, terms, rawData, Beta, pValues, SE_Beta, tValues,
-                R2, R2_adj, stdErrorEst, anova: { SSM, SSE, SST, MSM, MSE, F, pValueModel, dfModel, dfError, dfTotal },
+                yCol, linearXCols, terms, rawData, Beta, pValues, SE_Beta, tValues, vifs,
+                R2, R2_adj, R2_pred, stdErrorEst, anova: { SSM, SSE, SST, MSM, MSE, F, pValueModel, dfModel, dfError, dfTotal },
                 Residuals,
                 outliers
             };
@@ -650,9 +803,14 @@ const Regression = {
         document.getElementById('regression-results-wrapper').classList.remove('hidden');
         const tr = (typeof translations !== 'undefined' && translations[currentLang]) ? translations[currentLang] : (typeof translations !== 'undefined' ? translations.en : {});
 
+        const r2PredDisplay = (typeof model.R2_pred === 'number' && isFinite(model.R2_pred))
+            ? `${(model.R2_pred * 100).toFixed(2)}%`
+            : '-';
+
         document.getElementById('reg-summary-cards').innerHTML = `
                 <div class="card"><div class="card-title">${tr.lblR2 || 'R-sq'}</div><div class="card-value">${(model.R2 * 100).toFixed(2)}%</div><div class="card-sub">${tr.lblCoefDet || 'Coefficient of Determination'}</div></div>
                 <div class="card"><div class="card-title">${tr.lblR2Adj || 'R-sq (adj)'}</div><div class="card-value">${(model.R2_adj * 100).toFixed(2)}%</div><div class="card-sub">${tr.lblAdjPred || 'Adjusted for Predictors'}</div></div>
+                <div class="card"><div class="card-title">${tr.lblR2Pred || 'R-sq (pred)'}</div><div class="card-value">${r2PredDisplay}</div><div class="card-sub">${tr.lblPredR2Sub || 'Predicted R-sq'}</div></div>
                 <div class="card"><div class="card-title">${tr.lblStdErr || 'S'}</div><div class="card-value">${model.stdErrorEst.toFixed(4)}</div><div class="card-sub">${tr.lblStdErrEst || 'Std Error of Estimate'}</div></div>`;
 
         const anovaBody = document.querySelector('#reg-anova-table tbody');
@@ -665,6 +823,14 @@ const Regression = {
         let coefRows = '';
         model.terms.forEach((term, i) => {
             const displayName = (term === 'Intercept') ? (tr.regIntercept || 'Intercept') : term;
+            let vifDisplay = '-';
+            if (model.vifs && model.vifs[i] !== null && model.vifs[i] !== undefined) {
+                if (model.vifs[i] === Infinity) {
+                    vifDisplay = 'Inf';
+                } else if (!isNaN(model.vifs[i])) {
+                    vifDisplay = model.vifs[i].toFixed(3);
+                }
+            }
             coefRows += `
                     <tr>
                         <td>${displayName}</td>
@@ -672,7 +838,7 @@ const Regression = {
                         <td>${model.SE_Beta[i].toFixed(4)}</td>
                         <td>${model.tValues[i].toFixed(2)}</td>
                         <td>${model.pValues[i].toFixed(4)}</td>
-                        <td>-</td>
+                        <td>${vifDisplay}</td>
                     </tr>`;
         });
         coefBody.innerHTML = coefRows;
@@ -863,6 +1029,371 @@ const Regression = {
         tableBody.innerHTML = bodyHTML;
     },
 
+    buildFactorLevelInfo: function (values, maxLevels = 10, binCount = 6) {
+        const clean = values.filter(v => typeof v === 'number' && !isNaN(v));
+        const uniq = Array.from(new Set(clean)).sort((a, b) => a - b);
+        if (uniq.length === 0) {
+            return { levels: [], labelOf: () => '', getKey: () => null };
+        }
+        if (uniq.length <= maxLevels) {
+            return {
+                levels: uniq,
+                labelOf: (v) => String(v),
+                getKey: (v) => (typeof v === 'number' && !isNaN(v)) ? v : null
+            };
+        }
+        const min = Math.min(...clean);
+        const max = Math.max(...clean);
+        if (min === max) {
+            return {
+                levels: [0],
+                labelOf: () => String(min),
+                getKey: () => 0
+            };
+        }
+        const width = (max - min) / binCount;
+        const labels = Array.from({ length: binCount }, (_, i) => {
+            const start = min + i * width;
+            const end = (i === binCount - 1) ? max : start + width;
+            return `${start.toFixed(3)} - ${end.toFixed(3)}`;
+        });
+        return {
+            levels: Array.from({ length: binCount }, (_, i) => i),
+            labelOf: (idx) => labels[idx] || '',
+            getKey: (v) => {
+                if (typeof v !== 'number' || isNaN(v)) return null;
+                let idx = Math.floor((v - min) / width);
+                if (idx < 0) idx = 0;
+                if (idx >= binCount) idx = binCount - 1;
+                return idx;
+            }
+        };
+    },
+
+    plotFactorialPlots: function (data, yName, xNames, pValues, hasIntercept, container, theme, t, model) {
+        if (!container || !Array.isArray(data) || data.length === 0 || !Array.isArray(xNames) || xNames.length === 0) {
+            return;
+        }
+
+        const makeChartDiv = (id, titleText, fullWidth = false) => {
+            const wrapper = document.createElement('div');
+            wrapper.style.flex = fullWidth ? '1 1 100%' : '1 1 420px';
+            wrapper.style.minWidth = fullWidth ? '100%' : '320px';
+            wrapper.style.height = fullWidth ? '360px' : '380px';
+
+            const title = document.createElement('div');
+            title.className = 'panel-title';
+            title.textContent = titleText;
+            title.style.marginBottom = '8px';
+
+            const chartDiv = document.createElement('div');
+            chartDiv.id = id;
+            chartDiv.style.width = '100%';
+            chartDiv.style.height = fullWidth ? '320px' : '340px';
+
+            wrapper.appendChild(title);
+            wrapper.appendChild(chartDiv);
+            container.appendChild(wrapper);
+            return chartDiv;
+        };
+
+        const maxLevels = 10;
+        const binCount = 6;
+
+        // Main Effects Plot (shared Y-axis, side-by-side)
+        const mainEffects = [];
+        const xMeans = {};
+        xNames.forEach(xName => {
+            const values = data.map(d => d[xName]).filter(v => typeof v === 'number' && !isNaN(v));
+            if (values.length === 0) return;
+            xMeans[xName] = getMean(values);
+        });
+
+        const hasModel = model && Array.isArray(model.terms) && Array.isArray(model.Beta);
+        const predictY = (point) => {
+            if (!hasModel) return null;
+            let y = 0;
+            model.terms.forEach((term, i) => {
+                const coef = model.Beta[i][0];
+                if (term === 'Intercept') {
+                    y += coef;
+                    return;
+                }
+                const factors = term.split('*');
+                let termValue = 1;
+                factors.forEach(factor => {
+                    const val = (typeof point[factor] === 'number' && !isNaN(point[factor])) ? point[factor] : 1;
+                    termValue *= val;
+                });
+                y += coef * termValue;
+            });
+            return y;
+        };
+
+        xNames.forEach(xName => {
+            const values = data.map(d => d[xName]).filter(v => typeof v === 'number' && !isNaN(v));
+            const uniq = Array.from(new Set(values)).sort((a, b) => a - b);
+            if (uniq.length < 2) return;
+            const min = Math.min(...values);
+            const max = Math.max(...values);
+            if (!isFinite(min) || !isFinite(max) || min === max) return;
+            const steps = 30;
+            const xGrid = Array.from({ length: steps }, (_, i) => min + i * (max - min) / (steps - 1));
+            const basePoint = { ...xMeans };
+            const yPred = xGrid.map(xVal => {
+                const yVal = predictY({ ...basePoint, [xName]: xVal });
+                return (typeof yVal === 'number' && isFinite(yVal)) ? yVal : null;
+            });
+            if (!yPred.some(v => typeof v === 'number' && isFinite(v))) return;
+            const markerX = [];
+            const markerY = [];
+            data.forEach(row => {
+                const xVal = row[xName];
+                const yVal = row.y;
+                if (typeof xVal !== 'number' || isNaN(xVal)) return;
+                if (typeof yVal !== 'number' || isNaN(yVal)) return;
+                markerX.push(xVal);
+                markerY.push(yVal);
+            });
+            mainEffects.push({ xName, xGrid, yPred, markerX, markerY });
+        });
+
+        if (mainEffects.length > 0) {
+            const mainEffectsId = `regFactorialPlot_mainEffects`;
+            const chartDiv = makeChartDiv(mainEffectsId, t('lblMainEffectsTitle') || 'Main Effects Plot', true);
+            const traces = [];
+            const annotations = [];
+            let yMin = Infinity;
+            let yMax = -Infinity;
+
+            mainEffects.forEach((effect, idx) => {
+                const axisSuffix = idx === 0 ? '' : `${idx + 1}`;
+                effect.yPred.forEach(v => {
+                    if (typeof v !== 'number' || !isFinite(v)) return;
+                    if (v < yMin) yMin = v;
+                    if (v > yMax) yMax = v;
+                });
+                traces.push({
+                    x: effect.xGrid,
+                    y: effect.yPred,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { color: theme.theme_primary },
+                    xaxis: `x${axisSuffix}`,
+                    yaxis: `y${axisSuffix}`
+                });
+                if (effect.markerX && effect.markerX.length) {
+                    traces.push({
+                        x: effect.markerX,
+                        y: effect.markerY,
+                        type: 'scatter',
+                        mode: 'markers',
+                        marker: { color: theme.theme_primary, size: 6 },
+                        xaxis: `x${axisSuffix}`,
+                        yaxis: `y${axisSuffix}`
+                    });
+                }
+                annotations.push({
+                    text: effect.xName,
+                    xref: `x${axisSuffix} domain`,
+                    yref: 'paper',
+                    x: 0.5,
+                    y: 1.08,
+                    showarrow: false,
+                    font: theme.font
+                });
+            });
+
+            if (!isFinite(yMin) || !isFinite(yMax)) {
+                yMin = 0;
+                yMax = 1;
+            }
+            const padding = (yMax - yMin) * 0.08;
+            const yRange = (yMax - yMin) > 0 ? [yMin - padding, yMax + padding] : [yMin - 1, yMax + 1];
+
+            const layout = {
+                grid: { rows: 1, columns: mainEffects.length, pattern: 'independent' },
+                font: theme.font,
+                paper_bgcolor: theme.paper_bgcolor,
+                plot_bgcolor: theme.plot_bgcolor,
+                showlegend: false,
+                margin: { l: 70, r: 20, t: 50, b: 50 },
+                annotations
+            };
+            layout.yaxis = { title: t('lblMeanResponse') || 'Mean Response', gridcolor: theme.gridcolor, range: yRange };
+            mainEffects.forEach((effect, idx) => {
+                const axisSuffix = idx === 0 ? '' : `${idx + 1}`;
+                layout[`xaxis${axisSuffix}`] = { title: effect.xName, gridcolor: theme.gridcolor };
+                if (idx > 0) {
+                    layout[`yaxis${axisSuffix}`] = { matches: 'y', showticklabels: false, gridcolor: theme.gridcolor };
+                }
+            });
+
+            Plotly.newPlot(chartDiv, traces, layout, { responsive: true });
+        }
+
+        // Interaction Plot Matrix (pairwise)
+        if (xNames.length >= 2 && hasModel) {
+            const rows = xNames.length - 1;
+            const cols = xNames.length - 1;
+            const safeId = `regFactorialPlot_interaction_matrix`;
+            const chartDiv = makeChartDiv(
+                safeId,
+                `${t('lblInteractionTitle') || 'Interaction Plot'}: ${yName}`,
+                true
+            );
+            if (chartDiv && chartDiv.parentElement) {
+                const rowHeight = 280;
+                const totalHeight = Math.max(360, rows * rowHeight + 120);
+                chartDiv.parentElement.style.height = `${totalHeight + 40}px`;
+                chartDiv.style.height = `${totalHeight}px`;
+            }
+
+            const interactions = [];
+            const annotations = [];
+            const layout = {
+                grid: { rows, columns: cols, pattern: 'independent', xgap: 0.12, ygap: 0.24 },
+                font: theme.font,
+                paper_bgcolor: theme.paper_bgcolor,
+                plot_bgcolor: theme.plot_bgcolor,
+                showlegend: true,
+                legend: { font: theme.font },
+                margin: { l: 80, r: 20, t: 110, b: 80 }
+            };
+
+            let yMin = Infinity;
+            let yMax = -Infinity;
+
+            const getLevelPair = (values) => {
+                const clean = values.filter(v => typeof v === 'number' && !isNaN(v)).sort((a, b) => a - b);
+                if (clean.length === 0) return null;
+                const low = jStat.percentile(clean, 0.25);
+                const high = jStat.percentile(clean, 0.75);
+                if (low === high) {
+                    return { low: clean[0], high: clean[clean.length - 1] };
+                }
+                return { low, high };
+            };
+
+            const getAxisIndex = (rowIdx, colIdx) => rowIdx * cols + colIdx + 1;
+
+            const interactionColors = [
+                theme.theme_primary,
+                theme.accentcolor || theme.dangercolor || '#E4572E'
+            ];
+
+            xNames.forEach((bName, bIdx) => {
+                if (bIdx === 0) return;
+                const bValues = data.map(d => d[bName]);
+                const levels = getLevelPair(bValues);
+                if (!levels) return;
+                const legendGroup = `int_${bName}`;
+                const levelDefs = [
+                    { value: levels.low, name: levels.low.toFixed(2), dash: 'solid' },
+                    { value: levels.high, name: levels.high.toFixed(2), dash: 'dash' }
+                ];
+
+                xNames.forEach((aName, aIdx) => {
+                    if (aIdx >= bIdx) return;
+                    const aValues = data.map(d => d[aName]).filter(v => typeof v === 'number' && !isNaN(v));
+                    if (aValues.length < 2) return;
+                    const min = Math.min(...aValues);
+                    const max = Math.max(...aValues);
+                    if (!isFinite(min) || !isFinite(max) || min === max) return;
+                    const steps = 30;
+                    const xGrid = Array.from({ length: steps }, (_, i) => min + i * (max - min) / (steps - 1));
+                    const basePoint = { ...xMeans };
+
+                    const rowIdx = bIdx - 1;
+                    const colIdx = aIdx;
+                    const axisIdx = getAxisIndex(rowIdx, colIdx);
+                    const axisSuffix = axisIdx === 1 ? '' : `${axisIdx}`;
+                    const isFirstCol = colIdx === 0;
+                    const isLastRow = rowIdx === rows - 1;
+
+                    levelDefs.forEach((lvl, lvlIdx) => {
+                        const yPred = xGrid.map(xVal => {
+                            const yVal = predictY({ ...basePoint, [aName]: xVal, [bName]: lvl.value });
+                            return (typeof yVal === 'number' && isFinite(yVal)) ? yVal : null;
+                        });
+
+                        yPred.forEach(v => {
+                            if (typeof v !== 'number' || !isFinite(v)) return;
+                            if (v < yMin) yMin = v;
+                            if (v > yMax) yMax = v;
+                        });
+
+                        interactions.push({
+                            x: xGrid,
+                            y: yPred,
+                            type: 'scatter',
+                            mode: 'lines',
+                            line: { color: interactionColors[lvlIdx % interactionColors.length], dash: lvl.dash },
+                            name: lvl.name,
+                            legendgroup: legendGroup,
+                            legendgrouptitle: lvlIdx === 0 ? { text: bName } : undefined,
+                            showlegend: aIdx === 0,
+                            xaxis: `x${axisSuffix}`,
+                            yaxis: `y${axisSuffix}`
+                        });
+                    });
+
+                    annotations.push({
+                        text: `${aName} * ${bName}`,
+                        xref: `x${axisSuffix} domain`,
+                        yref: `y${axisSuffix} domain`,
+                        x: 0.5,
+                        y: 1.14,
+                        showarrow: false,
+                        font: theme.font
+                    });
+
+                    layout[`xaxis${axisSuffix}`] = {
+                        title: isLastRow ? aName : '',
+                        gridcolor: theme.gridcolor,
+                        showticklabels: true
+                    };
+                    layout[`yaxis${axisSuffix}`] = {
+                        title: isFirstCol ? (t('lblMeanResponse') || 'Mean Response') : '',
+                        gridcolor: theme.gridcolor,
+                        showticklabels: isFirstCol
+                    };
+                });
+            });
+
+            const totalCells = rows * cols;
+            for (let idx = 1; idx <= totalCells; idx++) {
+                const axisSuffix = idx === 1 ? '' : `${idx}`;
+                if (!layout[`xaxis${axisSuffix}`]) {
+                    layout[`xaxis${axisSuffix}`] = { visible: false };
+                }
+                if (!layout[`yaxis${axisSuffix}`]) {
+                    layout[`yaxis${axisSuffix}`] = { visible: false };
+                }
+            }
+
+            if (interactions.length > 0) {
+                if (!isFinite(yMin) || !isFinite(yMax)) {
+                    yMin = 0;
+                    yMax = 1;
+                }
+                const padding = (yMax - yMin) * 0.08;
+                const yRange = (yMax - yMin) > 0 ? [yMin - padding, yMax + padding] : [yMin - 1, yMax + 1];
+                for (let idx = 1; idx <= rows * cols; idx++) {
+                    const axisSuffix = idx === 1 ? '' : `${idx}`;
+                    if (layout[`yaxis${axisSuffix}`] && layout[`yaxis${axisSuffix}`].visible !== false) {
+                        layout[`yaxis${axisSuffix}`].range = yRange;
+                    }
+                }
+                layout.annotations = annotations;
+                Plotly.newPlot(chartDiv, interactions, layout, { responsive: true });
+            } else {
+                Plotly.purge(chartDiv);
+                chartDiv.innerHTML = '';
+            }
+        }
+    },
+
     plotCharts: function (model) {
         const { rawData: data, Residuals: residuals, yCol: yName, linearXCols: xNames, Beta: beta, SE_Beta: seBeta, pValues, terms, anova } = model;
         const theme = getChartTheme(document.body.getAttribute('data-theme'));
@@ -933,10 +1464,14 @@ const Regression = {
             }, { responsive: true });
 
             const contourChartDiv = document.getElementById('regContourChart');
+            const contourControls = document.getElementById('regContourControls');
+            const contourSelectX = document.getElementById('regContourX');
+            const contourSelectY = document.getElementById('regContourY');
             if (contourChartDiv) {
                 Plotly.purge(contourChartDiv);
                 contourChartDiv.style.display = 'none'; // Hide by default to avoid empty space
             }
+            if (contourControls) contourControls.style.display = 'none';
             const factorialPlotsContainer = document.getElementById('regFactorialPlotsContainer');
             if (factorialPlotsContainer) {
                 Array.from(factorialPlotsContainer.children).forEach(child => {
@@ -949,51 +1484,91 @@ const Regression = {
 
             if (xNames.length >= 2) {
                 if (contourChartDiv) contourChartDiv.style.display = 'block'; // Show only if needed
+                if (contourControls) contourControls.style.display = 'flex';
                 const pValuesX = hasIntercept ? pValues.slice(1, xNames.length + 1) : pValues.slice(0, xNames.length);
-                const varsWithP = xNames.map((name, i) => ({ name, p: pValuesX[i] })).sort((a, b) => a.p - b.p);
+                const varsWithP = xNames.map((name, i) => ({ name, p: pValuesX[i] ?? Number.POSITIVE_INFINITY }))
+                    .sort((a, b) => a.p - b.p);
                 const sigVar1 = varsWithP[0], sigVar2 = varsWithP[1];
-                const x1_data = data.map(d => d[sigVar1.name]);
-                const x2_data = data.map(d => d[sigVar2.name]);
-                const x1_min = Math.min(...x1_data), x1_max = Math.max(...x1_data);
-                const x2_min = Math.min(...x2_data), x2_max = Math.max(...x2_data);
-                const nGrid = 30;
-                const x1_grid = Array.from({ length: nGrid }, (_, i) => x1_min + i * (x1_max - x1_min) / (nGrid - 1));
-                const x2_grid = Array.from({ length: nGrid }, (_, i) => x2_min + i * (x2_max - x2_min) / (nGrid - 1));
-                const otherVarsMeans = {};
-                xNames.forEach(name => {
-                    if (name !== sigVar1.name && name !== sigVar2.name) {
-                        otherVarsMeans[name] = getMean(data.map(d => d[name]));
-                    }
-                });
-                const z_grid = x2_grid.map(y_val => {
-                    return x1_grid.map(x_val => {
-                        const point = { ...otherVarsMeans };
-                        point[sigVar1.name] = x_val;
-                        point[sigVar2.name] = y_val;
-                        let prediction = 0;
-                        terms.forEach((termName, i) => {
-                            const termBeta = beta[i][0];
-                            let termValue = 1;
-                            if (termName !== 'Intercept') {
-                                termName.split('*').forEach(factor => {
-                                    termValue *= point[factor] || 1;
-                                });
-                            }
-                            prediction += termBeta * termValue;
-                        });
-                        return prediction;
+
+                const setSelectOptions = (selectEl, options) => {
+                    if (!selectEl) return;
+                    selectEl.innerHTML = '';
+                    options.forEach(name => {
+                        const opt = document.createElement('option');
+                        opt.value = name;
+                        opt.textContent = name;
+                        selectEl.appendChild(opt);
                     });
-                });
-                Plotly.newPlot('regContourChart', [{
-                    z: z_grid, x: x1_grid, y: x2_grid, type: 'contour',
-                    colorscale: 'RdBu', reversescale: true
-                }], {
-                    title: `${t('lblContourPlot') || 'Contour Plot'}: ${yName} vs ${sigVar1.name}, ${sigVar2.name}`,
-                    xaxis: { title: sigVar1.name, gridcolor: theme.gridcolor },
-                    yaxis: { title: sigVar2.name, gridcolor: theme.gridcolor },
-                    font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor
-                }, { responsive: true });
+                };
+
+                setSelectOptions(contourSelectX, xNames);
+                setSelectOptions(contourSelectY, xNames);
+
+                let defaultX = contourSelectX && xNames.includes(contourSelectX.value) ? contourSelectX.value : sigVar1.name;
+                let defaultY = contourSelectY && xNames.includes(contourSelectY.value) ? contourSelectY.value : sigVar2.name;
+                if (defaultX === defaultY) {
+                    defaultY = xNames.find(name => name !== defaultX) || defaultY;
+                }
+                if (contourSelectX) contourSelectX.value = defaultX;
+                if (contourSelectY) contourSelectY.value = defaultY;
+
+                const drawContour = () => {
+                    if (!contourSelectX || !contourSelectY) return;
+                    let xVar = contourSelectX.value;
+                    let yVar = contourSelectY.value;
+                    if (xVar === yVar) {
+                        yVar = xNames.find(name => name !== xVar) || yVar;
+                        contourSelectY.value = yVar;
+                    }
+                    const x1_data = data.map(d => d[xVar]);
+                    const x2_data = data.map(d => d[yVar]);
+                    const x1_min = Math.min(...x1_data), x1_max = Math.max(...x1_data);
+                    const x2_min = Math.min(...x2_data), x2_max = Math.max(...x2_data);
+                    const nGrid = 30;
+                    const x1_grid = Array.from({ length: nGrid }, (_, i) => x1_min + i * (x1_max - x1_min) / (nGrid - 1));
+                    const x2_grid = Array.from({ length: nGrid }, (_, i) => x2_min + i * (x2_max - x2_min) / (nGrid - 1));
+                    const otherVarsMeans = {};
+                    xNames.forEach(name => {
+                        if (name !== xVar && name !== yVar) {
+                            otherVarsMeans[name] = getMean(data.map(d => d[name]));
+                        }
+                    });
+                    const z_grid = x2_grid.map(y_val => {
+                        return x1_grid.map(x_val => {
+                            const point = { ...otherVarsMeans };
+                            point[xVar] = x_val;
+                            point[yVar] = y_val;
+                            let prediction = 0;
+                            terms.forEach((termName, i) => {
+                                const termBeta = beta[i][0];
+                                let termValue = 1;
+                                if (termName !== 'Intercept') {
+                                    termName.split('*').forEach(factor => {
+                                        termValue *= point[factor] || 1;
+                                    });
+                                }
+                                prediction += termBeta * termValue;
+                            });
+                            return prediction;
+                        });
+                    });
+                    Plotly.newPlot('regContourChart', [{
+                        z: z_grid, x: x1_grid, y: x2_grid, type: 'contour',
+                        colorscale: 'RdBu', reversescale: true
+                    }], {
+                        title: `${t('regContour') || 'Contour Plot'}: ${yName} vs ${xVar}, ${yVar}`,
+                        xaxis: { title: xVar, gridcolor: theme.gridcolor },
+                        yaxis: { title: yVar, gridcolor: theme.gridcolor },
+                        font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor
+                    }, { responsive: true });
+                };
+
+                if (contourSelectX) contourSelectX.onchange = drawContour;
+                if (contourSelectY) contourSelectY.onchange = drawContour;
+                drawContour();
             }
+
+            this.plotFactorialPlots(data, yName, xNames, pValues, hasIntercept, factorialPlotsContainer, theme, t, model);
         }
     }
 };

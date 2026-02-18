@@ -45,11 +45,15 @@ const WarrantyPrediction = {
         document.getElementById('warranty-view').classList.remove('hidden');
 
         const probSnapshot = (failuresAtSnapshot / iterations) * 100;
+        const probSnapshotPpm = (probSnapshot / 100) * 1e6;
         const elFailures = document.getElementById('warranty-val-failures');
         if (elFailures) elFailures.textContent = failuresAtSnapshot.toLocaleString();
 
         const elProb = document.getElementById('warranty-val-prob');
-        if (elProb) elProb.textContent = probSnapshot.toFixed(4);
+        if (elProb) elProb.textContent = `${probSnapshot.toFixed(2)}%`;
+
+        const elProbPpm = document.getElementById('warranty-val-prob-ppm');
+        if (elProbPpm) elProbPpm.textContent = Math.round(probSnapshotPpm).toLocaleString();
 
         const elYear = document.getElementById('warranty-val-snapshot-year-display');
         if (elYear) elYear.textContent = snapshotYear;

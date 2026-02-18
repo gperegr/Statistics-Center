@@ -74,6 +74,157 @@ document.addEventListener('gesturestart', function (e) {
     }
 })();
 
+function installPlotlyExportPatch() {
+    if (typeof Plotly === 'undefined' || Plotly.__statsCenterPatched) return;
+    Plotly.__statsCenterPatched = true;
+
+    const buildPlotlyConfig = (userConfig = {}) => {
+        const baseConfig = {
+            responsive: true,
+            displaylogo: false
+        };
+
+        const toImageDefaults = {
+            format: 'png',
+            scale: 2
+        };
+
+        const merged = { ...baseConfig, ...userConfig };
+        merged.toImageButtonOptions = { ...toImageDefaults, ...(userConfig.toImageButtonOptions || {}) };
+
+        const removeList = Array.isArray(merged.modeBarButtonsToRemove) ? merged.modeBarButtonsToRemove.slice() : [];
+        if (!removeList.includes('toImage')) removeList.push('toImage');
+        merged.modeBarButtonsToRemove = removeList;
+
+        const addList = Array.isArray(merged.modeBarButtonsToAdd) ? merged.modeBarButtonsToAdd.slice() : [];
+        addList.push({
+            name: 'downloadPngKaleido',
+            title: 'Download plot as PNG',
+            icon: Plotly.Icons && Plotly.Icons.camera ? Plotly.Icons.camera : undefined,
+            click: (gd) => downloadPlotAsPng(gd)
+        });
+        addList.push({
+            name: 'downloadSvg',
+            title: 'Download plot as SVG',
+            icon: Plotly.Icons && Plotly.Icons.camera ? Plotly.Icons.camera : undefined,
+            click: (gd) => downloadPlotAsSvg(gd)
+        });
+        merged.modeBarButtonsToAdd = addList;
+
+        return merged;
+    };
+
+    const downloadPlotAsPng = (gd) => {
+        if (!gd || typeof Plotly === 'undefined') return;
+        const filenameBase = gd.id ? gd.id : 'plot';
+        const scale = 2;
+
+        const triggerDownload = (dataUrl) => {
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `${filenameBase}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+
+        const fallbackToPlotly = (err) => {
+            if (err) console.error('PNG export failed (SVG path)', err);
+            const size = gd._fullLayout ? { width: gd._fullLayout.width, height: gd._fullLayout.height } : {};
+            const baseOptions = { format: 'png', filename: filenameBase, scale, ...size };
+            const kaleidoOptions = window.PlotlyKaleido ? { ...baseOptions, engine: 'kaleido' } : baseOptions;
+            Plotly.toImage(gd, kaleidoOptions)
+                .then(triggerDownload)
+                .catch(err2 => {
+                    console.error('PNG export failed (Plotly fallback)', err2);
+                    alert('Sorry, there was a problem downloading your snapshot!');
+                });
+        };
+
+        const svgNode = gd.querySelector('svg');
+        if (!svgNode) {
+            fallbackToPlotly();
+            return;
+        }
+
+        const width = Math.round((gd._fullLayout && gd._fullLayout.width) || gd.clientWidth || 800);
+        const height = Math.round((gd._fullLayout && gd._fullLayout.height) || gd.clientHeight || 600);
+
+        const svgClone = svgNode.cloneNode(true);
+        svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+        svgClone.setAttribute('width', width);
+        svgClone.setAttribute('height', height);
+
+        const svgString = new XMLSerializer().serializeToString(svgClone);
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                URL.revokeObjectURL(url);
+                fallbackToPlotly();
+                return;
+            }
+            ctx.setTransform(scale, 0, 0, scale, 0, 0);
+            ctx.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+            try {
+                const pngUrl = canvas.toDataURL('image/png');
+                triggerDownload(pngUrl);
+            } catch (err) {
+                fallbackToPlotly(err);
+            }
+        };
+        img.onerror = (err) => {
+            URL.revokeObjectURL(url);
+            fallbackToPlotly(err);
+        };
+        img.src = url;
+    };
+
+    const downloadPlotAsSvg = (gd) => {
+        if (!gd) return;
+        const filenameBase = gd.id ? gd.id : 'plot';
+        const svgNode = gd.querySelector('svg');
+        if (!svgNode) return;
+        const width = Math.round((gd._fullLayout && gd._fullLayout.width) || gd.clientWidth || 800);
+        const height = Math.round((gd._fullLayout && gd._fullLayout.height) || gd.clientHeight || 600);
+        const svgClone = svgNode.cloneNode(true);
+        svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        svgClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+        svgClone.setAttribute('width', width);
+        svgClone.setAttribute('height', height);
+
+        const svgString = new XMLSerializer().serializeToString(svgClone);
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${filenameBase}.svg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const originalNewPlot = Plotly.newPlot;
+    Plotly.newPlot = function (div, data, layout, config) {
+        return originalNewPlot.call(this, div, data, layout, buildPlotlyConfig(config || {}));
+    };
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', installPlotlyExportPatch);
+} else {
+    installPlotlyExportPatch();
+}
+
 
 
 function toggleAboutModal() {
@@ -895,7 +1046,7 @@ function switchTab(mode) {
 }
 
 // Global App Version
-const APP_VERSION = "v1.0";
+const APP_VERSION = "v1.1.2";
 
 // --- DATA PARSING ---
 function handleFileUpload(input) {
