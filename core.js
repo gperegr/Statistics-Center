@@ -525,7 +525,7 @@ function resetApp() {
 }
 
 // --- SAVE / LOAD LOGIC ---
-function saveData() {
+async function saveData() {
     const state = {
         version: "0.1",
         timestamp: new Date().toISOString(),
@@ -553,15 +553,45 @@ function saveData() {
         }
     };
 
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `statistics_analysis_${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const jsonContent = JSON.stringify(state, null, 2);
+    const defaultFilename = `statistics_analysis_${new Date().toISOString().slice(0, 10)}`;
+
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: `${defaultFilename}.stat`,
+                types: [{
+                    description: 'Statistics Analysis File',
+                    accept: { 'text/plain': ['.stat'] },
+                }],
+                excludeAcceptAllOption: true
+            });
+            const writable = await handle.createWritable();
+            await writable.write(jsonContent);
+            await writable.close();
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error('Save failed:', err);
+                alert('Failed to save file.');
+            }
+        }
+    } else {
+        // Fallback: Use prompt to allow user to customize filename
+        let filename = prompt("Save Analysis As:", defaultFilename);
+        if (filename !== null) {
+            if (!filename.endsWith('.stat')) filename += '.stat';
+
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    }
 }
 
 function loadData() {
@@ -1046,7 +1076,7 @@ function switchTab(mode) {
 }
 
 // Global App Version
-const APP_VERSION = "v1.1.2";
+const APP_VERSION = "v1.1.3";
 
 // --- DATA PARSING ---
 function handleFileUpload(input) {
@@ -1395,6 +1425,10 @@ function initApp() {
         document.title = `Bosch Statistics Center ${APP_VERSION}`;
         const versionEl = document.getElementById('aboutVersionNumber');
         if (versionEl) versionEl.textContent = APP_VERSION;
+
+        // Update file input to accept .stat files
+        const stateInput = document.getElementById('stateFileInput');
+        if (stateInput) stateInput.setAttribute('accept', '.stat');
     } catch (err) {
         console.error("Critical error in initApp:", err);
     }

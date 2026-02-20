@@ -51,7 +51,8 @@ const Graphs = {
         const charts = {
             hist: document.getElementById('showHist').checked,
             box: document.getElementById('showBox').checked,
-            interval: document.getElementById('showInterval').checked
+            interval: document.getElementById('showInterval').checked,
+            timeSeries: document.getElementById('showTimeSeries').checked
         };
 
         if (selectedCols.length === 0) {
@@ -171,6 +172,7 @@ const Graphs = {
         let allIntervalX = [];
         let allIntervalY = [];
         let allIntervalErr = [];
+        let allTimeSeriesTraces = [];
 
         selectedCols.forEach((col, idx) => {
             Object.keys(groupedData).forEach(grp => {
@@ -194,6 +196,15 @@ const Graphs = {
                         type: 'histogram',
                         name: traceName,
                         opacity: 0.6
+                    });
+                }
+
+                if (charts.timeSeries) {
+                    allTimeSeriesTraces.push({
+                        y: vals,
+                        type: 'scatter',
+                        mode: 'lines+markers',
+                        name: traceName
                     });
                 }
             });
@@ -252,6 +263,11 @@ const Graphs = {
                 type: 'scatter', mode: 'markers', marker: { size: 12, color: theme.primary }
             };
             Plotly.newPlot(divId, [trace], { ...baseLayout, title: "" }, { responsive: true });
+        }
+
+        if (charts.timeSeries && allTimeSeriesTraces.length > 0) {
+            const divId = addChartDiv('chart-timeseries-combined', (translations[currentLang].lblTimeSeriesPlot || 'Time Series Plot'));
+            Plotly.newPlot(divId, allTimeSeriesTraces, { ...baseLayout, title: "" }, { responsive: true });
         }
     }
 };

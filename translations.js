@@ -352,6 +352,7 @@ const translations = {
         lblInteractionTitle: "Interaction Plot",
         msgInteractionError: "Need at least 2 factors for interaction plot.",
         lblIntervalPlot: "Interval Plot",
+        lblTimeSeriesPlot: "Time Series Plot",
         lblNumericCols: "Numeric Columns",
         lblGroupCol: "Group By",
         lblInputs: "Inputs",
@@ -881,6 +882,7 @@ const translations = {
         lblInteractionTitle: "Gráfico de Interação",
         msgInteractionError: "Necessário pelo menos 2 fatores para o gráfico de interação.",
         lblIntervalPlot: "Gráfico de Intervalo",
+        lblTimeSeriesPlot: "Gráfico de Série Temporal",
         lblNumericCols: "Colunas Numéricas",
         lblGroupCol: "Agrupar Por",
         lblInputs: "Entradas",
@@ -1538,6 +1540,7 @@ const translations = {
         lblInteractionTitle: "Wechselwirkungsdiagramm",
         msgInteractionError: "Mindestens 2 Faktoren für Wechselwirkungsdiagramm erforderlich.",
         lblIntervalPlot: "Intervall-Diagramm",
+        lblTimeSeriesPlot: "Zeitreihendiagramm",
         lblNumericCols: "Numerische Spalten",
         lblGroupCol: "Gruppieren Nach",
         lblInputs: "Eingaben",
@@ -2546,5 +2549,3 @@ function changeLanguage(lang) {
 function initializeLanguage() {
 
 }
-
-
