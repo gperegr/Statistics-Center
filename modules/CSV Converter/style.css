@@ -1,0 +1,182 @@
+:root {
+    --border-color: #ccc;
+    --background-light: #f7f7f7;
+    --text-color: #333;
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #e9ecef;
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.importer-container {
+    width: 100%;
+    max-width: 1000px; /* Ajustado para um layout mais compacto */
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.importer-header, .importer-footer, .importer-main {
+    padding: 15px 20px;
+}
+
+.importer-header {
+    border-bottom: 1px solid var(--border-color);
+}
+.importer-header h2 { margin: 0; font-size: 1.2em; }
+
+.importer-main {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.file-input-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#file-path {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    background: #eee;
+}
+.browse-btn {
+    padding: 8px 15px;
+    background: var(--background-light);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    cursor: pointer;
+}
+.browse-btn:hover { background: #e2e2e2; }
+#file-input { display: none; }
+
+.data-preview-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.data-preview-section label, .import-options > label {
+    font-weight: bold;
+    color: #555;
+}
+
+#table-preview-wrapper {
+    height: 350px; /* Aumentei um pouco a altura */
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    overflow: auto;
+    padding: 0;
+    background: var(--background-light);
+}
+#table-preview-wrapper .placeholder-text { color: #888; padding: 10px; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+th, td {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap;
+    background: #fff;
+}
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+.table-index-header {
+    font-weight: normal;
+    background-color: #e9ecef;
+    color: #555;
+    text-align: center;
+}
+.table-row-num {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    font-weight: normal;
+    background-color: #e9ecef;
+    color: #555;
+    text-align: center;
+}
+.table-corner {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    background-color: #e9ecef;
+}
+.data-header-cell {
+    font-weight: bold;
+    background-color: #f8f9fa;
+}
+
+/* NOVIDADE: Layout de uma coluna para a seção inferior */
+.bottom-section {
+    display: grid;
+    grid-template-columns: 1fr; /* Apenas uma coluna */
+    gap: 20px;
+}
+.import-options { display: flex; flex-direction: column; gap: 5px; }
+.options-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 15px;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    background: var(--background-light);
+}
+.options-grid label { text-align: right; }
+.options-grid input, .options-grid select {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+.checkbox-options { grid-column: 1 / -1; display: flex; align-items: center; gap: 5px; }
+.checkbox-options label { order: 2; }
+.checkbox-options input { order: 1; width: auto; }
+
+.importer-footer {
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    background: var(--background-light);
+}
+#import-btn, #cancel-btn {
+    padding: 8px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+}
+#import-btn {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+#import-btn:hover { background: var(--primary-hover); }
+#cancel-btn { background: #fff; }
+#cancel-btn:hover { background: #e2e2e2; }

@@ -1297,11 +1297,17 @@
         }
 
         .weibull-gof-box {
-            flex: 0 0 40%;
+            flex: 0 0 auto;
+            overflow: visible;
         }
 
         .weibull-percentiles-box {
-            flex: 0 0 60%;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .weibull-gof-box .results-table th {
+            width: 50%;
         }
 
         /* --- GRAPHS TAB SPECIFIC --- */
@@ -2101,7 +2107,7 @@
 
         #custom-tooltip-container {
             position: fixed;
-            z-index: 100000;
+            z-index: 500000;
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.2s ease;
@@ -2117,4 +2123,85 @@
             font-size: 12px;
             line-height: 1.4;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            white-space: pre-wrap;
         }
+
+/* --- EXCEL IMPORT MODAL --- */
+.excel-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.excel-modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.excel-modal-content {
+    background: var(--SolidBackgroundFillColorBase);
+    padding: 24px;
+    border-radius: var(--OverlayCornerRadius);
+    border-radius: 0;
+    box-shadow: var(--Shadow32);
+    width: 400px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid var(--CardStrokeColorDefault);
+    color: var(--TextFillColorPrimary);
+    max-height: 90vh;
+}
+
+.excel-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.excel-import-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 4px;
+    /* Restore scrollbar visibility */
+    scrollbar-width: thin;
+    -ms-overflow-style: auto;
+}
+
+.excel-import-body::-webkit-scrollbar {
+    display: block;
+    width: 6px;
+}
+
+.excel-import-body::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+[data-theme="dark"] .excel-import-body::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .excel-modal-content {
+        padding: 16px;
+        width: 95% !important;
+        max-width: 95% !important;
+        max-height: 95vh;
+    }
+}

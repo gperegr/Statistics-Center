@@ -11,8 +11,8 @@ const Pareto = {
         catSelect.innerHTML = '';
         valSelect.innerHTML = '<option value="">None (Count Frequencies)</option>';
 
-        const allCols = Object.keys(dataset);
-        const numericCols = allCols.filter(col => dataset[col].some(v => typeof v === 'number' && !isNaN(v)));
+        const allCols = Object.keys(rawDataset);
+        const numericCols = Object.keys(dataset);
 
         allCols.forEach(col => {
             const opt = document.createElement('option');
@@ -39,15 +39,28 @@ const Pareto = {
 
         if (!catCol) return;
 
+        const decimalSep = document.getElementById('decimalSep').value;
+        const cleanVal = (val) => {
+            if (!val) return NaN;
+            let v = String(val).trim().replace(/"/g, '');
+            if (decimalSep === ',') v = v.replace(/\./g, '').replace(',', '.');
+            return parseFloat(v);
+        };
+
         // 1. Group Data
         const counts = {};
-        dataset[catCol].forEach((cat, i) => {
-            const key = String(cat);
-            const val = valCol ? (dataset[valCol][i] || 0) : 1;
-            if (!isNaN(val)) {
-                counts[key] = (counts[key] || 0) + val;
-            }
-        });
+        if (rawDataset[catCol]) {
+            rawDataset[catCol].forEach((cat, i) => {
+                const key = String(cat);
+                let val = 1;
+                if (valCol && rawDataset[valCol]) {
+                    val = cleanVal(rawDataset[valCol][i]);
+                }
+                if (!isNaN(val)) {
+                    counts[key] = (counts[key] || 0) + val;
+                }
+            });
+        }
 
         // 2. Sort and Calculate
         const sorted = Object.entries(counts)

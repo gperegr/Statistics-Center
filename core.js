@@ -413,115 +413,9 @@ window.onload = function () {
 // --- RESET LOGIC ---
 // --- RESET LOGIC ---
 function resetApp() {
-    location.reload();
-    return;
-    dataset = {};
-    rawDataset = {};
-    mcData = [];
-    weibullCurrentModel = null;
-    selectedColumnName = null;
-
-    // clear inputs
-    document.getElementById('textInput').value = '';
-    document.getElementById('fileInput').value = '';
-    document.getElementById('stateFileInput').value = '';
-
-    // Reset all input fields to default
-    const inputsToReset = [
-        'limitValue', 'lslValue', 'uslValue', 'targetValue',
-        'mc-norm-mean', 'mc-norm-std', 'mc-n', 'histBins', 'hypoAlpha',
-        'tol-confidence', 'tol-coverage',
-        'spcSubgroupColumn', 'hypoResponseCol', 'hypoFactorCol'
-    ];
-    inputsToReset.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = el.defaultValue || '';
-    });
-
-    // Reset Selectors
-    const selectsToReset = ['columnSelect', 'capDistributionMethod', 'limitType', 'spcChartType'];
-    selectsToReset.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.selectedIndex = 0;
-    });
-
-    // Clear text displays
-    document.getElementById('mc-msg').textContent = '';
-    document.getElementById('cap-dist-label').textContent = '';
-
-    // Clear Result Cells (Capability)
-    const capIds = [
-        'val-lsl', 'val-usl', 'val-target', 'val-mean', 'val-n',
-        'val-cp', 'val-cpl', 'val-cpu', 'val-cpk', 'val-sig-within',
-        'val-pp', 'val-ppl', 'val-ppu', 'val-ppk', 'val-cpm', 'val-sig-overall',
-        'pct-ppl', 'ppm-ppl', 'pct-ppu', 'ppm-ppu', 'pct-ppt', 'ppm-ppt',
-        'pct-cpl', 'ppm-cpl', 'pct-cpu', 'ppm-cpu', 'pct-cpt', 'ppm-cpt'
-    ];
-    capIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = '-';
-    });
-
-    // Hide Containers
-    const containersToHide = [
-        'preview-wrapper', 'column-selector-group', 'analysis-view',
-        'stats-container', 'analysis-chart-container', 'multi-table-container',
-        'tolerance-view', 'tolerance-stats-wrapper', 'tolerance-normality-wrapper', 'tolerance-table-wrapper', 'tolerance-chart-container',
-        'spc-violations-wrapper', 'cap-indices-within', 'cap-indices-overall',
-        // Specific Analysis Containers:
-        'mc-results-container', 'montecarlo-view',
-
-        'pareto-view', 'pareto-chart-container', 'pareto-table-container',
-        'regression-view', 'regression-results-container',
-        'msa-view', 'msa-results-container',
-        'weibayes-view', 'weibayes-results',
-        'warranty-view',
-        'spc-view', 'graphs-view', 'capability-view', 'hypothesis-view'
-    ];
-    containersToHide.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.classList.add('hidden');
-            // Removed destructive innerHTML clearing here because it was deleting static headers/structure
-            // Only hide the containers to fix phantom panels.
-        }
-    });
-
-    // Clear Charts
-    const chartIds = ['mainChart', 'mainCdfChart', 'toleranceChart', 'toleranceCdfChart', 'capChart', 'mcChart', 'mcCdfChart', 'graphsChart', 'spcChart', 'spcChartSecondary', 'hypothesisChart', 'paretoChart', 'weibullChart', 'warrantyTrendChart', 'warrantyOverlapChart'];
-    chartIds.forEach(id => {
-        Plotly.purge(id);
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-    });
-
-    // Clear Content Areas (Specific tbodies or content divs)
-    const contentIds = [
-        'stats-container', 'multiDistTable tbody', 'spcViolationsTable tbody',
-        'hypothesisSummaryTable', 'hypothesisGroupsTable tbody', 'paretoTable tbody', 'toleranceTable tbody'
-    ];
-    contentIds.forEach(id => {
-        const el = document.querySelector(`#${id}`);
-        if (el) el.innerHTML = '';
-    });
-
-    // Reset Tolerance Interval placeholders
-    const tolBody = document.querySelector('#toleranceTable tbody');
-    if (tolBody) {
-        const msg = (translations && translations[currentLang] && translations[currentLang].msgTolAwait) ? translations[currentLang].msgTolAwait : 'Awaiting data...';
-        tolBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px; color:#999;">${msg}</td></tr>`;
-    }
-    ['tol-n', 'tol-mean', 'tol-std', 'tol-min', 'tol-max', 'tol-skew', 'tol-ad-stat', 'tol-ad-p', 'tol-ad-conclusion'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = '-';
-    });
-    const tolMsg = document.getElementById('tolerance-message');
-    if (tolMsg) tolMsg.textContent = '';
-
-    // Re-render empty column options?
-    updateColumnSelect();
-
-    switchTab('normal');
+    const url = new URL(window.location.href);
+    url.searchParams.set('reset', 'true');
+    window.location.href = url.toString();
 }
 
 // --- SAVE / LOAD LOGIC ---
@@ -644,6 +538,7 @@ function restoreState(state) {
         if (s.spcSubgroupColumn) {
             document.getElementById('spcSubgroupColumn').value = s.spcSubgroupColumn;
         }
+        if (s.capSubgroupCol) document.getElementById('capSubgroupCol').value = s.capSubgroupCol;
         if (s.capDistributionMethod) {
             document.getElementById('capDistributionMethod').value = s.capDistributionMethod;
         }
@@ -714,7 +609,10 @@ function updateRegressionColumns() {
 // --- TAB SWITCHING ---
 function switchTab(mode) {
     // Determine data availability early to avoid TDZ issues
-    const hasData = (typeof dataset !== 'undefined' && dataset !== null) ? Object.keys(dataset).length > 0 : false;
+    let hasData = (typeof dataset !== 'undefined' && dataset !== null) ? Object.keys(dataset).length > 0 : false;
+    if (mode === 'pareto' && typeof rawDataset !== 'undefined' && rawDataset !== null) {
+        hasData = hasData || Object.keys(rawDataset).length > 0;
+    }
 
     // Reset Weibayes if leaving the tab
     if (typeof currentMode !== 'undefined' && currentMode === 'weibayes' && mode !== 'weibayes') {
@@ -1058,7 +956,7 @@ function switchTab(mode) {
 
     // Hide general column selector by default, then show if needed
     document.getElementById('column-selector-group').classList.add('hidden');
-    if (['normal', 'multi', 'tolerance', 'capability', 'spc', 'pareto'].includes(mode)) {
+    if (['normal', 'multi', 'tolerance', 'capability', 'spc'].includes(mode)) {
         document.getElementById('column-selector-group').classList.remove('hidden');
     }
 
@@ -1082,6 +980,14 @@ const APP_VERSION = "v1.1.3";
 function handleFileUpload(input) {
     const file = input.files[0];
     if (!file) return;
+
+    // Check for Excel extension
+    const filename = file.name.toLowerCase();
+    if (filename.endsWith('.xlsx') || filename.endsWith('.xls')) {
+        handleExcelUpload(file);
+        return;
+    }
+
     const reader = new FileReader();
     reader.onload = function (e) {
         document.getElementById('textInput').value = e.target.result;
@@ -1151,7 +1057,9 @@ function parseAndLoadData() {
     const cleanVal = (val) => {
         if (!val) return NaN;
         let v = val.trim().replace(/"/g, '');
+        v = v.replace(/\s/g, '');
         if (decimalSep === ',') v = v.replace(/\./g, '').replace(',', '.');
+        else v = v.replace(/,/g, '');
         return parseFloat(v);
     };
 
@@ -1210,6 +1118,7 @@ function updateColumnSelectors(triggerAnalysis = true) {
     const selectors = [
         { el: document.getElementById('columnSelect'), cols: numericCols },
         { el: document.getElementById('spcSubgroupColumn'), cols: allCols, hasNone: true },
+        { el: document.getElementById('capSubgroupCol'), cols: allCols, hasNone: true },
         { el: document.getElementById('hypoResponseCol'), cols: numericCols },
         { el: document.getElementById('hypoFactorCol'), cols: allCols },
         { el: document.getElementById('hypoSample1Col'), cols: numericCols },
@@ -1295,7 +1204,10 @@ function runAnalysis(userInitiated = false) {
         return;
     }
 
-    const hasData = Object.keys(dataset).length > 0;
+    let hasData = Object.keys(dataset).length > 0;
+    if (currentMode === 'pareto') {
+        hasData = Object.keys(rawDataset).length > 0;
+    }
     console.log("hasData:", hasData, "dataset keys:", Object.keys(dataset));
 
     document.getElementById('welcome-msg').classList.toggle('hidden', hasData);
@@ -1340,6 +1252,7 @@ function runAnalysis(userInitiated = false) {
                 return;
             }
             analyzeWeibull();
+            updateWeibullCounts();
             break;
         case 'spc':
             if (dataset[selectedColumnName] && dataset[selectedColumnName].length > 1) {
@@ -1396,8 +1309,66 @@ function runAnalysis(userInitiated = false) {
 
 // --- SPC ANALYSIS ---
 
+function updateWeibullCounts() {
+    const failCol = document.getElementById('weibull-failure-col').value;
+    const censorCol = document.getElementById('weibull-censor-col').value;
+    const censorVal = document.getElementById('weibull-censor-val').value.trim();
+    const decimalSep = document.getElementById('decimalSep').value;
+
+    if (!failCol || !rawDataset[failCol]) return;
+
+    let failureCount = 0;
+    let censorCount = 0;
+    const failData = rawDataset[failCol];
+    const censData = censorCol ? rawDataset[censorCol] : null;
+
+    for (let i = 0; i < failData.length; i++) {
+        let rawVal = failData[i];
+        if (typeof rawVal === 'string') {
+            rawVal = rawVal.trim().replace(/"/g, '');
+            if (decimalSep === ',') rawVal = rawVal.replace(/\./g, '').replace(',', '.');
+        }
+        const val = parseFloat(rawVal);
+        
+        if (isNaN(val)) continue;
+
+        let isCensored = false;
+        if (censData) {
+            const cVal = String(censData[i]).trim();
+            if (cVal === censorVal) isCensored = true;
+        }
+
+        if (isCensored) censorCount++;
+        else failureCount++;
+    }
+
+    const elFail = document.getElementById('weibull-count-failures');
+    const elCens = document.getElementById('weibull-count-censored');
+    if (elFail) elFail.textContent = failureCount;
+    if (elCens) elCens.textContent = censorCount;
+}
+
 function initApp() {
     try {
+        // Check for reset flag and clear inputs if present
+        const url = new URL(window.location.href);
+        if (url.searchParams.get('reset') === 'true') {
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                if (el.id === 'langSelect') return; // Preserve language selector
+                if (el.type === 'checkbox' || el.type === 'radio') {
+                    el.checked = el.defaultChecked;
+                } else if (el.tagName === 'SELECT') {
+                    const defaultOpt = Array.from(el.options).find(opt => opt.defaultSelected);
+                    if (defaultOpt) el.value = defaultOpt.value;
+                    else if (el.options.length > 0) el.selectedIndex = 0;
+                } else {
+                    el.value = el.defaultValue;
+                }
+            });
+            url.searchParams.delete('reset');
+            window.history.replaceState({}, document.title, url.toString());
+        }
+
         // Theme Initialization
         const savedTheme = localStorage.getItem('appTheme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
@@ -1420,6 +1391,9 @@ function initApp() {
 
         // Initialize Custom Tooltips
         initCustomTooltips();
+
+        // Initialize Excel Modal
+        initExcelModal();
 
         // Set Version
         document.title = `Bosch Statistics Center ${APP_VERSION}`;
@@ -1478,6 +1452,16 @@ function initCustomTooltips() {
     let hoverTimeout;
 
     document.addEventListener('mouseover', function (e) {
+        // Convert native 'title' attributes to custom tooltips to prevent browser UI
+        const targetWithTitle = e.target.closest('[title]');
+        if (targetWithTitle) {
+            const titleText = targetWithTitle.getAttribute('title');
+            if (titleText) {
+                targetWithTitle.setAttribute('data-tooltip-text', titleText);
+                targetWithTitle.removeAttribute('title');
+            }
+        }
+
         // Find triggers
         const target = e.target.closest('[data-tooltip-text], .info-icon');
 
@@ -1515,6 +1499,11 @@ function initCustomTooltips() {
     document.addEventListener('mouseout', function (e) {
         const target = e.target.closest('[data-tooltip-text], .info-icon');
         if (target) {
+            // Fix: Prevent tooltip from hiding when moving to a child element (e.g. text node)
+            if (e.relatedTarget && target.contains(e.relatedTarget)) {
+                return;
+            }
+
             clearTimeout(hoverTimeout);
             tooltip.style.opacity = '0';
             // Hide after transition

@@ -15,6 +15,8 @@ const Capability = {
         const usl = parseFloat(document.getElementById('uslValue').value);
         const target = parseFloat(document.getElementById('targetValue').value);
         const method = document.getElementById('capDistributionMethod').value;
+        const subSize = parseInt(document.getElementById('capSubgroupSize').value) || 1;
+        const subColName = document.getElementById('capSubgroupCol').value;
 
         if (isNaN(lsl) && isNaN(usl)) {
             showError("Please enter at least one limit (LSL or USL).");
@@ -24,9 +26,66 @@ const Capability = {
 
         const mean = getMean(data);
         const sigmaOverall = getStd(data, mean);
-        let sumMR = 0;
-        for (let i = 1; i < data.length; i++) sumMR += Math.abs(data[i] - data[i - 1]);
-        const sigmaWithin = (data.length > 1) ? ((sumMR / (data.length - 1)) / getSpcConstant('d2', 2)) : sigmaOverall;
+        
+        let sigmaWithin;
+        
+        // Priority: Subgroup Column > Subgroup Size > 1 (I-MR)
+        if (subColName) {
+            // Group by Column
+            const groups = {};
+            const subData = rawDataset[subColName]; // Access raw strings for grouping
+            
+            // Group data
+            for (let i = 0; i < data.length; i++) {
+                const key = subData[i];
+                if (!groups[key]) groups[key] = [];
+                groups[key].push(data[i]);
+            }
+
+            const ranges = [];
+            let totalN = 0;
+            let groupCount = 0;
+
+            Object.values(groups).forEach(g => {
+                if (g.length > 1) {
+                    ranges.push(Math.max(...g) - Math.min(...g));
+                    totalN += g.length;
+                    groupCount++;
+                }
+            });
+
+            // Estimate average N for d2 constant (simplified for variable subgroup sizes)
+            const avgN = groupCount > 0 ? Math.round(totalN / groupCount) : 0;
+            const d2 = getSpcConstant('d2', avgN);
+
+            if (ranges.length > 0 && d2) {
+                const rBar = ranges.reduce((a, b) => a + b, 0) / ranges.length;
+                sigmaWithin = rBar / d2;
+            } else {
+                sigmaWithin = sigmaOverall; // Fallback if groups are too small (n=1)
+            }
+
+        } else if (subSize > 1) {
+            // Fixed Subgroup Size (Chunking)
+            const ranges = [];
+            for (let i = 0; i < data.length; i += subSize) {
+                const chunk = data.slice(i, i + subSize);
+                if (chunk.length === subSize) {
+                    ranges.push(Math.max(...chunk) - Math.min(...chunk));
+                }
+            }
+            const d2 = getSpcConstant('d2', subSize);
+            if (ranges.length > 0 && d2) {
+                const rBar = ranges.reduce((a, b) => a + b, 0) / ranges.length;
+                sigmaWithin = rBar / d2;
+            } else {
+                sigmaWithin = sigmaOverall;
+            }
+        } else {
+            let sumMR = 0;
+            for (let i = 1; i < data.length; i++) sumMR += Math.abs(data[i] - data[i - 1]);
+            sigmaWithin = (data.length > 1) ? ((sumMR / (data.length - 1)) / getSpcConstant('d2', 2)) : sigmaOverall;
+        }
 
         let fit = null;
         let cdf, pdf;

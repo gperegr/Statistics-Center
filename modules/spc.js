@@ -109,7 +109,8 @@ const SPC = {
         const sigma = rbar / getSpcConstant('d2', n);
 
         // Check Rules (on xbars)
-        const violations = this.checkRules(xbars, xbarDouble, sigma, subgroupStats.map(s => s.key));
+        const sigmaXbar = sigma / Math.sqrt(n);
+        const violations = this.checkRules(xbars, xbarDouble, sigmaXbar, subgroupStats.map(s => s.key));
 
         // Plot
         this.plotChart('spcChart', tr.lblChartXbar || 'X-bar Chart', xbars, xbarDouble, ucl_xbar, lcl_xbar, violations.map(v => v.index), 0, subgroupStats.map(s => s.key));

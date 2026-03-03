@@ -13,10 +13,14 @@ function randn_bm() {
 
 // --- DATA PARSING HELPER ---
 function parseNumber(val) {
-    if (typeof val === 'number') return val;
+    if (typeof val === 'number') return Number.isFinite(val) ? val : NaN;
     if (!val) return NaN;
-    // Replace comma with dot for international support
-    return parseFloat(val.toString().replace(',', '.'));
+    const decimalSepEl = document.getElementById('decimalSep');
+    const decimalSep = decimalSepEl ? decimalSepEl.value : '.';
+    let v = val.toString().trim().replace(/\s/g, '');
+    if (decimalSep === ',') v = v.replace(/\./g, '').replace(',', '.');
+    else v = v.replace(/,/g, '');
+    return parseFloat(v);
 }
 
 // --- BASIC STATS ---

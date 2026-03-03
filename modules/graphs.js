@@ -37,6 +37,19 @@ const Graphs = {
         const selectedCols = Array.from(document.querySelectorAll('#graphs-num-cols input:checked')).map(cb => cb.value);
         const groupCol = document.getElementById('graphs-group-col').value;
         const normalize = document.getElementById('graphNormalize').checked;
+        const decimalSep = document.getElementById('decimalSep').value;
+
+        const parseGraphNumber = (val) => {
+            if (typeof val === 'number') return Number.isFinite(val) ? val : NaN;
+            if (val === null || val === undefined) return NaN;
+            let v = String(val).trim().replace(/"/g, '');
+            if (!v) return NaN;
+            v = v.replace(/\s/g, '');
+            if (decimalSep === ',') v = v.replace(/\./g, '').replace(',', '.');
+            else v = v.replace(/,/g, '');
+            const num = parseFloat(v);
+            return Number.isFinite(num) ? num : NaN;
+        };
 
         const stats = {
             mean: document.getElementById('statMean').checked,
@@ -61,18 +74,20 @@ const Graphs = {
         }
 
         // 2. Prepare Data Structure
+        // Use rawDataset row indexes to preserve alignment across columns.
         let groupedData = {};
         let groups = {}; // map index -> groupName
+        const rowCount = Object.keys(rawDataset).reduce((max, col) => Math.max(max, rawDataset[col].length), 0);
         if (groupCol) {
-            dataset[groupCol].forEach((val, i) => {
+            for (let i = 0; i < rowCount; i++) {
+                const val = (rawDataset[groupCol] && rawDataset[groupCol][i] !== undefined) ? rawDataset[groupCol][i] : '';
                 const key = String(val);
                 if (!groups[key]) groups[key] = [];
                 groups[key].push(i);
-            });
+            }
         } else {
-            const firstCol = Object.keys(dataset)[0];
-            if (firstCol) {
-                groups["All"] = dataset[firstCol].map((_, i) => i);
+            if (rowCount > 0) {
+                groups["All"] = Array.from({ length: rowCount }, (_, i) => i);
             } else {
                 return; // No data
             }
@@ -81,7 +96,9 @@ const Graphs = {
         Object.keys(groups).forEach(gKey => {
             groupedData[gKey] = {};
             selectedCols.forEach(col => {
-                let vals = groups[gKey].map(idx => dataset[col][idx]).filter(v => v !== null && v !== undefined && !isNaN(v));
+                let vals = groups[gKey]
+                    .map(idx => parseGraphNumber(rawDataset[col] ? rawDataset[col][idx] : undefined))
+                    .filter(v => !isNaN(v));
                 if (normalize) {
                     const mean = jStat.mean(vals);
                     const std = jStat.stdev(vals, true);
@@ -99,7 +116,7 @@ const Graphs = {
         tbody.innerHTML = '';
         thead.innerHTML = '';
 
-        let headers = ['Variable', 'Group'];
+        let headers = ['Variable', 'Group', 'N'];
         if (stats.mean) headers.push('Mean');
         if (stats.stdev) headers.push('StDev');
         if (stats.var) headers.push('Var');
@@ -122,7 +139,7 @@ const Graphs = {
                 if (vals.length === 0) return;
 
                 const row = document.createElement('tr');
-                row.innerHTML += `<td><b>${col}</b></td><td>${grp}</td>`;
+                row.innerHTML += `<td><b>${col}</b></td><td>${grp}</td><td>${vals.length}</td>`;
 
                 if (stats.mean) row.innerHTML += `<td>${jStat.mean(vals).toFixed(4)}</td>`;
                 if (stats.stdev) row.innerHTML += `<td>${jStat.stdev(vals, true).toFixed(4)}</td>`;

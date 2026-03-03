@@ -1,12 +1,12 @@
 // --- LANGUAGE STATE ---
 // Default language for the application.
-let currentLang = 'en'; // Default to English
+var currentLang = 'en'; // Default to English
 
 
 
 // --- TRANSLATIONS CONFIG ---
 // Contains all UI strings for supported languages (en, pt, de).
-const translations = {
+var translations = {
     en: {
         appTitle: "Statistics Center",
         btnSave: "Save",
@@ -94,6 +94,9 @@ const translations = {
         lblWeibullCensorCol: "Censoring Column (Optional)",
         lblWeibullCensorVal: "Censoring Value",
         lblWeibullGof: "Goodness of Fit",
+        lblCountFailures: "Failures",
+        lblShowConfBounds: "Show Confidence Bounds",
+        lblCountCensored: "Censors",
         lblWeibullPercentiles: "Percentiles",
         lblWeibullProbAxis: "Probability of Failure",
         thStatistic: "Statistic",
@@ -163,6 +166,8 @@ const translations = {
         optCapNormal: "Normal Distribution",
         optCapBestFit: "Best Fit (Non-Normal)",
         hintDistAssumption: "Choose 'Best Fit' for non-normal data.",
+        lblSubgroupSize: "Subgroup Size",
+        tipSubgroupSize: "Size of subgroups for Within variation (1 = I-MR, >1 = Xbar-R)",
         lblLSL: "Lower Spec Limit (LSL)",
         lblUSL: "Upper Spec Limit (USL)",
         lblTarget: "Process Target",
@@ -274,6 +279,12 @@ const translations = {
         tipRule2: "9 consecutive points on same side of centerline",
         tipRule3: "6 consecutive points trending up or down",
         tipRule4: "14 consecutive points alternating up and down",
+        tipStabilityCapRec: "Recommendation\nUse the Control Charts tab to check if the process is stable (predictable).\nUse the Capability tab to check if the process meets the Specification Limits (USL/LSL).",
+
+        tipTabTolerance: "Determine limits that cover a specified proportion of the population.",
+        tipTabRegression: "Analyze relationships between variables (Linear, Quadratic).",
+        tipTabMSA: "Assess measurement system variation (Gage R&R).",
+        tipTabWeibayes: "Reliability analysis with few or no failures.",
 
         // MISSING TOOLTIPS (EN)
         tipLimitValue: "Enter a specific limit value (e.g. 10.5) for comparison.",
@@ -312,7 +323,7 @@ const translations = {
 
         tipWeibullMethod: "LSXY (Rank Regression) is best for small samples. MLE is better for large datasets.",
         tipWeibullFailure: "Column containing time-to-failure numeric data.",
-        tipWeibullCensor: "Optional column to identify suspensions (units that did not fail).",
+        tipWeibullCensor: "Optional column to identify Censors (units that did not fail).",
         tipWeibullCensorVal: "Value in the column that indicates a suspension/censored unit (e.g. 'S', 'C').",
 
         tipWarrantyShape: "Weibull Shape (k) for the limit distribution.",
@@ -363,7 +374,6 @@ const translations = {
         lblMedian: "Median",
         lblMin: "Min",
         lblMax: "Max",
-        lblSkewness: "Schiefe",
         lblSkewness: "Skewness",
         lblQuartiles: "Quartiles",
         lblVar: "Variance",
@@ -402,6 +412,7 @@ const translations = {
         msaNDC: "Number of Distinct Categories (ndc)",
         msaContrib: "% Contribution",
         msaStudyVar: "% Study Var",
+        msaPctTol: "% Tolerance",
         msaInteractPlot: "Operator x Part Interaction",
         msaCompPlot: "Components of Variation",
         errMsaSelect: "Please select Measurement, Part, and Operator columns.",
@@ -541,6 +552,22 @@ const translations = {
         errPairedLength: "Paired t-test requires both columns to have the same length.",
         errFTestMinData: "F-test requires at least 2 data points in each group.",
         errFTestZeroVar: "F-test requires non-zero variance in both groups.",
+
+        // Excel Import
+        lblExcelImport: "Import Excel Data",
+        lblSelectSheet: "Select Sheet",
+        btnImport: "Import",
+        msgExcelError: "Error reading Excel file. Ensure it is a valid .xlsx or .xls file.",
+        msgLibraryMissing: "Excel library (SheetJS) not found. Please include xlsx.full.min.js.",
+        btnCancel: "Cancel",
+        lblFile: "File",
+        lblDataPreview: "Data Preview",
+        msgLoadingPreview: "Loading preview...",
+        lblMaxRows: "Max Rows",
+        lblSkipRows: "Skip Rows",
+        lblRange: "Range (e.g. A1:E10)",
+        lblHeaderRow: "First Row Header",
+        msgNoDataFound: "No data found.",
     },
     pt: {
         appTitle: "Statistics Center",
@@ -627,13 +654,16 @@ const translations = {
         lblWeibullCensorCol: "Coluna de Censura (Opcional)",
         lblWeibullCensorVal: "Valor de Censura",
         lblWeibullGof: "Qualidade do Ajuste",
+        lblCountFailures: "Falhas",
+        lblShowConfBounds: "Mostrar Limites de Confiança",
+        lblCountCensored: "Censuras",
         lblWeibullPercentiles: "Percentis",
         lblWeibullProbAxis: "Probabilidade de Falha",
         thStatistic: "Estatística",
         thTest: "Teste",
         thPValue: "Valor-P",
-        thConclusion: "Conclusao",
-        thMethod: "Metodo",
+        thConclusion: "Conclusão",
+        thMethod: "Método",
         thLower: "Limite Inferior",
         thUpper: "Limite Superior",
         thAchieved: "Conf. Obtida",
@@ -695,6 +725,8 @@ const translations = {
         optCapNormal: "Distribuição Normal",
         optCapBestFit: "Melhor Ajuste (Não-Normal)",
         hintDistAssumption: "Escolha 'Melhor Ajuste' para dados não-normais.",
+        lblSubgroupSize: "Tamanho do Subgrupo",
+        tipSubgroupSize: "Tamanho dos subgrupos para variação Intra (1 = I-MR, >1 = Xbar-R)",
         lblLSL: "Limite Inf. Espec. (LIE)",
         lblUSL: "Limite Sup. Espec. (LSE)",
         lblTarget: "Alvo do Processo",
@@ -804,8 +836,13 @@ const translations = {
         tipRule2: "9 pontos consecutivos do mesmo lado da linha central",
         tipRule3: "6 pontos consecutivos em tendência de alta ou baixa",
         tipRule4: "14 pontos consecutivos alternando para cima e para baixo",
+        tipStabilityCapRec: "Recomendação\nMantenha a Estabilidade (Cartas de Controle) separada da Capacidade (Limites de Especificação).\n\nUse a aba Cartas de Controle para verificar se o processo está estável (previsível).\nUse a aba Capacidade para verificar se o processo atende aos Limites de Especificação (LSE/LIE).",
 
-        // MISSING TOOLTIPS (PT)
+        tipTabTolerance: "Determine limites que cobrem uma proporção especificada da população.",
+        tipTabRegression: "Analise relações entre variáveis (Linear, Quadrática).",
+        tipTabMSA: "Avalie a variação do sistema de medição (Gage R&R).",
+        tipTabWeibayes: "Análise de confiabilidade com poucas ou nenhuma falha.",
+
         tipLimitValue: "Insira um valor limite específico (ex: 10.5) para comparação.",
         tipLimitType: "Escolha qual lado do limite verificar (Superior ou Inferior).",
         tipTolConfidence: "Nível de confiança de que o intervalo cobre a proporção especificada.",
@@ -1027,6 +1064,7 @@ const translations = {
         msaNDC: "Número de Categorias Distintas (ndc)",
         msaContrib: "% Contribuição",
         msaStudyVar: "% Variação do Estudo",
+        msaPctTol: "% Tolerância",
         msaInteractPlot: "Interação Operador x Peça",
         msaCompPlot: "Componentes de Variância",
         errMsaSelect: "Por favor, selecione as colunas de Medição, Peça e Operador.",
@@ -1070,6 +1108,22 @@ const translations = {
         errPairedLength: "Teste t pareado requer colunas com o mesmo tamanho.",
         errFTestMinData: "Teste F requer pelo menos 2 pontos em cada grupo.",
         errFTestZeroVar: "Teste F requer variancia nao nula em ambos os grupos.",
+
+        // Excel Import PT
+        lblExcelImport: "Importar Dados Excel",
+        lblSelectSheet: "Selecionar Planilha",
+        btnImport: "Importar",
+        msgExcelError: "Erro ao ler arquivo Excel. Verifique se é um arquivo .xlsx ou .xls válido.",
+        msgLibraryMissing: "Biblioteca Excel (SheetJS) não encontrada.",
+        btnCancel: "Cancelar",
+        lblFile: "Arquivo",
+        lblDataPreview: "Pré-visualização",
+        msgLoadingPreview: "Carregando prévia...",
+        lblMaxRows: "Máx. Linhas",
+        lblSkipRows: "Pular Linhas",
+        lblRange: "Intervalo (ex: A1:E10)",
+        lblHeaderRow: "Cabeçalho na 1ª Linha",
+        msgNoDataFound: "Nenhum dado encontrado.",
     },
     de: {
         appTitle: "Statistics Center",
@@ -1157,6 +1211,9 @@ const translations = {
         lblWeibullCensorCol: "Zensierungsspalte (Optional)",
         lblWeibullCensorVal: "Zensierungswert",
         lblWeibullGof: "Güte der Anpassung",
+        lblCountFailures: "Ausfälle",
+        lblShowConfBounds: "Konfidenzgrenzen anzeigen",
+        lblCountCensored: "Zensierungen",
         lblWeibullPercentiles: "Perzentile",
         lblWeibullProbAxis: "Ausfallwahrscheinlichkeit",
         thStatistic: "Statistik",
@@ -1321,6 +1378,7 @@ const translations = {
         msaNDC: "Anzahl unterscheidb. Kategorien (ndc)",
         msaContrib: "% Beitrag",
         msaStudyVar: "% Studienvariation",
+        msaPctTol: "% Toleranz",
         msaInteractPlot: "Interaktion Bediener x Teil",
         msaCompPlot: "Varianzkomponenten",
         errMsaSelect: "Bitte wählen Sie Mess-, Teile- und Bedienerspalten.",
@@ -1334,6 +1392,8 @@ const translations = {
         optCapNormal: "Normalverteilung",
         optCapBestFit: "Beste Anpassung (Nicht-Normal)",
         hintDistAssumption: "Wählen Sie 'Beste Anpassung' für nicht-normale Daten.",
+        lblSubgroupSize: "Stichprobengröße",
+        tipSubgroupSize: "Größe der Untergruppen für Variation Innerhalb (1 = I-MR, >1 = Xbar-R)",
         lblLSL: "Untere Spez.grenze (USG)",
         lblUSL: "Obere Spez.grenze (OSG)",
         lblTarget: "Prozessziel",
@@ -1398,6 +1458,12 @@ const translations = {
         rule2: "9 Punkte auf einer Seite",
         rule3: "6 Punkte im Trend",
         rule4: "14 Punkte abwechselnd",
+        tipStabilityCapRec: "Empfehlung\nTrennen Sie Stabilität (Regelkarten) von Fähigkeit (Spezifikationsgrenzen).\n\nVerwenden Sie den Reiter Regelkarten, um zu prüfen, ob der Prozess stabil (vorhersehbar) ist.\nVerwenden Sie den Reiter Fähigkeit, um zu prüfen, ob der Prozess die Spezifikationsgrenzen (OSG/USG) einhält.",
+
+        tipTabTolerance: "Bestimmen Sie Grenzen, die einen bestimmten Anteil der Population abdecken.",
+        tipTabRegression: "Beziehungen zwischen Variablen analysieren (Linear, Quadratisch).",
+        tipTabMSA: "Messsystemanalyse (Gage R&R) bewerten.",
+        tipTabWeibayes: "Zuverlässigkeitsanalyse mit wenigen oder keinen Ausfällen.",
 
         // Regression Prediction & Optimization (New - DE)
         lblPrediction: "Vorhersage",
@@ -1463,7 +1529,6 @@ const translations = {
         tipRule3: "6 aufeinanderfolgende Punkte im Trend nach oben oder unten",
         tipRule4: "14 aufeinanderfolgende Punkte, die sich abwechselnd auf und ab bewegen",
 
-        // MISSING TOOLTIPS (DE - Placeholder EN)
         tipLimitValue: "Enter a specific limit value (e.g. 10.5) for comparison.",
         tipLimitType: "Choose which side of the limit to check (Upper or Lower).",
         tipTolConfidence: "Confidence level that the interval covers the specified proportion.",
@@ -1579,7 +1644,7 @@ const translations = {
         lblStatus: "Status",
         btnAddPoint: "Punkt hinzufügen",
         wbOptManual: "Weibayes (1-Param)",
-        wbOptRegression: "Regresión Weibull (2-Param)",
+        wbOptRegression: "Weibull-Regression (2-Param)",
         wbOptRR: "Rangregression (RR)",
         wbOptMLE: "Max. Wahrscheinlichkeit (MLE)",
         lblDataInput: "Dateneingabe",
@@ -1727,7 +1792,7 @@ const translations = {
         lblWeibullFailureCol: "Coluna de Falhas",
         lblWeibullCensorCol: "Coluna de Censura (Opcional)",
         lblWeibullCensorVal: "Valor de Censura",
-        lblWeibullGof: "Bondade de Ajuste",
+        lblWeibullGof: "Qualidade do Ajuste",
         lblWeibullPercentiles: "Percentis",
         lblWeibullProbAxis: "Probabilidade de Falha",
         thStatistic: "Estatística",
@@ -2479,6 +2544,22 @@ const translations = {
         msgNoModelPred: "Kein Modell für Vorhersage.",
         msgNoSolution: "Keine Lösung gefunden.",
         msgRegFailed: "Regression fehlgeschlagen:",
+
+        // Excel Import DE
+        lblExcelImport: "Excel-Daten importieren",
+        lblSelectSheet: "Blatt auswählen",
+        btnImport: "Importieren",
+        msgExcelError: "Fehler beim Lesen der Excel-Datei.",
+        msgLibraryMissing: "Excel-Bibliothek (SheetJS) nicht gefunden.",
+        btnCancel: "Abbrechen",
+        lblFile: "Datei",
+        lblDataPreview: "Datenvorschau",
+        msgLoadingPreview: "Vorschau wird geladen...",
+        lblMaxRows: "Max. Zeilen",
+        lblSkipRows: "Zeilen überspringen",
+        lblRange: "Bereich (z.B. A1:E10)",
+        lblHeaderRow: "Erste Zeile als Kopfzeile",
+        msgNoDataFound: "Keine Daten gefunden.",
     }
 };
 

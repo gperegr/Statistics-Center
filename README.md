@@ -36,6 +36,7 @@ Statistics-Center/
   assets/
     images/
   modules/
+    CSV Converter/
     capability.js
     distribution.js
     graphs.js

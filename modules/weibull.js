@@ -33,7 +33,8 @@ const Weibull = {
             if (data.filter(d => !d.isCensored).length < 2) { showError("Need at least 2 failure points for analysis."); return; }
 
             const method = document.getElementById('weibull-method').value;
-            const results = (method === 'mle') ? this.runMle(data) : this.runWlsxy(data);
+            const confLevel = parseFloat(document.getElementById('weibull-conf-level').value) || 95;
+            const results = (method === 'mle') ? this.runMle(data, confLevel) : this.runWlsxy(data, confLevel);
             if (!results) { showError("Could not compute Weibull parameters."); return; }
 
             this.currentModel = { type: 'weibull', method, ...results };
@@ -91,8 +92,13 @@ const Weibull = {
             <tr><td>Anderson-Darling (adj)</td><td>${model.gof.ad.toFixed(3)}</td></tr>
             <tr><td>p-value</td><td>${pValueStr}</td></tr>`;
 
-        document.querySelector('#weibull-percentiles-table tbody').innerHTML = model.percentiles.map(p =>
-            `<tr><td>${p.percent}%</td><td>${p.time.toPrecision(4)}</td></tr>`).join('');
+        document.querySelector('#weibull-percentiles-table tbody').innerHTML = model.percentiles.map(p => `
+            <tr>
+                <td>${p.percent}%</td>
+                <td>${p.time.toPrecision(4)}</td>
+                <td>${p.lower ? p.lower.toPrecision(4) : '-'}</td>
+                <td>${p.upper ? p.upper.toPrecision(4) : '-'}</td>
+            </tr>`).join('');
 
         this.plotChart(model);
     },
@@ -185,7 +191,7 @@ const Weibull = {
         return plotPoints;
     },
 
-    runWlsxy: function (data) {
+    runWlsxy: function (data, confLevel = 95) {
         const plotData = this.calculateMedianRankPlotPoints(data);
         if (plotData.length < 2) return null;
         const x = plotData.map(p => p.x);
@@ -208,15 +214,32 @@ const Weibull = {
         const beta = 1 / b_xy;
         const eta = Math.exp(a_xy);
 
+        // --- Confidence Bounds Calculation (LSXY) ---
+        let bounds = null;
+        let lsxyParams = null;
+        if (n > 2) {
+            const mean_y = sum_y / n;
+            const S_yy = sum_yy - (sum_y * sum_y) / n;
+            let sse = 0;
+            for(let i=0; i<n; i++) {
+                const x_pred = a_xy + b_xy * y[i];
+                sse += Math.pow(x[i] - x_pred, 2);
+            }
+            const syx = Math.sqrt(sse / (n - 2));
+            bounds = this.calculateLsxyBounds(a_xy, b_xy, syx, mean_y, S_yy, n, confLevel);
+            lsxyParams = { a_xy, b_xy, syx, mean_y, S_yy, n };
+        }
+        // --------------------------------------------
+
         const gof = {
             ...this.calculateGoodnessOfFit(data, beta, eta, 'lsxy', plotData),
             corr: Math.pow(this.calculateCorrelation(x, y), 2)
         };
-        const percentiles = this.calculatePercentiles(beta, eta);
-        return { beta, eta, plotData, gof, percentiles };
+        const percentiles = this.calculatePercentiles(beta, eta, 'lsxy', lsxyParams);
+        return { beta, eta, plotData, gof, percentiles, bounds, confLevel };
     },
 
-    runMle: function (data) {
+    runMle: function (data, confLevel = 95) {
         const failures = data.filter(d => !d.isCensored);
         const initialGuess = this.runWlsxy(data);
         let beta = initialGuess ? initialGuess.beta : 1;
@@ -236,14 +259,97 @@ const Weibull = {
             beta = beta_new;
         }
         const eta = Math.pow(data.reduce((s, d) => s + Math.pow(d.time, beta), 0) / failures.length, 1 / beta);
+        
+        // Calculate Confidence Bounds (Fisher Matrix)
+        const bounds = this.calculateMleBounds(data, beta, eta, confLevel);
+
         const plotData = this.calculateKaplanMeierPlotPoints(data);
         const corr = this.calculatePlotCorrelation(plotData);
         const gof = {
             ...this.calculateGoodnessOfFit(data, beta, eta, 'mle', plotData),
             corr: corr
         };
-        const percentiles = this.calculatePercentiles(beta, eta);
-        return { beta, eta, plotData, gof, percentiles };
+        const percentiles = this.calculatePercentiles(beta, eta, 'mle', { data });
+        return { beta, eta, plotData, gof, percentiles, bounds, confLevel };
+    },
+
+    calculateMleBounds: function(data, beta, eta, confLevel) {
+        // Fisher Information Matrix & Delta Method for 95% Confidence Bounds
+        const r = data.filter(d => !d.isCensored).length;
+        
+        // Hessian Elements (Observed Information)
+        let sum_z_lnz_sq = 0;
+        let sum_z_lnz = 0;
+        
+        data.forEach(d => {
+            const z = Math.pow(d.time / eta, beta);
+            const ln_t_eta = Math.log(d.time / eta);
+            sum_z_lnz_sq += z * (ln_t_eta * ln_t_eta);
+            sum_z_lnz += z * ln_t_eta;
+        });
+
+        // Elements of Observed Fisher Information Matrix (I = -Hessian)
+        const i11 = (r / (beta * beta)) + sum_z_lnz_sq; // d2L/dbeta2
+        const i22 = (r * beta * beta) / (eta * eta);    // d2L/deta2
+        const i12 = (beta / eta) * sum_z_lnz;           // d2L/dbetadeta
+
+        // Inverse Matrix (Covariance)
+        const det = i11 * i22 - i12 * i12;
+        const var_beta = i22 / det;
+        const var_eta = i11 / det;
+        const cov_beta_eta = -i12 / det;
+
+        // Generate bounds lines
+        const bounds = { lower: [], upper: [] };
+        // Range of probabilities for the plot lines
+        const probs = [0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99];
+
+        let z_crit = 1.96;
+        if (typeof jStat !== 'undefined') {
+            const alpha = 1 - (confLevel / 100);
+            z_crit = jStat.normal.inv(1 - alpha / 2, 0, 1);
+        }
+        
+        probs.forEach(p => {
+            const w = Math.log(-Math.log(1 - p));
+            const xb = Math.log(eta) + (w / beta); // ln(time)
+            // Variance of ln(time) via Delta Method
+            const var_xb = (1/(eta**2))*var_eta + (w**2 / beta**4)*var_beta - (2*w / (eta * beta**2))*cov_beta_eta;
+            const se = Math.sqrt(var_xb);
+            bounds.lower.push({ p, time: Math.exp(xb - z_crit * se) });
+            bounds.upper.push({ p, time: Math.exp(xb + z_crit * se) });
+        });
+        return bounds;
+    },
+
+    calculateLsxyBounds: function(a_xy, b_xy, syx, mean_y, S_yy, n, confLevel) {
+        const bounds = { lower: [], upper: [] };
+        // Range of probabilities for the plot lines
+        const probs = [0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.98, 0.99];
+        
+        let t_crit = 1.96;
+        if (typeof jStat !== 'undefined') {
+            const alpha = 1 - (confLevel / 100);
+            t_crit = jStat.studentt.inv(1 - alpha / 2, n - 2);
+        }
+
+        probs.forEach(p => {
+            const y0 = Math.log(-Math.log(1 - p));
+            const x_hat = a_xy + b_xy * y0;
+            
+            // Confidence Interval for the Mean Response (Regression Line)
+            // SE = syx * sqrt(1/n + (y0 - mean_y)^2 / S_yy)
+            const term = (1/n) + (Math.pow(y0 - mean_y, 2) / S_yy);
+            const se = syx * Math.sqrt(term);
+            
+            const x_lower = x_hat - t_crit * se;
+            const x_upper = x_hat + t_crit * se;
+            
+            bounds.lower.push({ p, time: Math.exp(x_lower) });
+            bounds.upper.push({ p, time: Math.exp(x_upper) });
+        });
+        
+        return bounds;
     },
 
     calculateGoodnessOfFit: function (data, beta, eta, method, plotData) {
@@ -284,15 +390,75 @@ const Weibull = {
         return r * r;
     },
 
-    calculatePercentiles: function (beta, eta) {
-        return [1, 5, 10, 50, 90, 95, 99].map(p => ({
-            percent: p,
-            time: eta * Math.pow(-Math.log(1 - p / 100), 1 / beta)
-        }));
+    calculatePercentiles: function (beta, eta, method = null, params = null) {
+        const percents = [1, 5, 10, 50, 90, 95, 99];
+        
+        let mleCov = null;
+        if (method === 'mle' && params && params.data) {
+            mleCov = this.getMleCovariance(params.data, beta, eta);
+        }
+
+        let t_crit = 1.96;
+        if (method === 'lsxy' && params && params.n > 2 && typeof jStat !== 'undefined') {
+            t_crit = jStat.studentt.inv(0.975, params.n - 2);
+        }
+
+        return percents.map(p => {
+            const prob = p / 100;
+            const time = eta * Math.pow(-Math.log(1 - prob), 1 / beta);
+            let lower = null, upper = null;
+
+            if (method === 'lsxy' && params && params.n > 2) {
+                const y0 = Math.log(-Math.log(1 - prob));
+                const x_hat = params.a_xy + params.b_xy * y0;
+                const term = (1/params.n) + (Math.pow(y0 - params.mean_y, 2) / params.S_yy);
+                const se = params.syx * Math.sqrt(term);
+                lower = Math.exp(x_hat - t_crit * se);
+                upper = Math.exp(x_hat + t_crit * se);
+            } else if (method === 'mle' && mleCov) {
+                const w = Math.log(-Math.log(1 - prob));
+                const xb = Math.log(eta) + (w / beta);
+                const var_xb = (1/(eta**2))*mleCov.var_eta + (w**2 / beta**4)*mleCov.var_beta - (2*w / (eta * beta**2))*mleCov.cov_beta_eta;
+                if (var_xb >= 0) {
+                    const se = Math.sqrt(var_xb);
+                    lower = Math.exp(xb - 1.96 * se);
+                    upper = Math.exp(xb + 1.96 * se);
+                }
+            }
+
+            return { percent: p, time, lower, upper };
+        });
+    },
+
+    getMleCovariance: function(data, beta, eta) {
+        const r = data.filter(d => !d.isCensored).length;
+        let sum_z_lnz_sq = 0;
+        let sum_z_lnz = 0;
+        
+        data.forEach(d => {
+            const z = Math.pow(d.time / eta, beta);
+            const ln_t_eta = Math.log(d.time / eta);
+            sum_z_lnz_sq += z * (ln_t_eta * ln_t_eta);
+            sum_z_lnz += z * ln_t_eta;
+        });
+
+        const i11 = (r / (beta * beta)) + sum_z_lnz_sq;
+        const i22 = (r * beta * beta) / (eta * eta);
+        const i12 = (beta / eta) * sum_z_lnz;
+
+        const det = i11 * i22 - i12 * i12;
+        if (det === 0) return null;
+        return {
+            var_beta: i22 / det,
+            var_eta: i11 / det,
+            cov_beta_eta: -i12 / det
+        };
     },
 
     plotChart: function (model) {
         const { plotData, beta, eta } = model;
+        const showConf = document.getElementById('weibull-show-conf').checked;
+
         const theme = getChartTheme(document.body.getAttribute('data-theme'));
         const probToY = p => Math.log(-Math.log(1 - p));
         const fitLine = (() => {
@@ -317,6 +483,26 @@ const Weibull = {
             mode: 'lines', type: 'scatter', line: { color: theme.dangercolor, width: 2 },
             hoverinfo: 'skip'
         };
+
+        const traces = [dataTrace, lineTrace];
+
+        if (showConf && model.bounds) {
+            const cl = model.confLevel || 95;
+            const lowerTrace = {
+                x: model.bounds.lower.map(b => b.time),
+                y: model.bounds.lower.map(b => probToY(b.p)),
+                mode: 'lines', type: 'scatter', line: { color: theme.theme_primary, width: 1, dash: 'dash' },
+                hoverinfo: 'skip', name: `Lower ${cl}%`
+            };
+            const upperTrace = {
+                x: model.bounds.upper.map(b => b.time),
+                y: model.bounds.upper.map(b => probToY(b.p)),
+                mode: 'lines', type: 'scatter', line: { color: theme.theme_primary, width: 1, dash: 'dash' },
+                hoverinfo: 'skip', name: `Upper ${cl}%`
+            };
+            traces.push(lowerTrace, upperTrace);
+        }
+
         const layout = {
             title: '', font: theme.font,
             paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor,
@@ -335,7 +521,7 @@ const Weibull = {
             }]
         };
         if (typeof Plotly !== 'undefined') {
-            Plotly.newPlot('weibullChart', [dataTrace, lineTrace], layout, { responsive: true });
+            Plotly.newPlot('weibullChart', traces, layout, { responsive: true });
         }
     }
 };
@@ -346,3 +532,9 @@ window.resetWeibullUI = () => Weibull.resetUI();
 window.weibullCurrentModel = Weibull.currentModel; // Initial reference (warning: stale if reassigned)
 window.hasWeibullModel = () => !!Weibull.currentModel;
 window.replotWeibull = () => { if (Weibull.currentModel) Weibull.updateUI(Weibull.currentModel); };
+
+// Add listener for checkbox to update chart immediately
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('weibull-show-conf')?.addEventListener('change', () => window.replotWeibull());
+    document.getElementById('weibull-conf-level')?.addEventListener('change', () => window.analyzeWeibull());
+});

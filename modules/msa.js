@@ -317,13 +317,28 @@ function renderMsaCharts(res, structure, parts, operators) {
         marker: { color: theme.dangercolor }
     };
 
+    const traces = [trace1, trace2];
+
+    // 3. % Tolerance (if available)
+    const tolVals = [res.grr.pctTol, res.repeat.pctTol, res.reprod.pctTol, res.part.pctTol];
+    if (tolVals.some(v => v !== null)) {
+        const trace3 = {
+            x: labels,
+            y: tolVals,
+            type: 'bar',
+            name: translations[currentLang].msaPctTol || "% Tolerance",
+            marker: { color: theme.warningcolor }
+        };
+        traces.push(trace3);
+    }
+
     const layoutComponents = {
         title: translations[currentLang].msaCompPlot,
         barmode: 'group',
         yaxis: { title: translations[currentLang].lblPercentAxis || 'Percent %', gridcolor: theme.gridcolor },
         font: theme.font, paper_bgcolor: theme.paper_bgcolor, plot_bgcolor: theme.plot_bgcolor
     };
-    Plotly.newPlot('msaComponentsChart', [trace1, trace2], layoutComponents, { responsive: true });
+    Plotly.newPlot('msaComponentsChart', traces, layoutComponents, { responsive: true });
 
     // 2. Interaction Plot (Operator x Part)
     const tracesInt = [];
