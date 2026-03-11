@@ -254,6 +254,16 @@
             color: var(--TextFillColorPrimary);
         }
 
+        .dev-environment-tag {
+            font-size: var(--fontSizeCaption);
+            color: var(--TextFillColorSecondary);
+            border: 1px solid var(--DividerStrokeColorDefault);
+            padding: 2px 8px;
+            line-height: 1.2;
+            border-radius: 0;
+            white-space: nowrap;
+        }
+
         .header-controls {
             display: flex;
             gap: 12px;
@@ -1671,19 +1681,362 @@
             margin-bottom: 24px;
         }
 
-        .modal-close-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: transparent;
-            border: none;
-            color: var(--TextFillColorSecondary);
-            font-size: 20px;
-            cursor: pointer;
-        }
+.modal-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--TextFillColorSecondary);
+    font-size: 20px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
 
         .modal-close-btn:hover {
             color: var(--TextFillColorPrimary);
+        }
+
+        .axis-scale-modal-content {
+            width: 560px;
+            max-width: min(92vw, 560px);
+            text-align: left;
+            background: #EFF1F2;
+            padding: 24px;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+        }
+
+        [data-theme="dark"] .axis-scale-modal-content {
+            background: var(--LayerFillColorDefault);
+            border-radius: 0;
+            border: none;
+        }
+
+        .axis-scale-panel-title {
+            margin-bottom: 12px;
+        }
+
+        .axis-scale-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 0;
+        }
+
+        .axis-scale-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .axis-scale-row-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .axis-scale-row-3col {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .axis-scale-row label {
+            color: var(--TextFillColorPrimary);
+            font-size: var(--fontSizeBody);
+            font-weight: 400;
+        }
+
+        .axis-scale-row input {
+            width: 100%;
+            padding: 6px 8px;
+            border: none;
+            border-bottom: 1px solid #000000;
+            background-color: #e0e2e5;
+            color: var(--TextFillColorPrimary);
+            border-radius: 0;
+            box-sizing: border-box;
+            font-size: var(--fontSizeBody);
+            height: 32px;
+            outline: none;
+            transition: border-color 0.1s;
+        }
+
+        .axis-scale-textarea {
+            width: 100%;
+            min-height: 74px;
+            resize: vertical;
+            padding: 6px 8px;
+            border: none;
+            border-bottom: 1px solid #000000;
+            background-color: #e0e2e5;
+            color: var(--TextFillColorPrimary);
+            border-radius: 0;
+            box-sizing: border-box;
+            font-size: var(--fontSizeBody);
+            outline: none;
+            transition: border-color 0.1s;
+            font-family: inherit;
+            line-height: 1.3;
+        }
+
+        .axis-scale-textarea:focus {
+            border-bottom: 2px solid var(--SystemAccentColor);
+        }
+
+        .axis-scale-row-help {
+            color: var(--TextFillColorSecondary);
+            font-size: 12px;
+            line-height: 1.3;
+            margin-top: 2px;
+        }
+
+        .axis-scale-row input:focus {
+            border-bottom: 2px solid var(--SystemAccentColor);
+        }
+
+        .axis-scale-row input[type="number"] {
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .axis-scale-row input[type="number"]::-webkit-outer-spin-button,
+        .axis-scale-row input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .axis-custom-select {
+            position: relative;
+        }
+
+        .axis-custom-select-trigger {
+            width: 100%;
+            height: 32px;
+            padding: 6px 28px 6px 8px;
+            border: none;
+            border-bottom: 1px solid #000000;
+            border-radius: 0;
+            background-color: #e0e2e5;
+            color: var(--TextFillColorPrimary);
+            font-size: var(--fontSizeBody);
+            font-family: inherit;
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+            transition: border-color 0.1s;
+            display: flex;
+            align-items: center;
+            line-height: 1.2;
+        }
+
+        .axis-custom-select-trigger::after {
+            content: "";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-35%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 6px solid var(--TextFillColorSecondary);
+            pointer-events: none;
+        }
+
+        .axis-custom-select-trigger:focus {
+            outline: none;
+            border-bottom: 2px solid var(--SystemAccentColor);
+        }
+
+        .axis-custom-select-menu {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            border: 1px solid var(--ControlStrokeColorDefault);
+            border-radius: 0;
+            background: var(--SolidBackgroundFillColorBase);
+            box-shadow: var(--Shadow8);
+            z-index: 4;
+            overflow: hidden;
+        }
+
+        .axis-custom-option {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--TextFillColorPrimary);
+            padding: 9px 12px;
+            text-align: left;
+            cursor: pointer;
+            font-size: var(--fontSizeBody);
+            font-family: inherit;
+        }
+
+        .axis-custom-option:hover,
+        .axis-custom-option:focus {
+            background: rgba(0, 123, 192, 0.12);
+            outline: none;
+        }
+
+        .axis-scale-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--DividerStrokeColorDefault);
+        }
+
+        .axis-scale-inline-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 4px;
+        }
+
+        .axis-scale-auto-cell {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .axis-scale-auto-btn {
+            min-height: 32px;
+            height: 32px;
+            padding: 2px 10px;
+            font-size: var(--fontSizeBody);
+            border-radius: 0;
+            border: 1px solid #007bc0;
+            color: #007bc0;
+        }
+
+        [data-theme="dark"] .axis-scale-row input {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border-bottom: 1px solid #a0a0a0;
+        }
+
+        [data-theme="dark"] .axis-scale-textarea {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border-bottom: 1px solid #a0a0a0;
+        }
+
+        [data-theme="dark"] .axis-custom-select-trigger {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border-bottom: 1px solid #a0a0a0;
+        }
+
+        [data-theme="dark"] .axis-custom-select-menu {
+            background-color: #1a1a1a;
+            border-color: #a0a0a0;
+        }
+
+        [data-theme="dark"] .axis-custom-option {
+            color: #ffffff;
+            background: transparent;
+        }
+
+        [data-theme="dark"] .axis-custom-option:hover,
+        [data-theme="dark"] .axis-custom-option:focus {
+            background: rgba(96, 205, 255, 0.18);
+        }
+
+        .chart-context-menu {
+            position: fixed;
+            z-index: 250000;
+            min-width: 220px;
+            background: #EFF1F2;
+            border: 1px solid var(--ControlStrokeColorDefault);
+            border-radius: 0;
+            box-shadow: var(--Shadow8);
+            padding: 4px 0;
+        }
+
+        .chart-context-item {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--TextFillColorPrimary);
+            text-align: left;
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: var(--fontSizeBody);
+            cursor: pointer;
+            border-radius: 0;
+        }
+
+        .chart-context-item:hover,
+        .chart-context-item:focus {
+            background: rgba(0, 123, 192, 0.12);
+            outline: none;
+        }
+
+        [data-theme="dark"] .chart-context-menu {
+            background: var(--LayerFillColorDefault);
+            border-color: #a0a0a0;
+        }
+
+        [data-theme="dark"] .chart-context-item {
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .chart-context-item:hover,
+        [data-theme="dark"] .chart-context-item:focus {
+            background: rgba(96, 205, 255, 0.18);
+        }
+
+        .percentile-line-delete-popover {
+            position: fixed;
+            z-index: 250100;
+            background: #EFF1F2;
+            border: 1px solid var(--ControlStrokeColorDefault);
+            box-shadow: var(--Shadow8);
+            padding: 4px;
+        }
+
+        .percentile-line-delete-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            color: #d13438;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            border-radius: 0;
+        }
+
+        .percentile-line-delete-btn:hover,
+        .percentile-line-delete-btn:focus {
+            background: rgba(209, 52, 56, 0.14);
+            outline: none;
+        }
+
+        [data-theme="dark"] .percentile-line-delete-popover {
+            background: var(--LayerFillColorDefault);
+            border-color: #a0a0a0;
+        }
+
+        @media (max-width: 700px) {
+            .axis-scale-row-2col {
+                grid-template-columns: 1fr;
+            }
+
+            .axis-scale-row-3col {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Sidebar Layout */
@@ -2205,3 +2558,4 @@
         max-height: 95vh;
     }
 }
+

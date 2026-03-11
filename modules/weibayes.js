@@ -8,37 +8,40 @@ const Weibayes = {
     currentEta: null,
     currentBeta: null,
     calculatedEta: null,
+    _initialized: false,
+    _handlers: null,
 
     init: function () {
+        if (!this._initialized) {
+            this._handlers = {
+                handleEnter: (e) => {
+                    if (e.key === 'Enter') this.addDataPoint();
+                },
+                handleMethodChange: () => this.updateMethodUI(),
+                handleQuickCalcInput: () => this.updateQuickCalc()
+            };
+            this._initialized = true;
+        }
+
         // Initial update
         this.updateMethodUI();
-        // Add Enter Key Listener
-        const tInput = document.getElementById('wb-input-time');
-        const typeInput = document.getElementById('wb-input-type');
+        this.bindUIListeners();
+    },
 
-        const handleEnter = (e) => {
-            if (e.key === 'Enter') this.addDataPoint();
+    bindUIListeners: function () {
+        const bindOnce = (el, eventName, handler, token) => {
+            if (!el) return;
+            const key = `__wbBound_${token}`;
+            if (el[key]) return;
+            el.addEventListener(eventName, handler);
+            el[key] = true;
         };
 
-        if (tInput) tInput.addEventListener('keydown', handleEnter);
-        if (typeInput) typeInput.addEventListener('keydown', handleEnter);
-
-        // Add Listener for Method Change
-        const methodSelect = document.getElementById('wb-method');
-        if (methodSelect) {
-            methodSelect.addEventListener('change', () => this.updateMethodUI());
-        }
-
-        // Add Listener for Fit Method Change (RR vs MLE)
-        const fitMethodSelect = document.getElementById('wb-fit-method');
-        if (fitMethodSelect) {
-            fitMethodSelect.addEventListener('change', () => this.updateMethodUI());
-        }
-
-        const wbCalcTimeInput = document.getElementById('wb-calc-time');
-        if (wbCalcTimeInput) {
-            wbCalcTimeInput.addEventListener('input', () => this.updateQuickCalc());
-        }
+        bindOnce(document.getElementById('wb-input-time'), 'keydown', this._handlers.handleEnter, 'timeKeydown');
+        bindOnce(document.getElementById('wb-input-type'), 'keydown', this._handlers.handleEnter, 'typeKeydown');
+        bindOnce(document.getElementById('wb-method'), 'change', this._handlers.handleMethodChange, 'methodChange');
+        bindOnce(document.getElementById('wb-fit-method'), 'change', this._handlers.handleMethodChange, 'fitMethodChange');
+        bindOnce(document.getElementById('wb-calc-time'), 'input', this._handlers.handleQuickCalcInput, 'calcTimeInput');
     },
 
     checkDataState: function () {

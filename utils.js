@@ -29,9 +29,12 @@ const getMax = (arr) => Math.max(...arr);
 const getMean = (data) => data.reduce((a, b) => a + b, 0) / data.length;
 const getSum = (data) => data.reduce((a, b) => a + b, 0);
 const getStd = (data, mean) => {
-    if (data.length < 2) return 0;
-    const m = mean === undefined ? getMean(data) : mean;
-    return Math.sqrt(data.map(x => (x - m) ** 2).reduce((a, b) => a + b) / (data.length - 1));
+    const clean = data.filter(Number.isFinite);
+    const n = clean.length;
+    if (n < 2) return 0;
+    const m = Number.isFinite(mean) ? mean : getMean(clean);
+    const sumSq = clean.reduce((acc, x) => acc + (x - m) ** 2, 0);
+    return Math.sqrt(sumSq / (n - 1));
 };
 
 // --- CORE STATISTICAL HELPERS ---
@@ -208,14 +211,34 @@ const inverseIncompleteBeta = (p, a, b) => {
 };
 
 const tCdf = (t, df) => {
+    if (!isFinite(t) || !isFinite(df) || df <= 0) return NaN;
+    if (t === 0) return 0.5;
     const x = df / (df + t * t);
-    return 1 - 0.5 * incompleteBeta(x, df / 2, 0.5);
+    const ib = incompleteBeta(x, df / 2, 0.5);
+    return t > 0 ? 1 - 0.5 * ib : 0.5 * ib;
 };
 
 const inverseTCdf = (p, df) => {
-    const x = inverseIncompleteBeta(2 * Math.min(p, 1 - p), df / 2, 0.5);
-    const t = Math.sqrt(df * (1 - x) / x);
-    return p < 0.5 ? -t : t;
+    if (!isFinite(p) || !isFinite(df) || df <= 0) return NaN;
+    if (p <= 0) return -Infinity;
+    if (p >= 1) return Infinity;
+    if (typeof jStat !== 'undefined' && jStat.studentt && typeof jStat.studentt.inv === 'function') {
+        return jStat.studentt.inv(p, df);
+    }
+    // Monotonic numeric inversion fallback for consistent accuracy.
+    if (p === 0.5) return 0;
+    const target = p < 0.5 ? p : 1 - p;
+    let lo = 0;
+    let hi = 1;
+    while (tCdf(hi, df) < 1 - target) hi *= 2;
+    for (let i = 0; i < 80; i++) {
+        const mid = (lo + hi) / 2;
+        const c = tCdf(mid, df);
+        if (c < 1 - target) lo = mid;
+        else hi = mid;
+    }
+    const q = (lo + hi) / 2;
+    return p < 0.5 ? -q : q;
 };
 
 const fCdf = (f, df1, df2) => {

@@ -213,10 +213,14 @@ const Capability = {
         document.getElementById('capability-results-wrapper').classList.remove('hidden');
 
         const minVal = getMin(data), maxVal = getMax(data);
-        const plotRange = Math.max(maxVal, usl || -Infinity) - Math.min(minVal, lsl || Infinity);
+        const effLsl = (lsl !== null && !isNaN(lsl)) ? lsl : Infinity;
+        const effUsl = (usl !== null && !isNaN(usl)) ? usl : -Infinity;
+
+        let plotRange = Math.max(maxVal, effUsl) - Math.min(minVal, effLsl);
+        if (plotRange <= 0) plotRange = 1.0;
         const buffer = plotRange * 0.2;
-        const plotMin = Math.min(minVal, lsl || Infinity) - buffer;
-        const plotMax = Math.max(maxVal, usl || Infinity) + buffer;
+        const plotMin = Math.min(minVal, effLsl) - buffer;
+        const plotMax = Math.max(maxVal, effUsl) + buffer;
 
         const xVals = Array.from({ length: 201 }, (_, i) => plotMin + (i / 200) * (plotMax - plotMin));
         const theme = getChartTheme(document.body.getAttribute('data-theme'));

@@ -41,6 +41,27 @@ var translations = {
         lblLognormalScaled: "Lognormal (Scaled Load)",
         lblRiskProb: "Failure Probability (%)",
         lblYear: "Year",
+        
+        // DOE
+        tabDOE: "Design of Experiments (DOE)",
+        lblSetup: "Experiment Setup",
+        thFactorName: "Factor Name",
+        thLowLevel: "Low (-)",
+        thHighLevel: "High (+)",
+        btnAddFactor: "Add Factor",
+        lblReplicates: "Replicates",
+        btnGenDesign: "Generate Design",
+        lblDesignMatrix: "Design Matrix & Response",
+        btnAnalyzeDOE: "Analyze Experiment",
+        lblEffectsTable: "Effects Table",
+        thTerm: "Term",
+        thEffect: "Effect",
+        thCoeff: "Coeff",
+        thPVal: "p-Value",
+        lblParetoTitle: "Pareto Chart of Effects",
+        lblMainEffectsTitle: "Main Effects Plot",
+        lblInteractionTitle: "Interaction Plot",
+
         lblFrequency: "Frequency",
         lblValue: "Value",
         lblWpInterpretation: "Interpretation",
@@ -1747,6 +1768,26 @@ var translations = {
         lblLognormalScaled: "Lognormal (Carga Escalada)",
         lblRiskProb: "Probabilidade de Falha (%)",
         lblYear: "Ano",
+
+        // DOE PT
+        tabDOE: "Planejamento de Experimentos (DOE)",
+        lblSetup: "Configuração do Experimento",
+        thFactorName: "Nome do Fator",
+        thLowLevel: "Baixo (-)",
+        thHighLevel: "Alto (+)",
+        btnAddFactor: "Adicionar Fator",
+        lblReplicates: "Réplicas",
+        btnGenDesign: "Gerar Design",
+        lblDesignMatrix: "Matriz Experimental & Resposta",
+        btnAnalyzeDOE: "Analisar Experimento",
+        lblEffectsTable: "Tabela de Efeitos",
+        thTerm: "Termo",
+        thEffect: "Efeito",
+        thCoeff: "Coef.",
+        thPVal: "Valor-p",
+        lblParetoTitle: "Gráfico de Pareto de Efeitos",
+        lblMainEffectsTitle: "Gráfico de Efeitos Principais",
+        lblInteractionTitle: "Gráfico de Interação",
         lblFrequency: "Frequência",
         lblValue: "Valor",
         lblWpInterpretation: "Interpretação",
@@ -2035,6 +2076,19 @@ var translations = {
         errMsaUnbalanced: "Aviso: Dados desbalanceados.",
         optNoneFreq: "Nenhum (Contar Frequências)",
         errWarrantyInputs: "Por favor, forneça entradas válidas.",
+        lblDeleteLine: "Apagar linha",
+        lblAddPercentile: "Adicionar Linha de Percentil",
+        lblAxisScale: "Configurações de Escala",
+        lblPercentile: "Percentil",
+        lblDataValue: "Valor dos Dados",
+        lblAddLines: "Adicionar Linhas",
+        lblClearLines: "Limpar Todas",
+        lblValuesInput: "Valores (separados por vírgula)",
+        lblYAxisMode: "Eixo Y",
+        lblXAxisMode: "Eixo X",
+        lblLinear: "Linear",
+        lblLog: "Log",
+        lblAuto: "Auto",
     },
     de: {
         appTitle: "Statistics Center",
@@ -2070,6 +2124,26 @@ var translations = {
         lblLognormalScaled: "Lognormal (Skalierte Last)",
         lblRiskProb: "Ausfallwahrscheinlichkeit (%)",
         lblYear: "Jahr",
+
+        // DOE DE
+        tabDOE: "Versuchsplanung (DOE)",
+        lblSetup: "Versuchseinrichtung",
+        thFactorName: "Faktorname",
+        thLowLevel: "Niedrig (-)",
+        thHighLevel: "Hoch (+)",
+        btnAddFactor: "Faktor hinzufügen",
+        lblReplicates: "Replika",
+        btnGenDesign: "Design generieren",
+        lblDesignMatrix: "Designmatrix & Antwort",
+        btnAnalyzeDOE: "Experiment analysieren",
+        lblEffectsTable: "Effekttabelle",
+        thTerm: "Begriff",
+        thEffect: "Wirkung",
+        thCoeff: "Koeff",
+        thPVal: "p-Wert",
+        lblParetoTitle: "Pareto-Diagramm der Effekte",
+        lblMainEffectsTitle: "Haupteffektdiagramm",
+        lblInteractionTitle: "Wechselwirkungsdiagramm",
         lblFrequency: "Häufigkeit",
         lblValue: "Wert",
         lblWpInterpretation: "Interpretation",
@@ -2560,6 +2634,19 @@ var translations = {
         lblRange: "Bereich (z.B. A1:E10)",
         lblHeaderRow: "Erste Zeile als Kopfzeile",
         msgNoDataFound: "Keine Daten gefunden.",
+        lblDeleteLine: "Linie löschen",
+        lblAddPercentile: "Perzentillinie hinzufügen",
+        lblAxisScale: "Achsenskalierung",
+        lblPercentile: "Perzentil",
+        lblDataValue: "Datenwert",
+        lblAddLines: "Linien hinzufügen",
+        lblClearLines: "Alle löschen",
+        lblValuesInput: "Werte (kommagetrennt)",
+        lblYAxisMode: "Y-Achsen",
+        lblXAxisMode: "X-Achsen",
+        lblLinear: "Linear",
+        lblLog: "Log",
+        lblAuto: "Auto",
     }
 };
 
@@ -2609,6 +2696,19 @@ function changeLanguage(lang) {
     } else {
         btnAnalyze.textContent = translations[lang].btnAnalyze;
     }
+
+    // Update dynamic UI elements
+    const deleteBtn = document.getElementById('percentileLineDeleteBtn');
+    if (deleteBtn) {
+        const span = deleteBtn.querySelector('span');
+        if (span && translations[lang].lblDeleteLine) {
+            span.textContent = translations[lang].lblDeleteLine;
+        }
+    }
+    const ctxAxis = document.getElementById('ctxAxisScaleBtn');
+    if (ctxAxis && translations[lang].lblAxisScale) ctxAxis.textContent = translations[lang].lblAxisScale;
+    const ctxPct = document.getElementById('ctxPercentileBtn');
+    if (ctxPct && translations[lang].lblAddPercentile) ctxPct.textContent = translations[lang].lblAddPercentile;
 
     // Re-run analysis or render ONLY if essential
     if (Object.keys(dataset).length > 0) {
