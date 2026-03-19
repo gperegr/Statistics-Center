@@ -80,6 +80,7 @@
                                     <option value="en">English</option>
                                     <option value="pt">Português</option>
                                     <option value="de">Deutsch</option>
+                                    <option value="zh">中文</option>
                                 </select>
                             </div>
                         </div>
@@ -136,10 +137,10 @@
                         <div class="nav-dropdown-item active" id="tab-normal" onclick="switchTab('normal')"
                             data-i18n="tabNormal" data-i18n-tooltip="tipTabNormal">Normal Distribution</div>
                         <div class="nav-dropdown-item" id="tab-multi" onclick="switchTab('multi')"
-                            data-i18n-tooltip="tipTabMulti">Multi-Distribution</div>
+                            data-i18n="tabMulti" data-i18n-tooltip="tipTabMulti">Multi-Distribution</div>
 
                         <div class="nav-dropdown-item" id="tab-graphs" onclick="switchTab('graphs')"
-                            data-i18n-tooltip="tipTabGraphs">Descriptive Statistics</div>
+                            data-i18n="tabGraphs" data-i18n-tooltip="tipTabGraphs">Descriptive Statistics</div>
                         <div class="nav-dropdown-item" id="tab-montecarlo" onclick="switchTab('montecarlo')"
                             data-i18n="tabMonteCarlo" data-i18n-tooltip="tipTabMonteCarlo">Monte Carlo</div>
 
@@ -151,14 +152,14 @@
                         <div class="nav-dropdown-item" id="tab-spc" onclick="switchTab('spc')" data-i18n="tabSpc"
                             data-i18n-tooltip="tipStabilityCapRec">Control Charts</div>
                         <div class="nav-dropdown-item" id="tab-msa" onclick="switchTab('msa')"
-                            data-i18n-tooltip="tipTabMSA">MSA / Gage R&R</div>
+                            data-i18n="tabMSA" data-i18n-tooltip="tipTabMSA">MSA / Gage R&R</div>
                         <div class="nav-dropdown-item" id="tab-tolerance" onclick="switchTab('tolerance')"
                             data-i18n="tabTolerance" data-i18n-tooltip="tipTabTolerance">Tolerance Interval</div>
 
                         <div class="nav-dropdown-item" id="tab-hypothesis" onclick="switchTab('hypothesis')"
-                            data-i18n-tooltip="tipTabHypothesis">Hypothesis Test</div>
+                            data-i18n="tabHypothesis" data-i18n-tooltip="tipTabHypothesis">Hypothesis Test</div>
                         <div class="nav-dropdown-item" id="tab-regression" onclick="switchTab('regression')"
-                            data-i18n-tooltip="tipTabRegression">Regression & Correlation</div>
+                            data-i18n="tabRegression" data-i18n-tooltip="tipTabRegression">Regression & Correlation</div>
                         <div class="nav-dropdown-item" id="tab-doe" onclick="switchTab('doe')"
                             data-i18n="tabDOE">Design of Experiments (DOE)</div>
 
@@ -1326,7 +1327,7 @@
 
                         <!-- ANOVA Table -->
                         <div class="results-table-wrapper">
-                            <div class="panel-title" data-i18n="lblANOVA">ANOVA</div>
+                            <div class="panel-title" data-i18n="regAnova">ANOVA</div>
                             <table class="results-table" id="reg-anova-table">
                                 <thead>
                                     <tr>
@@ -1344,7 +1345,7 @@
 
                         <!-- Coefficients Table -->
                         <div class="results-table-wrapper">
-                            <div class="panel-title" data-i18n="lblCoefficients">Coefficients</div>
+                            <div class="panel-title" data-i18n="regCoefficients">Coefficients</div>
                             <table class="results-table" id="reg-coef-table">
                                 <thead>
                                     <tr>
@@ -1561,13 +1562,15 @@
             </div>
             <div class="modal-body">
                 <p data-i18n="lblDesignedBy">Designed for Bosch Power Tools.</p>
+                <div style="margin-bottom: 24px;">
+                    <a href="doc/Instructions Manual.pdf" target="_blank" class="bosch-btn-primary" style="width: 100%; text-decoration: none;" data-i18n="btnManual">Instructions Manual</a>
+                </div>
                 <p><strong data-i18n="lblContact">Contact:</strong><br>
-                    Gabriel Peregrino<br><a href="mailto:gabriel.peregrino@br.bosch.com"
-                        style="color: #007bc0; text-decoration: none;">gabriel.peregrino@br.bosch.com</a><br><br>
                     Daniel Vesenmaier<br><a href="mailto:daniel.vesenmaier@de.bosch.com"
                         style="color: #007bc0; text-decoration: none;">daniel.vesenmaier@de.bosch.com</a><br><br>
                     Matheus Moraes<br><a href="mailto:matheus.moraes@br.bosch.com"
-                        style="color: #007bc0; text-decoration: none;">matheus.moraes@br.bosch.com</a>
+                        style="color: #007bc0; text-decoration: none;">matheus.moraes@br.bosch.com</a><br><br>
+        <span style="opacity: 0.3; font-style: italic;">Created by Gabriel Peregrino and Daniel Vesenmaier</span><br>
 
                     </p>
             </div>

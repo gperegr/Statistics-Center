@@ -2176,7 +2176,7 @@ function switchTab(mode) {
 }
 
 // Global App Version
-const APP_VERSION = "v1.2.3";
+const APP_VERSION = "v1.2.4";
 const SHOW_DEVELOPMENT_ENVIRONMENT = 0; // 0 = hide, 1 = show
 
 // --- DATA PARSING ---
@@ -2281,20 +2281,30 @@ function parseAndLoadData() {
         const cells = lines[i].split(delimiter);
         let rowHasData = false;
         colNames.forEach((col, idx) => {
-            if (cells[idx] !== undefined) {
-                const rawVal = cells[idx].trim().replace(/"/g, '');
-                const num = cleanVal(rawVal);
-                rawDataset[col].push(rawVal);
-                if (!isNaN(num)) {
-                    dataset[col].push(num);
-                    rowHasData = true;
-                }
+            const rawVal = (cells[idx] || '').trim().replace(/"/g, '');
+            const num = cleanVal(rawVal);
+
+            rawDataset[col].push(rawVal); // Always push the raw string value.
+
+            // For the numeric dataset, push the number or null to keep arrays aligned.
+            if (rawVal !== '' && !isNaN(num)) {
+                dataset[col].push(num);
+                rowHasData = true; // A row is considered to have data if at least one number is found.
+            } else {
+                dataset[col].push(null);
             }
         });
         if (rowHasData) validRows++;
     }
 
-    Object.keys(dataset).forEach(key => { if (dataset[key].length === 0) delete dataset[key]; });
+    Object.keys(dataset).forEach(key => {
+        const hasNumeric = dataset[key].some(v => v !== null && isFinite(v));
+        const hasText = rawDataset[key] && rawDataset[key].some(v => v && v.trim() !== '');
+
+        if (!hasNumeric && !hasText) {
+            delete dataset[key];
+        }
+    });
 
     const table = document.getElementById('previewTable');
     table.innerHTML = '';

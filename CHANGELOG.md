@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.2.4
+- Fixed missing translations for sidebar navigation items (Multi-Distribution, Descriptive Statistics, MSA, Hypothesis Test, Regression).
+- Fixed missing translations for ANOVA and Coefficients tables in Regression module.
+- Added "Instructions Manual" PDF button in the About section.
+- Added `doc/` folder containing `Instructions Manual.pdf`.
+- Updated translations for the new manual button.
+
 ## v1.2.3
 - Added **Design of Experiments (DOE)** module for creating and analyzing 2-level full factorial experiments.
 - Added Matheus Moraes as a contributor.

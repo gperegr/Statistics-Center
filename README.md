@@ -35,6 +35,8 @@ Statistics-Center/
   translations.js
   assets/
     images/
+  doc/
+    Instructions Manual.pdf
   modules/
     CSV Converter/
     capability.js
@@ -49,6 +51,7 @@ Statistics-Center/
     warranty.js
     weibayes.js
     weibull.js
+    doe.js
 ```
 
 # Libraries Used
@@ -110,3 +113,5 @@ Contributions are welcome! If you have a feature request, bug report, or want to
   * Gabriel Peregrino
 
   * Daniel Vesenmaier
+
+  * Matheus Moraes
