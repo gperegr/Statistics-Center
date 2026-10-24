@@ -1,8 +1,8 @@
-# Bosch Power Tools | Statistics Center
+# Statistics Center
 
-A browser-based application for statistical analysis. This tool provides a suite of interactive modules for data analysis, visualization, and process control, designed for engineers, analysts, and data scientists. It runs as a static site; full offline use requires local copies of external dependencies (Plotly, Plotly Kaleido, jStat, MathJax, and Bosch Sans fonts).
+A browser-based application for statistical analysis. This tool provides a suite of interactive modules for data analysis, visualization, and process control, designed for engineers, analysts, and data scientists. It runs as a static site; full offline use requires local copies of external dependencies (Plotly, Plotly Kaleido, jStat, MathJax).
 
-This project was originally designed for internal use at Bosch and has been prepared here as a standalone, open-source repository.
+This project was originally designed for personal and has been prepared here as a standalone, open-source repository.
 
 # Features
 
@@ -108,7 +108,7 @@ Contributions are welcome! If you have a feature request, bug report, or want to
 
 # Acknowledgments
 
-  This tool was originally created and designed for Bosch Power Tools, by the authors:
+  This tool was originally created and designed by the authors:
 
   * Gabriel Peregrino
 
