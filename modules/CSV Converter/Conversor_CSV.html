@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importar Dados do Excel</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Importa a biblioteca SheetJS (xlsx) para ler arquivos Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+    <div class="importer-container">
+        <header class="importer-header">
+            <h2>Importar Dados do Excel</h2>
+        </header>
+
+        <main class="importer-main">
+            <!-- Seção de Seleção de Arquivo -->
+            <div class="file-input-section">
+                <label for="file-path">Arquivo:</label>
+                <input type="text" id="file-path" readonly placeholder="Nenhum arquivo selecionado">
+                <label for="file-input" class="browse-btn">Procurar...</label>
+                <input type="file" id="file-input" accept=".xlsx, .xls">
+            </div>
+
+            <!-- Seção de Pré-visualização -->
+            <div class="data-preview-section">
+                <label>Pré-visualização dos Dados</label>
+                <div id="table-preview-wrapper">
+                    <p class="placeholder-text">Carregue um arquivo para ver a pré-visualização dos dados</p>
+                </div>
+            </div>
+
+            <!-- Seção Inferior: Opções -->
+            <div class="bottom-section">
+                <!-- Coluna de Opções de Importação -->
+                <div class="import-options">
+                    <label>Opções de Importação</label>
+                    <div class="options-grid">
+                        <label for="output-name">Nome:</label>
+                        <input type="text" id="output-name" value="dataset">
+
+                        <!-- NOVIDADE: Placeholder removido para maior clareza -->
+                        <label for="max-rows">Máx. Linhas:</label>
+                        <input type="number" id="max-rows" placeholder="">
+
+                        <label for="sheet-select">Planilha:</label>
+                        <select id="sheet-select"></select>
+
+                        <label for="skip-rows">Pular:</label>
+                        <input type="number" id="skip-rows" value="0" min="0">
+
+                        <label for="range-input">Intervalo:</label>
+                        <input type="text" id="range-input" placeholder="Ex: A1:G25">
+
+                        <label for="na-values">NA:</label>
+                        <input type="text" id="na-values" placeholder="Ex: N/A, -">
+                        
+                        <label for="delimiter-select">Delimitador:</label>
+                        <select id="delimiter-select">
+                            <option value=",">Vírgula (,)</option>
+                            <option value=";" selected>Ponto e Vírgula (;)</option>
+                            <option value="\t">Tabulação (Tab)</option>
+                        </select>
+                        
+                        <div class="checkbox-options">
+                            <input type="checkbox" id="first-row-header" checked>
+                            <label for="first-row-header">Primeira Linha como Cabeçalho</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="importer-footer">
+            <button id="import-btn">Importar</button>
+            <button id="cancel-btn">Cancelar</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
