@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Statistics Center</title>
+    <title>Prisma</title>
+    <link rel="icon" type="image/svg+xml" href="assets/brand/prisma.svg">
     <!-- Load Plotly for Charts -->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <!-- Kaleido plugin for reliable PNG export -->
@@ -31,9 +32,9 @@
     <div class="app-container">
         <div class="main-header">
             <div class="top-row">
-                <div class="header-branding"><svg class="sc-brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18h16M5 16c3 0 3-9 7-9s4 9 7 9M8 20h8"/></svg>
+                <div class="header-branding"><img class="sc-brand-mark" src="assets/brand/prisma.svg" alt="" aria-hidden="true">
                     
-                    <h1 class="title" data-i18n="appTitle">Statistics Center</h1>
+                    <h1 class="title" data-i18n="appTitle">Prisma</h1>
                     <span id="devEnvironmentTag" class="dev-environment-tag hidden">Development Environment</span>
                 </div>
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
@@ -1499,7 +1500,7 @@
     <div class="modal-overlay" id="aboutModal" onclick="if(event.target === this) toggleAboutModal()">
         <div class="modal-content">
             <button class="modal-close-btn" onclick="toggleAboutModal()">✕</button>
-            <h2 class="modal-title" data-i18n="appTitle">Statistics Center</h2>
+            <h2 class="modal-title" data-i18n="appTitle">Prisma</h2>
             <div class="modal-version"><span data-i18n="lblVersion">Version</span> <span id="aboutVersionNumber"></span>
             </div>
             <div class="modal-body">

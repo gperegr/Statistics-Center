@@ -1,5 +1,5 @@
 /**
- * Statistics Center Utilities
+ * Prisma Utilities
  * Shared mathematical and statistical functions.
  */
 

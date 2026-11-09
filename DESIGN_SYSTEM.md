@@ -1,4 +1,4 @@
-# Statistics Center — design system proposal
+# Prisma — design system proposal
 
 Status: the shared design system is integrated in the app, interactive component catalog, and mockup. The app uses a full-width horizontal function rail with touch/wheel scrolling and a restrained ratchet sound. The exact iOS 27 and macOS 27 “Golden Gate” releases and any changes specific to them still require verification against current Apple documentation. This document uses established Liquid Glass principles as design direction, not a claim of pixel equivalence to an Apple system UI.
 

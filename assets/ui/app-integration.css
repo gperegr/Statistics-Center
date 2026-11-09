@@ -106,8 +106,8 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
 [data-theme="dark"] .chart-context-menu,[data-theme="dark"] .percentile-line-delete-popover { background:var(--sc-bg-primary); border-color:var(--sc-border); }
 [data-theme="dark"] .chart-context-item { color:var(--sc-text); }
 /* A restrained halo belongs to measured/fit traces only; limits and grids stay crisp. */
-.js-plotly-plot .scatterlayer .js-line { filter:drop-shadow(0 0 1.5px rgba(20,98,215,.25)); }
-[data-theme="dark"] .js-plotly-plot .scatterlayer .js-line { filter:drop-shadow(0 0 1.5px rgba(133,180,255,.32)); }
+.js-plotly-plot .scatterlayer .js-line { filter:drop-shadow(0 0 1.5px rgba(61,80,166,.25)); }
+[data-theme="dark"] .js-plotly-plot .scatterlayer .js-line { filter:drop-shadow(0 0 1.5px rgba(172,186,255,.32)); }
 @media(max-width:768px) {
   .app-container { width:100%; min-height:100vh; margin:0; border:0; border-radius:0; }
   .main-header .top-row { padding:8px 16px; gap:12px; }.title { font-size:20px; }
@@ -122,7 +122,7 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
 /* Shared line icons for the application identity and navigation. */
 .sc-app-icon,.theme-icon-svg { width:18px; height:18px; flex:none; display:block; fill:none; stroke:currentColor; }
 .theme-icon-svg path { fill:none; stroke:currentColor!important; }
-.sc-brand-mark { width:36px; height:36px; flex:none; padding:6px; border:1px solid var(--sc-border); border-radius:10px; color:var(--sc-accent); background:var(--sc-bg-secondary); }
+.sc-brand-mark { width:36px; height:36px; flex:none; display:block; border-radius:11px; }
 .function-nav-item,.header-controls > .app-btn-secondary,.language-trigger-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; }
 .function-nav-item .sc-app-icon { width:17px; height:17px; }
 .header-controls > .app-btn-secondary,.header-controls > .app-btn-secondary:hover,.language-trigger-btn,.language-trigger-btn:hover { background:transparent; border-color:transparent; }

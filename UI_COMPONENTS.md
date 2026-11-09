@@ -1,4 +1,4 @@
-# Componentes de interface — Statistics Center
+# Componentes de interface — Prisma
 
 O [programa](index.html), o [catálogo interativo](ui-components.html) e o [mockup](liquid-glass-mockup.html) usam o mesmo sistema visual. O visual é flat, com Arimo local, transparência discreta e sombras apenas em superfícies flutuantes. A integração mapeia os controles existentes para os tokens de cor, tipografia, espaçamento, botões, campos e gráficos, preservando os módulos e eventos da aplicação. Não há etapa de build. As funções principais do app ficam numa faixa horizontal sem barra visível; roda do mouse, touch e teclado navegam entre elas, com fades nas extremidades e som de catraca discreto durante a rolagem.
 

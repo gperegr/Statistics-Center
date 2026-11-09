@@ -1,4 +1,4 @@
-/* Statistics Center UI tokens. Change values here, not inside components. */
+/* Prisma UI tokens. Change values here, not inside components. */
 @font-face {
   font-family: Arimo;
   src: url('../fonts/arimo/Arimo-Variable.ttf') format('truetype');
@@ -16,7 +16,7 @@
   --sc-bg-field: #fff; --sc-bg-translucent: rgba(244,247,252,.82);
   --sc-bg-selection: rgba(255,255,255,.65);
   --sc-border: #e5e7ec; --sc-border-strong: #c9ced7;
-  --sc-accent: #1462d7; --sc-on-accent: #fff; --sc-focus: #1462d7;
+  --sc-accent: #3d50a6; --sc-on-accent: #fff; --sc-focus: #3d50a6;
   --sc-success: #217454; --sc-warning: #a65522; --sc-danger: #be3845;
   --sc-shadow-color: rgba(49,64,85,.13);
   --sc-shadow-floating: 0 6px 20px #182c401a;
@@ -27,11 +27,11 @@
   --sc-padding-panel: var(--sc-space-6); --sc-padding-section: var(--sc-space-7);
   --sc-radius-field: 8px; --sc-radius-control: 8px; --sc-radius-panel: 16px;
   --sc-radius-pill: 999px; --sc-control-height: 48px; --sc-panel-padding: 24px;
-  --sc-chart-series-1: #1462d7; --sc-chart-series-2: #168575;
+  --sc-chart-series-1: #3d50a6; --sc-chart-series-2: #168575;
   --sc-chart-series-3: #8458b5; --sc-chart-series-4: #b36a20;
   --sc-chart-series-5: #b84270; --sc-chart-series-6: #237f9c;
   --sc-chart-series-7: #6e7830; --sc-chart-series-8: #776351;
-  --sc-chart-bar: #c6d8f1; --sc-chart-bar-border: #a3bfe7;
+  --sc-chart-bar: #d5dcf5; --sc-chart-bar-border: #aebce8;
   --sc-chart-font-size: 11px; --sc-chart-line-data: 2;
   --sc-chart-line-fit: 2.5; --sc-chart-line-reference: 1.25;
   --sc-chart-line-grid: 1; --sc-chart-line-bar: .75; --sc-chart-line-emphasis: 3;
@@ -44,14 +44,14 @@
   --sc-bg-field: #282f3a; --sc-bg-translucent: rgba(37,45,58,.94);
   --sc-bg-selection: rgba(186,207,241,.16);
   --sc-border: #343c49; --sc-border-strong: #505d6e;
-  --sc-accent: #85b4ff; --sc-on-accent: #122a4f; --sc-focus: #a2c5ff;
+  --sc-accent: #acbaff; --sc-on-accent: #18224d; --sc-focus: #c2cdff;
   --sc-success: #81c9a8; --sc-warning: #e8ad7a; --sc-danger: #ff96a1;
   --sc-shadow-color: rgba(0,0,0,.24); --sc-shadow-floating: 0 6px 20px #0003;
-  --sc-chart-series-1: #95baff; --sc-chart-series-2: #72cbbb;
+  --sc-chart-series-1: #acbaff; --sc-chart-series-2: #72cbbb;
   --sc-chart-series-3: #bc9be8; --sc-chart-series-4: #e7b16d;
   --sc-chart-series-5: #ef94b6; --sc-chart-series-6: #76c2dc;
   --sc-chart-series-7: #b8c47b; --sc-chart-series-8: #c6b299;
-  --sc-chart-bar: #344e73; --sc-chart-bar-border: #4d6c96;
+  --sc-chart-bar: #3a426e; --sc-chart-bar-border: #6877b3;
 }
 @media(max-width:700px) {
   :root { --sc-control-height: 48px; --sc-panel-padding: 24px; --sc-padding-panel: var(--sc-space-4); --sc-padding-section: var(--sc-space-5); }

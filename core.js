@@ -1712,8 +1712,8 @@ function getChartTheme(theme) {
         font: { ...tokens.font, color: isDark ? '#edf0f5' : '#202936', family: "Arimo, 'Liberation Sans', Arial, sans-serif" },
         gridcolor: isDark ? '#343c49' : '#e5e7ec',
         dangercolor: isDark ? '#ff96a1' : '#be3845', successcolor: isDark ? '#81c9a8' : '#217454', warningcolor: isDark ? '#e8ad7a' : '#a65522',
-        theme_primary: isDark ? '#85b4ff' : '#1462d7', theme_primary_darker: isDark ? '#6298e1' : '#104eaa',
-        colorway: tokens.colorway || ['#1462d7','#168575','#8458b5','#b36a20','#b84270','#237f9c','#6e7830','#776351']
+        theme_primary: isDark ? '#acbaff' : '#3d50a6', theme_primary_darker: isDark ? '#8193e0' : '#303f84',
+        colorway: tokens.colorway || ['#3d50a6','#168575','#8458b5','#b36a20','#b84270','#237f9c','#6e7830','#776351']
     };
 }
 
@@ -2845,7 +2845,7 @@ function initApp() {
         initExcelModal();
 
         // Set Version
-        document.title = `Statistics Center ${APP_VERSION}`;
+        document.title = `Prisma ${APP_VERSION}`;
         const versionEl = document.getElementById('aboutVersionNumber');
         if (versionEl) versionEl.textContent = APP_VERSION;
 

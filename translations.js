@@ -8,7 +8,7 @@ var currentLang = 'en'; // Default to English
 // Contains all UI strings for supported languages (en, pt, de, zh).
 var translations = {
     en: {
-        appTitle: "Statistics Center",
+        appTitle: "Prisma",
         btnSave: "Save",
         btnLoad: "Load",
         btnReset: "Reset",
@@ -594,7 +594,7 @@ var translations = {
     },
     pt: {
         // ... (Existing PT keys) ...
-        appTitle: "Statistics Center",
+        appTitle: "Prisma",
         btnSave: "Salvar",
         btnLoad: "Carregar",
         btnReset: "Reiniciar",
@@ -952,7 +952,7 @@ var translations = {
         lblAuto: "Auto",
     },
     de: {
-        appTitle: "Statistics Center",
+        appTitle: "Prisma",
         btnSave: "Speichern",
         btnLoad: "Laden",
         btnReset: "Zurücksetzen",
@@ -1512,7 +1512,7 @@ var translations = {
         lblAuto: "Auto",
     },
     zh: {
-        appTitle: "统计中心",
+        appTitle: "Prisma",
         btnSave: "保存",
         btnLoad: "加载",
         btnReset: "重置",
