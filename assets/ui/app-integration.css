@@ -1,0 +1,48 @@
+/* Application mapping: legacy layout classes adopt the shared design tokens. */
+:root {
+  --SystemAccentColor:var(--sc-accent); --AccentTextFillColorPrimary:var(--sc-accent);
+  --AccentFillColorDefault:var(--sc-accent); --OnAccentFillColorText:var(--sc-on-accent);
+  --TextFillColorPrimary:var(--sc-text); --TextFillColorSecondary:var(--sc-text-secondary);
+  --LayerFillColorDefault:var(--sc-bg-secondary); --ControlFillColorDefault:var(--sc-bg-tertiary);
+  --SolidBackgroundFillColorBase:var(--sc-bg-primary); --DividerStrokeColorDefault:var(--sc-border);
+  --fontFamily:var(--sc-font-family);
+}
+html { background:var(--sc-bg-primary); }
+body { color:var(--sc-text); background:var(--sc-bg-primary); font-family:var(--sc-font-family); }
+.app-container { width:min(1500px,calc(100% - 48px)); max-width:1500px; margin:24px auto; border:1px solid var(--sc-border); border-radius:22px; overflow:clip; background:var(--sc-bg-primary); box-shadow:0 12px 32px -12px var(--sc-shadow-color); }
+.main-header { background:var(--sc-bg-translucent); border-bottom:1px solid var(--sc-border); }
+.main-header .top-row { padding:24px 28px; }.header-branding { gap:16px; }.header-brand-logo-svg { display:none; }
+.title { color:var(--sc-text); font:600 23px/1.2 var(--sc-font-family); letter-spacing:-.45px; }
+.dev-environment-tag { border-radius:var(--sc-radius-field); border-color:var(--sc-border); color:var(--sc-text-secondary); }
+.pivot-container { padding:0 12px; border-color:var(--sc-border); background:var(--sc-bg-secondary); }
+.pivot-item { color:var(--sc-text-secondary); }.pivot-item.active,.pivot-item[aria-selected="true"] { color:var(--sc-accent); border-color:var(--sc-accent); font-weight:600; }
+.controls-panel { background:var(--sc-bg-secondary); border:0; border-right:1px solid var(--sc-border); border-radius:0; }
+[data-theme="dark"] .controls-panel { background:var(--sc-bg-secondary); border:0; border-right:1px solid var(--sc-border); }
+.card,.chart-container,.results-panel,.modal-content { border-radius:var(--sc-radius-panel); border-color:var(--sc-border); }
+.chart-container,.card,.results-panel { background:var(--sc-bg-primary); }.modal-content { background:var(--sc-bg-primary); box-shadow:var(--sc-shadow-floating); }
+.app-btn-primary,.app-btn-secondary { font-family:var(--sc-font-family); font-size:var(--sc-font-control); font-weight:600; transition:background-color .15s,color .15s,border-color .15s; }
+.app-btn-primary { min-height:40px; height:auto; padding:8px 16px; border:1px solid transparent; border-radius:var(--sc-radius-pill); color:var(--sc-on-accent); background:var(--sc-accent); }
+.app-btn-primary:hover { background:var(--sc-accent); filter:brightness(1.07); }
+.app-btn-secondary { min-height:36px; height:auto; padding:7px 12px; border:1px solid var(--sc-border); border-radius:var(--sc-radius-pill); color:var(--sc-text); background:var(--sc-bg-primary); }
+.app-btn-secondary:hover { color:var(--sc-text); border-color:var(--sc-border-strong); background:var(--sc-bg-secondary); }
+[data-theme="dark"] .app-btn-secondary { color:var(--sc-text); }
+#montecarlo-controls .app-btn-secondary,#grp-regression-controls .app-btn-secondary,#grp-warranty-controls .app-btn-secondary { min-height:40px; height:auto; border-color:var(--sc-border); color:var(--sc-text); background:var(--sc-bg-primary); }
+input[type="number"],input[type="text"],textarea,input[type="file"] { border:1px solid var(--sc-border-strong); border-radius:var(--sc-radius-field); color:var(--sc-text); background:var(--sc-bg-primary); font-family:var(--sc-font-family); font-size:var(--sc-font-control); }
+input[type="number"],input[type="text"] { min-height:36px; padding:7px 10px; }
+input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px solid var(--sc-focus); outline:2px solid color-mix(in srgb,var(--sc-focus) 22%,transparent); outline-offset:1px; }
+.sc-native-select-source { display:none!important; }
+.sc-native-select-host { display:inline-flex; vertical-align:middle; width:100%; min-width:0; max-width:100%; }
+.sc-native-select-trigger { min-height:36px; width:100%; min-width:0; justify-content:space-between; border-radius:var(--sc-radius-field); text-align:left; white-space:nowrap; overflow:hidden; }
+.sc-native-select-trigger > span { overflow:hidden; text-overflow:ellipsis; }.sc-native-select-trigger:disabled { opacity:.55; cursor:not-allowed; }
+.error-msg,.error-message,.alert,.notification { border-left:1px solid var(--sc-border)!important; }
+.results-table tr.best-fit-row td,.results-table tr.violation-row td:first-child { border-left:0; }
+.nav-dropdown-item,.nav-dropdown-item:hover,.nav-dropdown-item.active,[data-theme="dark"] .nav-dropdown-item.active { border-left:0!important; padding-left:16px; }
+#mc-interpretation { border-left:0!important; }
+/* A restrained halo belongs to measured/fit traces only; limits and grids stay crisp. */
+.js-plotly-plot .scatterlayer .js-line { filter:drop-shadow(0 0 1.5px rgba(20,98,215,.25)); }
+[data-theme="dark"] .js-plotly-plot .scatterlayer .js-line { filter:drop-shadow(0 0 1.5px rgba(133,180,255,.32)); }
+@media(max-width:768px) {
+  .app-container { width:100%; min-height:100vh; margin:0; border:0; border-radius:0; }
+  .main-header .top-row { padding:14px 16px; gap:12px; }.title { font-size:20px; }
+}
+@media(prefers-reduced-motion:reduce) { .js-plotly-plot .scatterlayer .js-line { filter:none; } }

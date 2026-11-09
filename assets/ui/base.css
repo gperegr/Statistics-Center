@@ -1,0 +1,16 @@
+/* Opt in by loading ui.css; the legacy application stylesheet is independent. */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; color: var(--sc-text); background: var(--sc-bg-primary); font: var(--sc-font-body)/var(--sc-line-height) var(--sc-font-family); }
+button,input,select,textarea { font: inherit; }
+button,input,select,textarea,a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+button { color: inherit; cursor: pointer; }
+button:disabled { cursor: default; }
+h1,h2,h3,p { margin: 0; }
+:focus-visible { outline: 3px solid var(--sc-focus); outline-offset: 3px; }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; scroll-behavior:auto!important; } }
+@media(prefers-reduced-transparency:reduce) { :root { --sc-bg-translucent:var(--sc-bg-secondary); } }
+@media(prefers-contrast:more) {
+  :root { --sc-text-secondary:#354052; --sc-text-muted:#354052; --sc-border:#8693a5; }
+  :root[data-theme="dark"] { --sc-text-secondary:#e2e9f5; --sc-text-muted:#e2e9f5; --sc-border:#7a8a9f; }
+}

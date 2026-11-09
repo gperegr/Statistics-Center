@@ -1,0 +1,17 @@
+/* Public entry point: theme, foundations, and reusable components. No build step. */
+@import url('./tokens.css');
+@import url('./base.css');
+@import url('./components.css');
+
+/* Explicit surface and padding utilities override component defaults. */
+.sc-bg-primary { background: var(--sc-bg-primary); }
+.sc-bg-secondary { background: var(--sc-bg-secondary); }
+.sc-bg-tertiary { background: var(--sc-bg-tertiary); }
+.sc-pad-control { padding: var(--sc-padding-control); }
+.sc-pad-panel { padding: var(--sc-padding-panel); }
+.sc-pad-section { padding: var(--sc-padding-section); }
+.sc-p-0 { padding: var(--sc-space-0); }.sc-p-1 { padding: var(--sc-space-1); }
+.sc-p-2 { padding: var(--sc-space-2); }.sc-p-3 { padding: var(--sc-space-3); }
+.sc-p-4 { padding: var(--sc-space-4); }.sc-p-5 { padding: var(--sc-space-5); }
+.sc-p-6 { padding: var(--sc-space-6); }.sc-p-7 { padding: var(--sc-space-7); }
+.sc-p-8 { padding: var(--sc-space-8); }.sc-p-9 { padding: var(--sc-space-9); }

@@ -1468,6 +1468,7 @@ function toggleTheme() {
     const newTheme = current === 'dark' ? 'light' : 'dark';
 
     body.setAttribute('data-theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
     icon.innerHTML = newTheme === 'dark' ? ICON_SUN_SVG : ICON_MOON_SVG;
     localStorage.setItem('appTheme', newTheme);
 
@@ -1477,19 +1478,15 @@ function toggleTheme() {
 
 function getChartTheme(theme) {
     const isDark = theme === 'dark';
+    const tokens = window.SCCharts ? window.SCCharts.plotlyLayout() : {};
     return {
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: {
-            color: isDark ? '#f3f2f1' : '#201f1e',
-            family: "'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif"
-        },
-        gridcolor: isDark ? '#484644' : '#e1dfdd',
-        dangercolor: isDark ? '#f17074' : '#d13438',
-        successcolor: isDark ? '#6bb700' : '#107c10',
-        warningcolor: isDark ? '#ffd700' : '#ffb900',
-        theme_primary: isDark ? '#4f9bdb' : '#0078d4',
-        theme_primary_darker: isDark ? '#2d6ca2' : '#005a9e'
+        ...tokens,
+        paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { ...tokens.font, color: isDark ? '#edf0f5' : '#202936', family: "Arimo, 'Liberation Sans', Arial, sans-serif" },
+        gridcolor: isDark ? '#343c49' : '#e5e7ec',
+        dangercolor: isDark ? '#ff96a1' : '#be3845', successcolor: isDark ? '#81c9a8' : '#217454', warningcolor: isDark ? '#e8ad7a' : '#a65522',
+        theme_primary: isDark ? '#85b4ff' : '#1462d7', theme_primary_darker: isDark ? '#6298e1' : '#104eaa',
+        colorway: tokens.colorway || ['#1462d7','#168575','#8458b5','#b36a20','#b84270','#237f9c','#6e7830','#776351']
     };
 }
 
@@ -1698,6 +1695,7 @@ function restoreState(state) {
     }
     if (s.theme) {
         document.body.setAttribute('data-theme', s.theme);
+        document.documentElement.setAttribute('data-theme', s.theme);
         document.getElementById('theme-icon').innerHTML = s.theme === 'dark' ? ICON_SUN_SVG : ICON_MOON_SVG;
     }
 
@@ -2593,6 +2591,7 @@ function initApp() {
         // Theme Initialization
         const savedTheme = localStorage.getItem('appTheme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
         const themeIcon = document.getElementById('theme-icon');
         if (themeIcon) {
             themeIcon.innerHTML = savedTheme === 'dark' ? ICON_SUN_SVG : ICON_MOON_SVG;

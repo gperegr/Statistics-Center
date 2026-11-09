@@ -1161,7 +1161,7 @@
 
         .results-table tr.best-fit-row td {
             font-weight: var(--fontWeightBodyStrong);
-            border-left: 3px solid var(--SystemAccentColor);
+            border-left: 0;
         }
 
         .results-table tr.violation-row {
@@ -2176,10 +2176,7 @@
             background-color: #e6f7ff;
             font-weight: bold;
             color: #007bc0;
-            border-left: 4px solid #007bc0;
-            /* Highlight indicator */
-            padding-left: 12px;
-            /* Adjust for border */
+            border-left: 0;
         }
 
 
@@ -2208,7 +2205,6 @@
             /* Low opacity blue */
             color: #60CDFF;
             /* Light Blue Accent */
-            border-left: 4px solid #60CDFF;
         }
 
         [data-theme="dark"] .nav-dropdown-menu::-webkit-scrollbar-thumb {

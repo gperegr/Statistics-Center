@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Capabilidade · Statistics Center</title>
+  <link rel="preload" href="assets/fonts/arimo/Arimo-Variable.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="assets/ui/ui.css">
+  <link rel="stylesheet" href="assets/mockup/mockup.css">
+  <script src="assets/ui/components.js" defer></script>
+  <script src="assets/ui/charts.js" defer></script>
+  <script src="assets/mockup/mockup.js" defer></script>
+</head>
+<body>
+
+<div class="app-window">
+  <header class="toolbar sc-surface--translucent">
+    <div class="brand"><span class="app-symbol"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-mark"/></svg></span>Statistics Center</div>
+    <button class="sc-button sc-button--icon mobile-only sc-button--tertiary" id="sidebarToggle" aria-label="Abrir navegação" aria-expanded="false" aria-controls="sidebar"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-sidebar"/></svg></button>
+    <div class="document-title"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-file"/></svg><div><strong>Diâmetro do eixo</strong><small id="documentSubtitle">Lote 024 · Dados de exemplo</small></div></div>
+    <div class="toolbar-actions">
+      <button class="sc-button sc-button--icon sc-button--tertiary" data-sc-popover="themeMenu" id="themeToggle" aria-label="Aparência" aria-haspopup="menu" aria-controls="themeMenu" aria-expanded="false" title="Aparência"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-sun"/></svg></button>
+      <span class="toolbar-divider"></span>
+      <button class="sc-button sc-button--sc-text-secondary" data-sc-popover="exportMenu" id="exportButton" aria-haspopup="menu" aria-controls="exportMenu" aria-expanded="false"><svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-export"/></svg><span>Exportar</span></button>
+    </div>
+  </header>
+  <button class="nav-scrim" aria-label="Fechar navegação" id="navScrim"></button>
+  <aside class="sidebar sc-surface--translucent" id="sidebar" aria-label="Navegação">
+    <p class="section-label">Amostra</p>
+    <button class="source-button" id="viewData"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-table"/></svg><span><strong id="sidebarBatch">Lote 024</strong><small><span data-count>200</span> observações · mm</small></span></button>
+    <p class="section-label">Análises</p>
+    <nav class="sc-nav" aria-label="Análises disponíveis"><span class="sc-selection-indicator" aria-hidden="true"></span>
+      <button data-analysis="capability" aria-current="page"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-capability"/></svg>Capabilidade</button>
+      <button data-analysis="distribution"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-distribution"/></svg>Distribuição</button>
+      <button data-analysis="sequence"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-sequence"/></svg>Controle estatístico</button>
+    </nav>
+    <div class="sidebar-bottom"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-info"/></svg>Prévia de interface</div>
+  </aside>
+  <main class="workspace" id="workspace">
+    <div class="page-heading"><div><h1 id="pageTitle" tabindex="-1">Capabilidade do processo</h1><p id="pageDescription">Amostra individual · Limites bilaterais</p></div><span class="sc-badge">mm</span></div>
+    <div class="view-controls">
+      <div class="sc-segmented" role="group" aria-label="Visualização do gráfico"><span class="sc-selection-indicator" aria-hidden="true"></span><button data-view="histogram" aria-pressed="true">Distribuição</button><button data-view="sequence" aria-pressed="false">Sequência</button></div>
+      <div class="chart-tools"><button class="sc-button sc-button--icon mobile-only sc-button--tertiary" id="showParameters" aria-label="Ir para os parâmetros" title="Parâmetros"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-sliders"/></svg></button><button class="sc-button sc-button--icon sc-button--tertiary" data-sc-popover="chartMenu" id="chartMenuToggle" aria-label="Opções do gráfico" aria-haspopup="menu" aria-controls="chartMenu" aria-expanded="false" title="Opções do gráfico"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-more"/></svg></button></div>
+    </div>
+    <dl class="metrics" aria-label="Resultados da análise">
+      <div class="metric"><dt>Cpk</dt><dd id="metricCpk">—</dd></div><div class="metric"><dt>Cp</dt><dd id="metricCp">—</dd></div><div class="metric"><dt>Média</dt><dd><span id="metricMean">—</span> <small>mm</small></dd></div><div class="metric"><dt>Desvio padrão</dt><dd><span id="metricStd">—</span> <small>mm</small></dd></div>
+    </dl>
+    <div class="plot-heading"><h2 id="plotTitle">Distribuição das medições</h2><span id="plotSubtitle">200 observações · Ajuste normal</span></div>
+    <div class="plot-wrapper"><svg class="sc-chart" id="chart" viewBox="0 0 720 305" role="img" aria-labelledby="chartTitle chartDesc"></svg><div class="sc-chart-tooltip" id="plotTooltip" hidden></div></div>
+    <div class="sc-chart-legend"><span><i></i><span id="legendData">Frequência observada</span></span><span id="fitLegend"><i class="line"></i>Ajuste normal</span><span id="specLegend"><i class="dashed"></i>Especificação</span></div>
+    <section class="result-note" aria-label="Interpretação do resultado"><svg class="sc-icon" aria-hidden="true" id="resultIcon"><use href="assets/ui/icons.svg#i-circle-check"/></svg><div><strong id="resultTitle">Calculando resultados</strong><p id="resultDescription"></p></div></section>
+    <dl class="summary" aria-label="Resumo das medições"><div><dt>Mínimo</dt><dd id="statMin">—</dd></div><div><dt>1º quartil</dt><dd id="statQ1">—</dd></div><div><dt>Mediana</dt><dd id="statMedian">—</dd></div><div><dt>3º quartil</dt><dd id="statQ3">—</dd></div><div><dt>Máximo</dt><dd id="statMax">—</dd></div></dl>
+  </main>
+  <form class="inspector" id="parameters" novalidate>
+    <div class="inspector-heading"><h2>Parâmetros</h2><button type="button" class="sc-button sc-button--icon sc-button--tertiary" id="resetParameters" aria-label="Restaurar parâmetros" title="Restaurar parâmetros"><svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-reset"/></svg></button></div>
+    <div class="sc-field"><span class="sc-label" id="batchLabel">Conjunto de dados</span><button type="button" class="sc-button sc-button--sc-text-secondary sc-dropdown" data-sc-popover="batchMenu" id="batchButton" aria-labelledby="batchLabel batchValue" aria-haspopup="listbox" aria-controls="batchMenu" aria-expanded="false"><span class="sc-dropdown__label"><svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-table"/></svg><span id="batchValue">Lote 024</span></span><svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-chevron"/></svg></button><p class="sc-help">Diâmetro do eixo · 200 medições</p></div>
+    <div class="sc-field"><span class="sc-label">Limites de especificação <span style="color:var(--sc-text-muted);font-weight:400">(mm)</span></span><div class="paired-fields"><div><label for="lowerLimit">Inferior</label><input class="sc-input" id="lowerLimit" type="text" inputmode="decimal" value="9,900" required aria-describedby="limitError"></div><div><label for="upperLimit">Superior</label><input class="sc-input" id="upperLimit" type="text" inputmode="decimal" value="10,100" required aria-describedby="limitError"></div></div></div>
+    <div class="sc-field"><div class="confidence-header"><label class="sc-label" for="confidence">Nível de confiança</label><span class="confidence-number"><input class="sc-input" type="number" id="confidenceNumber" min="80" max="99.9" step="0.1" value="95" aria-label="Nível de confiança em porcentagem">%</span></div><input class="sc-slider" data-sc-slider id="confidence" type="range" min="80" max="99.9" step="0.1" value="95" aria-valuetext="95 por cento"><div class="sc-slider__ends"><span>80%</span><span>99,9%</span></div></div>
+    <hr class="inspector-rule">
+    <div class="switches"><div class="sc-switch-row"><span id="fitLabel">Mostrar ajuste normal</span><button class="sc-switch" type="button" role="switch" aria-checked="true" aria-labelledby="fitLabel" id="fitSwitch"></button></div><div class="sc-switch-row"><span id="limitsLabel">Mostrar limites</span><button class="sc-switch" type="button" role="switch" aria-checked="true" aria-labelledby="limitsLabel" id="limitsSwitch"></button></div></div>
+    <div class="inspector-footer"><p class="validation-error" id="limitError" role="alert" hidden></p><button class="sc-button sc-button--primary" type="submit">Aplicar parâmetros<svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-arrow"/></svg></button><p class="apply-status" id="applyStatus" role="status">Parâmetros aplicados</p></div>
+  </form>
+  <footer class="statusbar"><span><i class="status-dot"></i><span data-count>200</span> observações <span class="method-note">· Desvio padrão amostral</span></span><span>Dados de demonstração</span></footer>
+</div>
+<div id="themeMenu" class="sc-menu" popover role="menu" aria-label="Aparência"><p class="sc-menu__title">Aparência</p><button class="sc-menu__item" role="menuitemradio" aria-checked="false" data-theme="system"><svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-system"/></svg>Automática<svg class="sc-icon sc-menu__check" aria-hidden="true"><use href="assets/ui/icons.svg#i-check"/></svg></button><button class="sc-menu__item" role="menuitemradio" aria-checked="true" data-theme="light"><svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-sun"/></svg>Clara<svg class="sc-icon sc-menu__check" aria-hidden="true"><use href="assets/ui/icons.svg#i-check"/></svg></button><button class="sc-menu__item" role="menuitemradio" aria-checked="false" data-theme="dark"><svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-moon"/></svg>Escura<svg class="sc-icon sc-menu__check" aria-hidden="true"><use href="assets/ui/icons.svg#i-check"/></svg></button></div>
+<div id="batchMenu" class="sc-menu" popover role="listbox" aria-labelledby="batchLabel"><button class="sc-menu__item" role="option" aria-selected="true" data-batch="24">Lote 024 <svg class="sc-icon sc-menu__check" aria-hidden="true"><use href="assets/ui/icons.svg#i-check"/></svg></button><button class="sc-menu__item" role="option" aria-selected="false" data-batch="25">Lote 025 <svg class="sc-icon sc-menu__check" aria-hidden="true"><use href="assets/ui/icons.svg#i-check"/></svg></button></div>
+<div id="exportMenu" class="sc-menu" popover role="menu" aria-label="Exportar"><p class="sc-menu__title">Exportar esta análise</p><button class="sc-menu__item" role="menuitem" id="exportSvg"><svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-distribution"/></svg>Gráfico em SVG</button><button class="sc-menu__item" role="menuitem" id="exportCsv"><svg class="sc-icon sc-icon--small" aria-hidden="true"><use href="assets/ui/icons.svg#i-table"/></svg>Dados em CSV</button></div>
+<div id="chartMenu" class="sc-menu" popover role="menu" aria-label="Opções do gráfico"><button class="sc-menu__item" role="menuitemcheckbox" aria-checked="true" id="gridToggle">Linhas de grade<svg class="sc-icon sc-menu__check" aria-hidden="true"><use href="assets/ui/icons.svg#i-check"/></svg></button><button class="sc-menu__item" role="menuitem" id="openData">Ver medições</button></div>
+<dialog class="sc-dialog" id="dataDialog" aria-labelledby="dataTitle"><div class="dialog-heading"><h2 id="dataTitle">Medições · Lote 024</h2><button class="sc-button sc-button--icon sc-button--tertiary" id="closeData" aria-label="Fechar medições"><svg class="sc-icon" aria-hidden="true"><use href="assets/ui/icons.svg#i-close"/></svg></button></div><p>Amostra sintética para explorar esta proposta de interface.</p><div class="data-table-scroll"><table class="sc-table"><thead><tr><th>Observação</th><th>Diâmetro (mm)</th></tr></thead><tbody id="dataRows"></tbody></table></div><p class="dialog-foot">200 observações · Unidade: milímetro</p></dialog>
+<p class="sc-toast sc-surface--translucent" id="toast" role="status" hidden></p>
+
+</body>
+</html>
