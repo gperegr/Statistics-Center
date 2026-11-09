@@ -37,7 +37,7 @@ Keep data and charts as the visual foreground. Use a restrained translucent laye
 | Warning | `#A65522` | `#E8AD7A` | Specification references and caution |
 | Negative | `#BE3845` | `#FF96A1` | Input errors |
 
-Use **Arimo**, a neutral sans serif close to Arial/Helvetica, hosted locally in `assets/fonts/arimo/`. Variable weights 400–700; use 400 for text, 500 for controls and values, 600–650 for selection and headings. Stack: `'Arimo', 'Liberation Sans', Arial, sans-serif`. Use the same family in SVG and future Plotly charts. Use tabular numerals for data. Compact desktop labels start at 11px, controls 12–13px, body 14px, page heading 28px; increase touch targets to at least 44px on mobile. Spacing scale: 4, 8, 12, 16, 24, 32px. Use one 8px radius for buttons, text fields, selects, and dropdown surfaces; reserve 16px for larger panels and dialogs. Use a visible 3px focus ring with 3px offset.
+Use **Arimo**, a neutral sans serif close to Arial/Helvetica, hosted locally in `assets/fonts/arimo/`. Variable weights 400–700; use 400 for text, 500 for controls and values, 600–650 for selection and headings. Stack: `'Arimo', 'Liberation Sans', Arial, sans-serif`. Use the same family in SVG and future Plotly charts. Use tabular numerals for data. Compact desktop labels start at 11px, controls 12–13px, body 14px, page heading 28px; increase touch targets to at least 44px on mobile. Spacing scale: 4, 8, 12, 16, 24, 32px. Use 4px for controls, 8px for menus and compact panels, and 12px for larger panels and dialogs. Use a visible 3px focus ring with 3px offset.
 
 Arimo is free for personal and commercial use under **SIL Open Font License 1.1**; it is not public domain. Preserve the license and copyright when redistributing the font. [License and source](assets/fonts/arimo/SOURCE.md) document the pinned upstream distribution. The mockup needs no external font service.
 
@@ -47,7 +47,7 @@ Arimo is free for personal and commercial use under **SIL Open Font License 1.1*
 - Text fields, selects, and numeric controls: solid surfaces for legibility. Persistent labels above fields, unit suffixes, visible validation messages, and a clear focus ring. Keep native keyboard and form behavior.
 - Slider: accent track, visible thumb, adjacent editable numeric value and units. Provide min/max and step information; keyboard arrows must work. Do not use a slider as the only way to enter exact statistical parameters.
 - Segmented controls and tabs: use a flat selection with a clear active state. The app’s primary analysis modes use a horizontally scrolling rail when the list is too long to fit.
-- Controls: use the same 8px corner radius for buttons, text fields, selects, and dropdown surfaces. Larger cards and dialogs use 16px; reserve full rounding for switches and slider thumbs.
+- Controls: use a 4px corner radius for buttons and fields, 8px for menus and compact panels, and 12px for larger cards and dialogs; reserve full rounding for switches and slider thumbs.
 - Cards and sidebars: solid analytical content panels. Use restrained transparency in the header and sidebar; menus and dialogs use solid surfaces.
 - Dialogs: distinct solid content surface over a dimmed backdrop; trap focus, support Escape, and restore focus to the trigger.
 - Tables: fixed header where useful, numeric columns aligned on decimal or right edge, restrained row separators, and explicit units. Color alone must not convey status.

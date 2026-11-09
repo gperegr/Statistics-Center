@@ -25,7 +25,7 @@
   --sc-space-7: 32px; --sc-space-8: 40px; --sc-space-9: 48px;
   --sc-padding-control: var(--sc-space-2) var(--sc-space-3);
   --sc-padding-panel: var(--sc-space-6); --sc-padding-section: var(--sc-space-7);
-  --sc-radius-field: 8px; --sc-radius-control: 8px; --sc-radius-panel: 48px;
+  --sc-radius-field: 4px; --sc-radius-control: 4px; --sc-radius-compact: 8px; --sc-radius-panel: 12px;
   --sc-radius-pill: 999px; --sc-control-height: 48px; --sc-panel-padding: 24px;
   --sc-chart-series-1: #3d50a6; --sc-chart-series-2: #168575;
   --sc-chart-series-3: #8458b5; --sc-chart-series-4: #b36a20;
@@ -54,5 +54,5 @@
   --sc-chart-bar: #3a426e; --sc-chart-bar-border: #6877b3;
 }
 @media(max-width:700px) {
-  :root { --sc-control-height: 48px; --sc-panel-padding: 16px; --sc-radius-panel: 40px; --sc-padding-panel: var(--sc-space-4); --sc-padding-section: var(--sc-space-5); }
+  :root { --sc-control-height: 48px; --sc-panel-padding: 16px; --sc-padding-panel: var(--sc-space-4); --sc-padding-section: var(--sc-space-5); }
 }

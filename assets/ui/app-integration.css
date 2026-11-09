@@ -78,7 +78,7 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
 .theme-icon-svg { fill:none!important; }
 .language-trigger-btn { min-height:36px; padding:7px 10px; border:1px solid transparent; border-radius:var(--sc-radius-field); color:var(--sc-text); font:500 var(--sc-font-control)/1.2 var(--sc-font-family); }
 .language-trigger-btn:hover { color:var(--sc-accent); background:var(--sc-bg-secondary); }
-.language-popup,#languagePopup { width:280px; max-width:calc(100vw - 24px); padding:12px; border:1px solid var(--sc-border); border-radius:36px; background:var(--sc-bg-primary); box-shadow:var(--sc-shadow-floating); }
+.language-popup,#languagePopup { width:280px; max-width:calc(100vw - 24px); padding:12px; border:1px solid var(--sc-border); border-radius:var(--sc-radius-compact); background:var(--sc-bg-primary); box-shadow:var(--sc-shadow-floating); }
 .language-menu-container.open #languagePopup { padding:12px; }
 .language-popup-select-wrap { margin-bottom:0; }
 .language-popup-title { margin:2px 36px 10px 8px; }
@@ -92,7 +92,7 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
 .axis-scale-row input:focus,.axis-scale-textarea:focus { border:1px solid var(--sc-focus); outline:2px solid color-mix(in srgb,var(--sc-focus) 22%,transparent); }
 .axis-custom-select-trigger { height:36px; padding:7px 32px 7px 10px; border:1px solid var(--sc-border-strong); border-radius:var(--sc-radius-field); background:var(--sc-bg-primary); color:var(--sc-text); font:var(--sc-font-control)/1.2 var(--sc-font-family); }
 .axis-custom-select-trigger:focus { border:1px solid var(--sc-focus); outline:2px solid color-mix(in srgb,var(--sc-focus) 22%,transparent); }
-.axis-custom-select-menu,.chart-context-menu,.percentile-line-delete-popover { border:1px solid var(--sc-border); border-radius:var(--sc-radius-field); background:var(--sc-bg-primary); box-shadow:var(--sc-shadow-floating); }
+.axis-custom-select-menu,.chart-context-menu,.percentile-line-delete-popover { border:1px solid var(--sc-border); border-radius:var(--sc-radius-compact); background:var(--sc-bg-primary); box-shadow:var(--sc-shadow-floating); }
 .axis-custom-option,.chart-context-item { min-height:36px; border-radius:var(--sc-radius-field); color:var(--sc-text); font:var(--sc-font-control)/1.35 var(--sc-font-family); }
 .axis-custom-option:hover,.axis-custom-option:focus,.chart-context-item:hover,.chart-context-item:focus { background:var(--sc-bg-secondary); color:var(--sc-accent); }
 .axis-scale-auto-btn { min-height:36px; height:auto; padding:7px 12px; border:1px solid var(--sc-border); border-radius:var(--sc-radius-field); color:var(--sc-text); }
@@ -124,7 +124,7 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
 /* Shared line icons for the application identity and navigation. */
 .sc-app-icon,.theme-icon-svg { width:18px; height:18px; flex:none; display:block; fill:none; stroke:currentColor; }
 .theme-icon-svg path { fill:none; stroke:currentColor!important; }
-.sc-brand-mark { width:36px; height:36px; flex:none; display:block; border-radius:11px; }
+.sc-brand-mark { width:36px; height:36px; flex:none; display:block; color:var(--sc-accent); }
 .function-nav-item,.header-controls > .app-btn-secondary,.language-trigger-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; }
 .function-nav-item .sc-app-icon { width:17px; height:17px; }
 .header-controls > .app-btn-secondary,.header-controls > .app-btn-secondary:hover,.language-trigger-btn,.language-trigger-btn:hover { background:transparent; border-color:transparent; }
@@ -161,9 +161,19 @@ input[aria-invalid="true"] { border-color:var(--sc-danger)!important; outline:2p
  .function-nav-item,.function-nav-shell::before,.function-nav-shell::after,.content,.action-feedback { transition:none!important; }
 }
 .content.sidebar-closed #sidebarToggle { display:flex!important; visibility:visible; pointer-events:auto; }
-/* Pill-shaped buttons and single-line fields. */
+/* Shared geometry for buttons and single-line fields. */
 button:not(.sc-switch):not(.sc-menu__item):not(.sc-native-select-option),
 input[type="text"],input[type="number"],input[type="email"],input[type="search"],input[type="url"],input[type="password"],input[type="file"],
-.sc-native-select-trigger,.axis-custom-select-trigger { border-radius:var(--sc-radius-pill); }
+.sc-native-select-trigger,.axis-custom-select-trigger { border-radius:var(--sc-radius-control); }
 input[type="text"],input[type="number"],input[type="email"],input[type="search"],input[type="url"],input[type="password"] { padding-inline:16px; }
-textarea { border-radius:24px; }
+textarea { border-radius:var(--sc-radius-control); }
+/* Shared, theme-aware surfaces and focus for legacy controls. */
+.preview-container,.wp-schedule-list { background:var(--sc-bg-secondary); border:1px solid var(--sc-border); border-radius:var(--sc-radius-compact); }
+.preview-table th { background:var(--sc-bg-tertiary); color:var(--sc-text-secondary); }
+.preview-table td { border-color:var(--sc-border); color:var(--sc-text); }
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px solid var(--sc-focus); outline-offset:2px; }
+.axis-custom-select-trigger,.language-popup-select { min-height:var(--sc-control-height); height:var(--sc-control-height); }
+@media(max-width:768px) { .content { min-width:0; } .results-panel,.sidebar-wrapper,.chart-container,.results-table-wrapper { min-width:0; } }
+/* Icons share the same restrained, angular stroke language. */
+.sc-app-icon,.theme-icon-svg,.icon-expand,.icon-collapse { stroke-linecap:square; stroke-linejoin:miter; }
+.sc-app-icon path,.theme-icon-svg path { stroke-linecap:round; stroke-linejoin:miter; }

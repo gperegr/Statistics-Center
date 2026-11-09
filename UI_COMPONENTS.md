@@ -43,7 +43,7 @@ Todas as classes públicas usam `sc-`; modificadores usam `--`, partes internas 
 
 Use `disabled` para indisponibilidade nativa e `aria-busy="true"` durante processamento. Botões de ação dentro de um formulário precisam de `type="button"` para não enviar o formulário. A altura é 36 px no desktop e 44 px no celular. Ações principais usam o token `--sc-accent`; a cor da série de um gráfico tem um token independente.
 
-Botões, campos de texto e superfícies de dropdown compartilham `--sc-radius-field` (8 px). Painéis e diálogos usam o raio maior `--sc-radius-panel`.
+Botões e campos compartilham `--sc-radius-control` (4 px); menus e painéis compactos usam `--sc-radius-compact` (8 px), e painéis principais e diálogos usam `--sc-radius-panel` (12 px).
 
 ## Fundos e padding
 
