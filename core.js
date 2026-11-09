@@ -8,6 +8,10 @@ document.addEventListener('gesturestart', function (e) {
     const content = document.querySelector('.content');
     const panel = document.querySelector('.controls-panel');
     let isResizing = false;
+    try {
+        const savedWidth = Number(localStorage.getItem('parameterPanelWidth'));
+        if (savedWidth >= 320 && savedWidth <= 1120) content.style.setProperty('--sidebarWidth', savedWidth + 'px');
+    } catch (_) {}
 
     resizer.addEventListener('mousedown', function (e) {
         isResizing = true;
@@ -40,6 +44,7 @@ document.addEventListener('gesturestart', function (e) {
             isResizing = false;
             resizer.classList.remove('resizing');
             document.body.style.cursor = 'default';
+            try { localStorage.setItem('parameterPanelWidth', parseInt(content.style.getPropertyValue('--sidebarWidth'), 10)); } catch (_) {}
             resizer.classList.remove('resizing');
             document.body.style.cursor = 'default';
             // Trigger window resize to ensure charts update after drag ends
@@ -51,6 +56,9 @@ document.addEventListener('gesturestart', function (e) {
     window.toggleSidebar = function () {
         const content = document.querySelector('.content');
         content.classList.toggle('sidebar-closed');
+        const closed = content.classList.contains('sidebar-closed');
+        document.getElementById('sidebarToggle').setAttribute('aria-expanded', String(!closed));
+        panel.inert = closed;
         setTimeout(() => window.dispatchEvent(new Event('resize')), 305); // Resize charts after anim
     };
 
@@ -1190,6 +1198,32 @@ function installPlotlyExportPatch() {
             title: 'Download plot as SVG',
             icon: Plotly.Icons && Plotly.Icons.camera ? Plotly.Icons.camera : undefined,
             click: (gd) => downloadPlotAsSvg(gd)
+        });
+        addList.push({
+            name: 'copyChartImage', title: 'Copy chart image',
+            icon: Plotly.Icons && Plotly.Icons.camera ? Plotly.Icons.camera : undefined,
+            click: async (gd) => {
+                try {
+                    if (!navigator.clipboard || !window.ClipboardItem) throw new Error('Clipboard unavailable');
+                    const url = await Plotly.toImage(gd, { format: 'png', scale: 2 });
+                    const blob = await (await fetch(url)).blob();
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                } catch (_) { showError(currentLang === 'pt' ? 'Não foi possível copiar a imagem. Use o botão de baixar PNG.' : 'Could not copy the image. Use the PNG download button.'); }
+            }
+        });
+        addList.push({
+            name: 'downloadChartData', title: 'Download chart data (CSV)',
+            icon: Plotly.Icons && Plotly.Icons.disk ? Plotly.Icons.disk : (Plotly.Icons && Plotly.Icons.camera),
+            click: (gd) => {
+                const csvCell = value => '"' + String(value == null ? '' : value).replace(/"/g, '""') + '"';
+                const rows = [['series', 'index', 'x', 'y']];
+                (gd.data || []).forEach((trace, series) => {
+                    const xs = trace.x || [], ys = trace.y || [];
+                    for (let i = 0; i < Math.max(xs.length, ys.length); i++) rows.push([trace.name || `Series ${series + 1}`, i + 1, xs[i], ys[i]]);
+                });
+                const url = URL.createObjectURL(new Blob([rows.map(row => row.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }));
+                const a = document.createElement('a'); a.href = url; a.download = (gd.id || 'chart') + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }
         });
         merged.modeBarButtonsToAdd = addList;
 

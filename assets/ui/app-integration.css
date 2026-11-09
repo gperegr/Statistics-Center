@@ -134,3 +134,9 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
   ::view-transition-old(root),::view-transition-new(root) { animation-duration: 0s; }
 }
 .theme-transitioning,.theme-transitioning *,.theme-transitioning *::before,.theme-transitioning *::after { transition: background-color 320ms ease-in-out, color 320ms ease-in-out, border-color 320ms ease-in-out, fill 320ms ease-in-out, stroke 320ms ease-in-out, box-shadow 320ms ease-in-out !important; }
+input[aria-invalid="true"] { border-color:var(--sc-danger)!important; outline:2px solid color-mix(in srgb,var(--sc-danger) 25%, transparent); }
+@media(max-width:768px) {
+  .content.sidebar-closed { grid-template-columns:1fr; }
+  .content.sidebar-closed .sidebar-wrapper { display:none; }
+  .sidebar-toggle { display:flex!important; position:static; align-self:flex-end; width:auto; min-width:44px; margin-bottom:8px; }
+}
