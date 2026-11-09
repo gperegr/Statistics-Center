@@ -99,3 +99,5 @@
 @media(prefers-reduced-motion:no-preference) { .sc-selection-indicator { transition:transform .25s ease,width .25s ease,height .25s ease; }.sc-switch::after { transition:transform .18s ease; }.sc-button { transition:background .15s ease,color .15s ease; } }
 @media(max-width:700px) { .sc-menu__item,.sc-segmented > button,.sc-nav > button { min-height:44px; } }
 @media(prefers-contrast:more) { .sc-selection-indicator { border:2px solid var(--sc-text); }.sc-button--secondary { border-color:var(--sc-text); } }
+/* Pill-shaped interactive controls. */
+.sc-button,.sc-dropdown__trigger,.sc-input { border-radius:var(--sc-radius-pill); }
