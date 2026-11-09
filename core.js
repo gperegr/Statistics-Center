@@ -1412,11 +1412,24 @@ if (document.readyState === 'loading') {
 
 function toggleAboutModal() {
     const modal = document.getElementById('aboutModal');
-    modal.classList.toggle('open');
+    const open = modal.classList.toggle('open');
+    modal.setAttribute('aria-hidden', String(!open));
+    const trigger = document.querySelector('[aria-controls="aboutModal"]');
+    if (trigger) trigger.setAttribute('aria-expanded', String(open));
+    if (open) document.getElementById('blueprintGrid').focus();
+    else if (trigger) trigger.focus();
 }
 
-// Add 'tipAbout' translation manually since it's new
-// Extra translations merged into main object
+function setBlueprintGrid(enabled) {
+    document.documentElement.dataset.blueprintGrid = enabled ? 'on' : 'off';
+    const checkbox = document.getElementById('blueprintGrid');
+    if (checkbox) checkbox.checked = enabled;
+    try { localStorage.setItem('prismaBlueprintGrid', enabled ? 'on' : 'off'); } catch (_) {}
+}
+
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && document.getElementById('aboutModal').classList.contains('open')) toggleAboutModal();
+});
 // Horizontal analysis navigation: native touch scrolling, wheel translation, and a quiet ratchet cue.
 function initFunctionNavRail() {
     const rail = document.getElementById('functionNavTrack');
@@ -2818,6 +2831,7 @@ function initApp() {
         }
 
         // Theme Initialization
+        try { setBlueprintGrid(localStorage.getItem('prismaBlueprintGrid') === 'on'); } catch (_) { setBlueprintGrid(false); }
         const savedTheme = localStorage.getItem('appTheme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
         document.documentElement.setAttribute('data-theme', savedTheme);

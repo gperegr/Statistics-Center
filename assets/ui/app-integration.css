@@ -181,3 +181,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 @media(min-width:769px) {
   .header-controls > .app-btn-secondary,.language-trigger-btn { width:40px; min-width:40px; padding:0; }
 }
+/* Optional workspace grid follows the 8 px spacing scale; panels stay opaque. */
+:root { --sc-grid-line:rgba(61,80,166,.065); --sc-grid-major:rgba(61,80,166,.09); }
+:root[data-theme="dark"] { --sc-grid-line:rgba(172,186,255,.055); --sc-grid-major:rgba(172,186,255,.085); }
+:root[data-blueprint-grid="on"] .content { background-color:var(--sc-bg-primary); background-image:linear-gradient(var(--sc-grid-major) 1px,transparent 1px),linear-gradient(90deg,var(--sc-grid-major) 1px,transparent 1px),linear-gradient(var(--sc-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--sc-grid-line) 1px,transparent 1px); background-size:32px 32px,32px 32px,8px 8px,8px 8px; background-position:0 0; }
+:root[data-blueprint-grid="on"] .results-panel { background:transparent; }
+.settings-content { text-align:left; }
+.settings-content .modal-title { color:var(--sc-text); padding-right:32px; }
+.settings-content .modal-version { margin-bottom:20px; }
+.settings-body { margin:0; }
+.settings-option { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px; border:1px solid var(--sc-border); border-radius:var(--sc-radius-compact); background:var(--sc-bg-secondary); cursor:pointer; }
+.settings-option span { display:flex; flex-direction:column; gap:4px; }
+.settings-option small { color:var(--sc-text-secondary); font-size:var(--sc-font-control); line-height:1.4; }
