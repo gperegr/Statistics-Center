@@ -58,7 +58,9 @@ const normalPDF = (x, mean, std) => {
 
 const normalInv = (p) => {
     if (typeof jStat !== 'undefined') return jStat.normal.inv(p, 0, 1);
-    if (p <= 0 || p >= 1) return 0;
+    if (p === 0) return -Infinity;
+    if (p === 1) return Infinity;
+    if (!(p > 0 && p < 1)) return NaN;
     const a1 = -3.969683028665376e+01, a2 = 2.209460984245205e+02,
         a3 = -2.759285104469687e+02, a4 = 1.383577518672690e+02,
         a5 = -3.066479806614716e+01, a6 = 2.506628277459239e+00;
@@ -72,14 +74,14 @@ const normalInv = (p) => {
         d3 = 2.445134137142996e+00, d4 = 3.754408661907416e+00;
     let q = p - 0.5;
     let r, t;
-    if (Math.abs(q) <= 0.42) {
+    if (p >= 0.02425 && p <= 0.97575) {
         t = q * q;
         r = q * (((((a1 * t + a2) * t + a3) * t + a4) * t + a5) * t + a6) / (((((b1 * t + b2) * t + b3) * t + b4) * t + b5) * t + 1);
     } else {
         t = (q > 0) ? 1 - p : p;
-        r = Math.sqrt(-Math.log(t));
+        r = Math.sqrt(-2 * Math.log(t));
         r = (((((c1 * r + c2) * r + c3) * r + c4) * r + c5) * r + c6) / ((((d1 * r + d2) * r + d3) * r + d4) * r + 1);
-        if (q < 0) r = -r;
+        if (q > 0) r = -r;
     }
     return r;
 };
