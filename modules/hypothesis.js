@@ -118,7 +118,7 @@ const Hypothesis = {
                 // Group data
                 for (let i = 0; i < responseData.length; i++) {
                     const factor = factorData[i];
-                    if (factor === undefined || factor.trim() === '') continue;
+                    if (factor === undefined || factor.trim() === '' || !Number.isFinite(responseData[i])) continue;
                     if (!groups[factor]) groups[factor] = [];
                     groups[factor].push(responseData[i]);
                 }
@@ -141,6 +141,7 @@ const Hypothesis = {
     },
 
     runOneSampleTTest: function (data, mu) {
+        data = data.filter(Number.isFinite);
         const n = data.length;
         if (n < 2) throw new Error(translations[currentLang].errMinData);
 
@@ -166,6 +167,7 @@ const Hypothesis = {
     },
 
     runTTest: function (g1, g2, equalVariances) {
+        g1 = g1.filter(Number.isFinite); g2 = g2.filter(Number.isFinite);
         const n1 = g1.length, n2 = g2.length;
         if (n1 < 2 || n2 < 2) throw new Error(translations[currentLang].errMinDataGroups);
 
@@ -198,7 +200,7 @@ const Hypothesis = {
         if (n1 < 2 || n2 < 2) throw new Error(translations[currentLang].errMinDataGroups);
         if (n1 !== n2) throw new Error(translations[currentLang].errPairedLength);
 
-        const diffs = g1.map((v, i) => v - g2[i]).filter(v => v !== null && v !== undefined && !isNaN(v));
+        const diffs = g1.flatMap((v, i) => Number.isFinite(v) && Number.isFinite(g2[i]) ? [v - g2[i]] : []);
         const n = diffs.length;
         if (n < 2) throw new Error(translations[currentLang].errMinData);
 
@@ -229,6 +231,7 @@ const Hypothesis = {
     },
 
     runFTest: function (g1, g2) {
+        g1 = g1.filter(Number.isFinite); g2 = g2.filter(Number.isFinite);
         const n1 = g1.length, n2 = g2.length;
         if (n1 < 2 || n2 < 2) throw new Error(translations[currentLang].errFTestMinData || translations[currentLang].errMinDataGroups);
 
