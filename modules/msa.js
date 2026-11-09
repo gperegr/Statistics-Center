@@ -269,12 +269,12 @@ window.analyzeMsa = function () {
 
         tr.innerHTML = `
                     <td>${name}</td>
-                    <td>${metrics.var.toFixed(5)}</td>
-                    <td>${pctCont.toFixed(2)}%</td>
-                    <td>${metrics.sd.toFixed(5)}</td>
-                    <td>${metrics.sv.toFixed(5)}</td>
-                    <td>${metrics.pctSV.toFixed(2)}%</td>
-                    <td>${metrics.pctTol !== null ? metrics.pctTol.toFixed(2) + '%' : '-'}</td>
+                    <td>${formatResultNumber(metrics.var, 5)}</td>
+                    <td>${Number.isFinite(pctCont) ? formatResultNumber(pctCont, 2) + "%" : "-"}</td>
+                    <td>${formatResultNumber(metrics.sd, 5)}</td>
+                    <td>${formatResultNumber(metrics.sv, 5)}</td>
+                    <td>${Number.isFinite(metrics.pctSV) ? formatResultNumber(metrics.pctSV, 2) + "%" : "-"}</td>
+                    <td>${Number.isFinite(metrics.pctTol) ? formatResultNumber(metrics.pctTol, 2) + '%' : '-'}</td>
                 `;
         tbody.appendChild(tr);
     };

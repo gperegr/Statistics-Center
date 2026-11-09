@@ -184,9 +184,9 @@ const Capability = {
             cpm = (usl - lsl) / (6 * Math.sqrt(sigmaOverall ** 2 + (mean - target) ** 2));
         }
 
-        const fmt = (v) => v !== null && v !== undefined && isFinite(v) ? v.toFixed(3) : '-';
+        const fmt = (v) => formatResultNumber(v, 4);
         const fmtPPM = (v) => v !== null && v !== undefined && isFinite(v) ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '-';
-        const fmtPCT = (v) => v !== null && v !== undefined && isFinite(v) ? v.toFixed(4) + '%' : '-';
+        const fmtPCT = (v) => Number.isFinite(v) ? formatResultNumber(v, 4) + '%' : '-';
 
         document.getElementById('val-lsl').textContent = isNaN(lsl) ? '-' : lsl;
         document.getElementById('val-usl').textContent = isNaN(usl) ? '-' : usl;

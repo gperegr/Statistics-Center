@@ -141,15 +141,15 @@ const Graphs = {
                 const row = document.createElement('tr');
                 row.innerHTML += `<td><b>${col}</b></td><td>${grp}</td><td>${vals.length}</td>`;
 
-                if (stats.mean) row.innerHTML += `<td>${jStat.mean(vals).toFixed(4)}</td>`;
-                if (stats.stdev) row.innerHTML += `<td>${jStat.stdev(vals, true).toFixed(4)}</td>`;
-                if (stats.var) row.innerHTML += `<td>${jStat.variance(vals, true).toFixed(4)}</td>`;
-                if (stats.min) row.innerHTML += `<td>${jStat.min(vals).toFixed(4)}</td>`;
-                if (stats.max) row.innerHTML += `<td>${jStat.max(vals).toFixed(4)}</td>`;
-                if (stats.median) row.innerHTML += `<td>${jStat.median(vals).toFixed(4)}</td>`;
+                if (stats.mean) row.innerHTML += `<td>${formatResultNumber(jStat.mean(vals), 4)}</td>`;
+                if (stats.stdev) row.innerHTML += `<td>${formatResultNumber(jStat.stdev(vals, true), 4)}</td>`;
+                if (stats.var) row.innerHTML += `<td>${formatResultNumber(jStat.variance(vals, true), 4)}</td>`;
+                if (stats.min) row.innerHTML += `<td>${formatResultNumber(jStat.min(vals), 4)}</td>`;
+                if (stats.max) row.innerHTML += `<td>${formatResultNumber(jStat.max(vals), 4)}</td>`;
+                if (stats.median) row.innerHTML += `<td>${formatResultNumber(jStat.median(vals), 4)}</td>`;
                 if (stats.quartiles) {
-                    row.innerHTML += `<td>${jStat.percentile(vals, 0.25).toFixed(4)}</td>`;
-                    row.innerHTML += `<td>${jStat.percentile(vals, 0.75).toFixed(4)}</td>`;
+                    row.innerHTML += `<td>${formatResultNumber(jStat.percentile(vals, 0.25), 4)}</td>`;
+                    row.innerHTML += `<td>${formatResultNumber(jStat.percentile(vals, 0.75), 4)}</td>`;
                 }
                 tbody.appendChild(row);
             });

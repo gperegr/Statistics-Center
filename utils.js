@@ -29,6 +29,12 @@ function formatPValueHtml(value) {
     if (!Number.isFinite(value) || value < 0 || value > 1) return 'N/A';
     return value < 0.0001 ? '&lt;0.0001' : value.toFixed(4);
 }
+// Keep small, non-zero results distinguishable from zero in result tables.
+function formatResultNumber(value, digits = 4) {
+    if (!Number.isFinite(value)) return '-';
+    if (value !== 0 && Math.abs(value) < 0.5 * Math.pow(10, -digits)) return value.toExponential(3);
+    return value.toFixed(digits);
+}
 const getMin = (arr) => Math.min(...arr);
 const getMax = (arr) => Math.max(...arr);
 const getMean = (data) => data.reduce((a, b) => a + b, 0) / data.length;
