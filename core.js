@@ -1386,14 +1386,17 @@ function initFunctionNavRail() {
     rail.dataset.initialized = 'true';
 
     const tabs = () => [...rail.querySelectorAll('[role="tab"]')];
-    let previousScroll = rail.scrollLeft;
-    let accumulatedDistance = 0;
+    const wheelMotion = { position: rail.scrollLeft, target: rail.scrollLeft, frame: 0, lastTime: 0 };
+    const scrollKeys = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ']);
     let audioContext = null;
-    let userScrollUntil = 0;
+    let noiseBuffer = null;
+    let soundArmed = false;
+    let lastMovement = 0;
+    let lastPosition = rail.scrollLeft;
     let lastScrollTime = performance.now();
-    let queuedTicks = [];
-    let tickTimer = null;
-    let tickNumber = 0;
+    let movementDistance = 0;
+    let movementSpeed = 0;
+    let lastToothTime = -Infinity;
 
     const updateEdges = () => {
         const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
@@ -1406,93 +1409,166 @@ function initFunctionNavRail() {
         if (!audioContext) {
             const AudioContextClass = window.AudioContext || window.webkitAudioContext;
             if (!AudioContextClass) return;
-            try { audioContext = new AudioContextClass(); } catch { return; }
+            try { audioContext = new AudioContextClass({ latencyHint: 'interactive' }); } catch { return; }
         }
         if (audioContext.state === 'suspended') audioContext.resume().catch(() => {});
     };
 
-    const playTooth = () => {
-        if (!audioContext || audioContext.state !== 'running') return;
-        const time = audioContext.currentTime + 0.004;
-        const pitch = 1450 + (tickNumber++ % 3) * 170;
-        const gear = audioContext.createOscillator();
-        const gearGain = audioContext.createGain();
-        gear.type = 'triangle';
-        gear.frequency.setValueAtTime(pitch, time);
-        gear.frequency.exponentialRampToValueAtTime(pitch * 0.48, time + 0.024);
-        gearGain.gain.setValueAtTime(0.0001, time);
-        gearGain.gain.exponentialRampToValueAtTime(0.038, time + 0.002);
-        gearGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.032);
-        gear.connect(gearGain).connect(audioContext.destination);
-        gear.start(time);
-        gear.stop(time + 0.034);
-
-        const pawl = audioContext.createOscillator();
-        const pawlGain = audioContext.createGain();
-        pawl.type = 'square';
-        pawl.frequency.setValueAtTime(260 + (tickNumber % 2) * 28, time);
-        pawl.frequency.exponentialRampToValueAtTime(105, time + 0.014);
-        pawlGain.gain.setValueAtTime(0.0001, time);
-        pawlGain.gain.exponentialRampToValueAtTime(0.012, time + 0.001);
-        pawlGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.017);
-        pawl.connect(pawlGain).connect(audioContext.destination);
-        pawl.start(time);
-        pawl.stop(time + 0.019);
-    };
-
-    const drainTickQueue = () => {
-        tickTimer = null;
-        const speed = queuedTicks.shift();
-        if (speed === undefined) return;
-        playTooth();
-        const interval = Math.max(34, Math.min(84, 78 - speed * 11));
-        if (queuedTicks.length) tickTimer = window.setTimeout(drainTickQueue, interval);
-    };
-
-    const queueTeeth = (count, speed) => {
-        const audibleSteps = Math.min(16, count);
-        for (let i = 0; i < audibleSteps && queuedTicks.length < 18; i++) queuedTicks.push(speed);
-        if (!tickTimer && queuedTicks.length) tickTimer = window.setTimeout(drainTickQueue, 0);
-    };
-
-    const onScroll = () => {
+    const armScrollSound = event => {
+        if (!event.isTrusted || event.ctrlKey || event.metaKey) return;
+        if (event.type === 'keydown' && (!scrollKeys.has(event.key) || event.target.closest('input,select,textarea,[contenteditable]'))) return;
         const now = performance.now();
-        const delta = rail.scrollLeft - previousScroll;
+        if (!soundArmed || now - lastMovement > 220) {
+            lastPosition = rail.scrollLeft;
+            lastScrollTime = now;
+            movementDistance = 0;
+            movementSpeed = 0;
+        }
+        soundArmed = true;
+        lastMovement = now;
+        unlockAudio();
+    };
+
+    const prepareNoiseBuffer = () => {
+        if (noiseBuffer || !audioContext) return;
+        const length = Math.ceil(audioContext.sampleRate * 0.08);
+        noiseBuffer = audioContext.createBuffer(1, length, audioContext.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        let smooth = 0;
+        for (let i = 0; i < data.length; i++) {
+            smooth = 0.65 * smooth + 0.35 * (Math.random() * 2 - 1);
+            data[i] = smooth;
+        }
+    };
+
+    const playGearTooth = () => {
+        if (!audioContext || audioContext.state !== 'running' || document.visibilityState !== 'visible') return;
+        const now = performance.now();
+        if (now - lastToothTime < 28) return;
+        lastToothTime = now;
+        prepareNoiseBuffer();
+        const context = audioContext;
+        const time = context.currentTime + 0.002;
+        const intensity = Math.min(1, movementSpeed / 1400);
+        const level = 0.55 + intensity * 0.4;
+        const pitch = 0.85 + intensity * 0.35;
+        const duration = 0.024;
+
+        const click = context.createBufferSource();
+        const band = context.createBiquadFilter();
+        const lowpass = context.createBiquadFilter();
+        const clickGain = context.createGain();
+        click.buffer = noiseBuffer;
+        band.type = 'bandpass';
+        band.frequency.value = 1350 * pitch;
+        band.Q.value = 0.75;
+        lowpass.type = 'lowpass';
+        lowpass.frequency.value = 2600;
+        clickGain.gain.setValueAtTime(0, time);
+        clickGain.gain.linearRampToValueAtTime(0.034 * level, time + 0.0015);
+        clickGain.gain.exponentialRampToValueAtTime(0.00001, time + duration);
+        click.connect(band).connect(lowpass).connect(clickGain).connect(context.destination);
+        click.start(time, Math.random() * 0.01, duration);
+        click.stop(time + duration);
+
+        const body = context.createOscillator();
+        const bodyGain = context.createGain();
+        body.type = 'sine';
+        body.frequency.setValueAtTime(185 * pitch, time);
+        body.frequency.exponentialRampToValueAtTime(145 * pitch, time + duration);
+        bodyGain.gain.setValueAtTime(0, time);
+        bodyGain.gain.linearRampToValueAtTime(0.013 * level, time + 0.0015);
+        bodyGain.gain.exponentialRampToValueAtTime(0.00001, time + duration);
+        body.connect(bodyGain).connect(context.destination);
+        body.start(time);
+        body.stop(time + duration);
+
+        const ring = context.createOscillator();
+        const ringGain = context.createGain();
+        ring.type = 'sine';
+        ring.frequency.value = 2100 * pitch;
+        ringGain.gain.setValueAtTime(0, time);
+        ringGain.gain.linearRampToValueAtTime(0.003 * level, time + 0.001);
+        ringGain.gain.exponentialRampToValueAtTime(0.00001, time + duration);
+        ring.connect(ringGain).connect(context.destination);
+        ring.start(time);
+        ring.stop(time + duration);
+    };
+
+    const smoothWheelScroll = now => {
+        const elapsed = Math.min(32, now - wheelMotion.lastTime || 16);
+        wheelMotion.lastTime = now;
+        const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduceMotion) {
+            wheelMotion.position = Math.max(0, Math.min(maxScroll, wheelMotion.target));
+            wheelMotion.target = wheelMotion.position;
+        } else {
+            const amount = 1 - Math.pow(0.78, elapsed / 16.67);
+            wheelMotion.position += (wheelMotion.target - wheelMotion.position) * amount;
+            if (wheelMotion.target < 0) wheelMotion.target += (0 - wheelMotion.target) * amount * 0.72;
+            else if (wheelMotion.target > maxScroll) wheelMotion.target += (maxScroll - wheelMotion.target) * amount * 0.72;
+        }
+        const bounded = Math.max(0, Math.min(maxScroll, wheelMotion.position));
+        const overshoot = wheelMotion.position - bounded;
+        rail.scrollLeft = bounded;
+        rail.style.setProperty('--wheel-elastic-offset', `${Math.max(-28, Math.min(28, -overshoot * 0.32))}px`);
+        rail.classList.toggle('wheel-elastic-active', Math.abs(overshoot) >= 0.25);
+        if (Math.abs(wheelMotion.target - bounded) < 0.25 && Math.abs(overshoot) < 0.5) {
+            wheelMotion.position = bounded;
+            wheelMotion.target = bounded;
+            wheelMotion.frame = 0;
+            rail.style.setProperty('--wheel-elastic-offset', '0px');
+            rail.classList.remove('wheel-elastic-active');
+            return;
+        }
+        wheelMotion.frame = requestAnimationFrame(smoothWheelScroll);
+    };
+
+    rail.addEventListener('wheel', armScrollSound, { capture: true, passive: true });
+    rail.addEventListener('wheel', event => {
+        const wheelDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+        if (event.ctrlKey || event.metaKey || wheelDelta === 0) return;
+        event.preventDefault();
+        const unit = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 32 :
+            event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? rail.clientWidth : 1;
+        const delta = Math.max(-180, Math.min(180, wheelDelta * unit));
+        const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
+        if (!wheelMotion.frame) {
+            wheelMotion.position = rail.scrollLeft;
+            wheelMotion.target = wheelMotion.position;
+            wheelMotion.lastTime = performance.now();
+        }
+        wheelMotion.target = Math.max(-240, Math.min(maxScroll + 240, wheelMotion.target + delta));
+        if (!wheelMotion.frame) wheelMotion.frame = requestAnimationFrame(smoothWheelScroll);
+    }, { passive: false });
+
+    rail.addEventListener('pointerdown', armScrollSound, { capture: true, passive: true });
+    rail.addEventListener('keydown', armScrollSound, { capture: true, passive: true });
+    rail.addEventListener('pointermove', event => {
+        if (soundArmed && (event.pointerType === 'touch' || event.pointerType === 'pen')) lastMovement = performance.now();
+    }, { passive: true });
+
+    rail.addEventListener('scroll', () => {
+        const now = performance.now();
+        const position = rail.scrollLeft;
+        const travel = Math.abs(position - lastPosition);
         const elapsed = Math.max(8, now - lastScrollTime);
-        previousScroll = rail.scrollLeft;
+        lastPosition = position;
         lastScrollTime = now;
         updateEdges();
-        if (now > userScrollUntil || Math.abs(delta) < 0.5) return;
-        accumulatedDistance += delta;
-        const speed = Math.abs(delta) / elapsed;
-        let steps = 0;
-        while (Math.abs(accumulatedDistance) >= 27 && steps < 16) {
-            accumulatedDistance -= Math.sign(accumulatedDistance) * 27;
-            steps++;
+        if (!soundArmed || now - lastMovement > 220 || travel < 0.25) {
+            if (now - lastMovement > 220) { soundArmed = false; movementDistance = 0; }
+            return;
         }
-        if (steps) queueTeeth(steps, speed);
-    };
-
-    rail.addEventListener('wheel', event => {
-        const verticalDominates = Math.abs(event.deltaY) > Math.abs(event.deltaX);
-        if (!verticalDominates || event.deltaY === 0) return;
-        event.preventDefault();
-        userScrollUntil = performance.now() + 1100;
-        unlockAudio();
-        const wheelScale = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 32 :
-            event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? rail.clientWidth : 1;
-        rail.scrollLeft += event.deltaY * wheelScale;
-    }, { passive: false });
-    rail.addEventListener('pointerdown', event => {
-        if (event.pointerType === 'touch' || event.pointerType === 'pen') {
-            userScrollUntil = performance.now() + 1300;
-            unlockAudio();
-        }
+        lastMovement = now;
+        const instantaneousSpeed = travel * 1000 / elapsed;
+        movementSpeed += (instantaneousSpeed - movementSpeed) * 0.4;
+        movementDistance += travel;
+        if (movementDistance < 16) return;
+        movementDistance %= 16;
+        playGearTooth();
     }, { passive: true });
-    rail.addEventListener('pointermove', event => {
-        if (event.pointerType === 'touch' || event.pointerType === 'pen') userScrollUntil = performance.now() + 450;
-    }, { passive: true });
-    rail.addEventListener('scroll', onScroll, { passive: true });
 
     rail.addEventListener('keydown', event => {
         if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
