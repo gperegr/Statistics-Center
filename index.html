@@ -115,6 +115,7 @@
                 <div class="sidebar-resizer" id="sidebarResizer"></div>
                 <!-- Controls Panel -->
                 <div class="controls-panel" id="parameterPanel">
+                    <button type="button" class="mobile-parameters-close app-btn-secondary" onclick="toggleSidebar()" data-i18n="btnViewResults">View results</button>
 
 
 
@@ -230,6 +231,7 @@
                                     <label class="control-label" data-i18n="lblUSL">Upper Spec Limit (USL)</label>
                                     <input type="number" id="uslValue" placeholder="Optional" step="any"
                                         data-i18n-tooltip="tipUSL">
+                                    <div id="limitsError" class="field-error" role="alert"></div>
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label" data-i18n="lblTarget">Process Target</label>
@@ -1650,6 +1652,7 @@
         <button type="button" id="ctxAxisScaleBtn" class="chart-context-item">Axis Scale Settings</button>
         <button type="button" id="ctxPercentileBtn" class="chart-context-item">Add Percentile Line</button>
     </div>
+    <div id="actionFeedback" class="action-feedback" role="status" aria-live="polite"></div>
     <div id="percentileLineDeletePopover" class="percentile-line-delete-popover hidden" aria-hidden="true">
         <button type="button" id="percentileLineDeleteBtn" class="percentile-line-delete-btn" title="Delete line">&#128465;</button>
     </div>

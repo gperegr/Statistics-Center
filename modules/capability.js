@@ -14,16 +14,18 @@ const Capability = {
         const lsl = parseFloat(document.getElementById('lslValue').value);
         const usl = parseFloat(document.getElementById('uslValue').value);
         const limitFields = ['lslValue', 'uslValue'].map(id => document.getElementById(id));
+        const limitsError = document.getElementById('limitsError');
         limitFields.forEach(field => {
             if (!field.dataset.limitValidationBound) {
-                field.addEventListener('input', () => limitFields.forEach(input => input.removeAttribute('aria-invalid')));
+                field.addEventListener('input', () => { limitFields.forEach(input => { input.removeAttribute('aria-invalid'); input.removeAttribute('aria-describedby'); }); limitsError.textContent = ''; });
                 field.dataset.limitValidationBound = 'true';
             }
         });
-        limitFields.forEach(field => field.removeAttribute('aria-invalid'));
+        limitFields.forEach(field => { field.removeAttribute('aria-invalid'); field.removeAttribute('aria-describedby'); });
+        limitsError.textContent = '';
         if (Number.isFinite(lsl) && Number.isFinite(usl) && lsl >= usl) {
-            limitFields.forEach(field => field.setAttribute('aria-invalid', 'true'));
-            showError(currentLang === 'pt' ? 'O limite inferior deve ser menor que o limite superior. Corrija os dois campos destacados.' : 'The lower limit must be less than the upper limit. Check the highlighted fields.');
+            limitFields.forEach(field => { field.setAttribute('aria-invalid', 'true'); field.setAttribute('aria-describedby', 'limitsError'); });
+            limitsError.textContent = currentLang === 'pt' ? 'O limite inferior deve ser menor que o limite superior.' : 'The lower limit must be less than the upper limit.';
             limitFields[0].focus();
             return;
         }

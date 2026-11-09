@@ -59,6 +59,10 @@ document.addEventListener('gesturestart', function (e) {
         const closed = content.classList.contains('sidebar-closed');
         document.getElementById('sidebarToggle').setAttribute('aria-expanded', String(!closed));
         panel.inert = closed;
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            const destination = closed ? document.getElementById('sidebarToggle') : panel;
+            destination.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+        }
         setTimeout(() => window.dispatchEvent(new Event('resize')), 305); // Resize charts after anim
     };
 
@@ -1208,6 +1212,7 @@ function installPlotlyExportPatch() {
                     const url = await Plotly.toImage(gd, { format: 'png', scale: 2 });
                     const blob = await (await fetch(url)).blob();
                     await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                    showActionFeedback(currentLang === 'pt' ? 'Imagem copiada.' : 'Image copied.');
                 } catch (_) { showError(currentLang === 'pt' ? 'Não foi possível copiar a imagem. Use o botão de baixar PNG.' : 'Could not copy the image. Use the PNG download button.'); }
             }
         });
@@ -2421,6 +2426,16 @@ function reparseData() {
     parseAndLoadData();
 }
 
+let actionFeedbackTimer;
+function showActionFeedback(message) {
+    const el = document.getElementById('actionFeedback');
+    if (!el) return;
+    el.textContent = message;
+    el.classList.add('visible');
+    clearTimeout(actionFeedbackTimer);
+    actionFeedbackTimer = setTimeout(() => el.classList.remove('visible'), 2600);
+}
+
 function parseAndLoadData() {
     const text = document.getElementById('textInput').value;
     const statusDiv = document.getElementById('data-status');
@@ -2537,6 +2552,7 @@ function parseAndLoadData() {
     const numCols = Object.keys(dataset).length;
     statusDiv.textContent = `Found ${numCols} numeric columns, ${validRows} rows.`;
     statusDiv.className = numCols > 0 ? 'success-msg' : 'error-msg';
+    if (numCols > 0) showActionFeedback(currentLang === 'pt' ? 'Dados carregados.' : 'Data loaded.');
 
     updateColumnSelectors();
     switchTab(currentMode); // Ensure UI updates (unhide views/controls)
