@@ -31,7 +31,7 @@
     <div class="app-container">
         <div class="main-header">
             <div class="top-row">
-                <div class="header-branding">
+                <div class="header-branding"><svg class="sc-brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18h16M5 16c3 0 3-9 7-9s4 9 7 9M8 20h8"/></svg>
                     
                     <h1 class="title" data-i18n="appTitle">Statistics Center</h1>
                     <span id="devEnvironmentTag" class="dev-environment-tag hidden">Development Environment</span>
@@ -47,7 +47,7 @@
                         <button class="language-trigger-btn" id="languageMenuBtn" onclick="toggleLanguagePopup()"
                             data-i18n-tooltip="tipLang" aria-label="Select language" aria-expanded="false"
                             aria-controls="languagePopup">
-                            <img class="lang-icon" src="assets/images/globe-language.svg" alt="" aria-hidden="true">
+                            <svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
                             <span id="languageCurrentCode">EN</span>
                         </button>
                         <div class="language-popup" id="languagePopup">
@@ -67,35 +67,21 @@
 
 
 
-                    <button class="app-btn-secondary" onclick="saveData()" data-i18n="btnSave"
-                        data-i18n-tooltip="tipSave">Save</button>
-                    <button class="app-btn-secondary" onclick="loadData()" data-i18n="btnLoad"
-                        data-i18n-tooltip="tipLoad">Load</button>
-                    <button class="app-btn-secondary" onclick="resetApp()" data-i18n="btnReset"
-                        data-i18n-tooltip="tipReset">
-                        <span class="reset-icon">⟳</span> Reset
-                    </button>
+                    <button class="app-btn-secondary" onclick="saveData()"
+                        data-i18n-tooltip="tipSave"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h12l3 3v13H4V4zM8 4v6h8V4M8 20v-7h8v7"/></svg><span data-i18n="btnSave">Save</span></button>
+                    <button class="app-btn-secondary" onclick="loadData()"
+                        data-i18n-tooltip="tipLoad"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h6l2 2h8v11H4zM12 10v6M9 13l3 3 3-3"/></svg><span data-i18n="btnLoad">Load</span></button>
+                    <button class="app-btn-secondary" onclick="resetApp()"
+                        data-i18n-tooltip="tipReset"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M19 12a7 7 0 1 0-2 5"/></svg><span data-i18n="btnReset">Reset</span></button>
                     <!-- Theme Toggle -->
-                    <button class="app-btn-secondary" onclick="toggleTheme()" data-i18n-tooltip="tipTheme">
+                    <button class="app-btn-secondary" onclick="toggleTheme()" aria-label="Toggle theme" data-i18n-tooltip="tipTheme">
                         <span id="theme-icon" style="display: flex; align-items: center;">
-                            <svg class="theme-icon-svg" viewBox="0 0 192 192">
-                                <path d="M97.75342,159.1499c-7.21631,0-14.48438-1.22217-21.48633-3.75342c-16.83789-6.08643-30.00342-18.47949-37.07178-34.89551
-	c-7.06836-16.4165-7.02344-34.49756,0.12598-50.9126c10.68213-24.5249,35.88184-39.90137,62.70947-38.25977l11.64746,0.7124
-	l-9.63525,6.58301c-9.13037,6.23828-15.82861,15.1123-19.37061,25.66309c-8.08691,24.08887,3.64258,51.31641,26.70361,61.98633
-	c10.00391,4.62793,20.95654,5.88086,31.67188,3.61914l11.41846-2.40869l-7.53955,8.90723
-	C134.49414,151.07764,116.2959,159.1499,97.75342,159.1499z M90.37402,39.74658
-	c-19.08057,2.66113-35.875,15.02881-43.71777,33.03613c-6.25781,14.3667-6.29785,30.18994-0.11279,44.5542
-	c6.18457,14.36426,17.70654,25.20898,32.44336,30.53613c18.33105,6.62744,38.76221,2.99268,53.79688-8.88232
-	c-8.48145-0.00684-16.87842-1.80713-24.76709-5.45654c-13.02539-6.02637-23.36182-16.68799-29.10498-30.02002
-	c-5.74365-13.33203-6.39111-28.16748-1.82324-41.77295C79.89404,53.38379,84.41162,45.93408,90.37402,39.74658z" />
-                            </svg>
+                            <svg class="theme-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15A8 8 0 0 1 9 4a8 8 0 1 0 11 11"/></svg>
                         </span>
                     </button>
                     <!-- About Button -->
                     <button class="app-btn-secondary" onclick="toggleAboutModal()" data-i18n-tooltip="tipAbout"
-                        data-i18n="btnAbout">
-                        About
-                    </button>
+                       ><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18M12 11v5M12 8h.01"/></svg><span data-i18n="btnAbout">About</span></button>
                     <input type="file" id="stateFileInput" accept=".json" style="display:none;"
                         onchange="handleStateUpload(this)">
                 </div>
@@ -106,21 +92,21 @@
             <!-- Horizontal function navigation -->
             <nav class="function-nav-shell" id="functionNav" aria-label="Analysis functions">
                 <div class="function-nav-track" id="functionNavTrack" role="tablist" aria-label="Analysis functions">
-                <button type="button" class="function-nav-item active" id="tab-normal" role="tab" aria-selected="true" tabindex="0" onclick="switchTab('normal')" data-i18n="tabNormal" data-i18n-tooltip="tipTabNormal">Normal Distribution</button>
-                <button type="button" class="function-nav-item" id="tab-multi" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('multi')" data-i18n="tabMulti" data-i18n-tooltip="tipTabMulti">Multi-Distribution</button>
-                <button type="button" class="function-nav-item" id="tab-graphs" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('graphs')" data-i18n="tabGraphs" data-i18n-tooltip="tipTabGraphs">Descriptive Statistics</button>
-                <button type="button" class="function-nav-item" id="tab-montecarlo" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('montecarlo')" data-i18n="tabMonteCarlo" data-i18n-tooltip="tipTabMonteCarlo">Monte Carlo</button>
-                <button type="button" class="function-nav-item" id="tab-pareto" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('pareto')" data-i18n="tabPareto" data-i18n-tooltip="tipTabPareto">Pareto Analysis</button>
-                <button type="button" class="function-nav-item" id="tab-capability" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('capability')" data-i18n="tabCapability" data-i18n-tooltip="tipStabilityCapRec">Capability</button>
-                <button type="button" class="function-nav-item" id="tab-spc" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('spc')" data-i18n="tabSpc" data-i18n-tooltip="tipStabilityCapRec">Control Charts</button>
-                <button type="button" class="function-nav-item" id="tab-msa" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('msa')" data-i18n="tabMSA" data-i18n-tooltip="tipTabMSA">MSA / Gage R&R</button>
-                <button type="button" class="function-nav-item" id="tab-tolerance" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('tolerance')" data-i18n="tabTolerance" data-i18n-tooltip="tipTabTolerance">Tolerance Interval</button>
-                <button type="button" class="function-nav-item" id="tab-hypothesis" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('hypothesis')" data-i18n="tabHypothesis" data-i18n-tooltip="tipTabHypothesis">Hypothesis Test</button>
-                <button type="button" class="function-nav-item" id="tab-regression" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('regression')" data-i18n="tabRegression" data-i18n-tooltip="tipTabRegression">Regression & Correlation</button>
-                <button type="button" class="function-nav-item" id="tab-doe" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('doe')" data-i18n="tabDOE">Design of Experiments (DOE)</button>
-                <button type="button" class="function-nav-item" id="tab-weibull" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('weibull')" data-i18n="tabWeibull" data-i18n-tooltip="tipTabWeibull">Weibull Analysis</button>
-                <button type="button" class="function-nav-item" id="tab-weibayes" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('weibayes')" data-i18n="tabWeibayes" data-i18n-tooltip="tipTabWeibayes">Weibayes Reliability</button>
-                <button type="button" class="function-nav-item" id="tab-warranty" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('warranty')" data-i18n="tabWarranty" data-i18n-tooltip="tipTabWarranty">Warranty Prediction</button>
+                <button type="button" class="function-nav-item active" id="tab-normal" role="tab" aria-selected="true" tabindex="0" onclick="switchTab('normal')" data-i18n-tooltip="tipTabNormal"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19h18M4 18c4 0 3-12 8-12s4 12 8 12"/></svg><span data-i18n="tabNormal">Normal Distribution</span></button>
+                <button type="button" class="function-nav-item" id="tab-multi" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('multi')" data-i18n-tooltip="tipTabMulti"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19h18M3 18c3 0 3-9 7-9s4 9 7 9M7 18c3 0 3-13 7-13s4 13 7 13"/></svg><span data-i18n="tabMulti">Multi-Distribution</span></button>
+                <button type="button" class="function-nav-item" id="tab-graphs" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('graphs')" data-i18n-tooltip="tipTabGraphs"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V5M4 20h16M8 16v-5M12 16V7M16 16v-3M20 16V9"/></svg><span data-i18n="tabGraphs">Descriptive Statistics</span></button>
+                <button type="button" class="function-nav-item" id="tab-montecarlo" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('montecarlo')" data-i18n-tooltip="tipTabMonteCarlo"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1M8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01"/></svg><span data-i18n="tabMonteCarlo">Monte Carlo</span></button>
+                <button type="button" class="function-nav-item" id="tab-pareto" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('pareto')" data-i18n-tooltip="tipTabPareto"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V5M4 20h17M7 17v-7h3v7M12 17v-5h3v5M17 17v-3h3v3M7 7l5-3 5-1"/></svg><span data-i18n="tabPareto">Pareto Analysis</span></button>
+                <button type="button" class="function-nav-item" id="tab-capability" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('capability')" data-i18n-tooltip="tipStabilityCapRec"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5v14M20 5v14M6 18c3 0 2-12 6-12s3 12 6 12M8 21h8"/></svg><span data-i18n="tabCapability">Capability</span></button>
+                <button type="button" class="function-nav-item" id="tab-spc" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('spc')" data-i18n-tooltip="tipStabilityCapRec"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 18h18M3 12h18M4 15l4-4 3 3 4-6 5 3"/></svg><span data-i18n="tabSpc">Control Charts</span></button>
+                <button type="button" class="function-nav-item" id="tab-msa" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('msa')" data-i18n-tooltip="tipTabMSA"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18l14-14 3 3L7 21H4v-3M12 10l2 2M9 13l2 2M15 7l2 2"/></svg><span data-i18n="tabMSA">MSA / Gage R&R</span></button>
+                <button type="button" class="function-nav-item" id="tab-tolerance" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('tolerance')" data-i18n-tooltip="tipTabTolerance"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5v14M20 5v14M7 12h10M7 12l3-3M7 12l3 3M17 12l-3-3M17 12l-3 3"/></svg><span data-i18n="tabTolerance">Tolerance Interval</span></button>
+                <button type="button" class="function-nav-item" id="tab-hypothesis" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('hypothesis')" data-i18n-tooltip="tipTabHypothesis"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M5 17c3 0 3-10 7-10s4 10 7 10M17 5v8M15 7l2-2 2 2"/></svg><span data-i18n="tabHypothesis">Hypothesis Test</span></button>
+                <button type="button" class="function-nav-item" id="tab-regression" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('regression')" data-i18n-tooltip="tipTabRegression"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4M4 20h16M6 17l12-11M8 13h.01M12 12h.01M15 7h.01M18 9h.01"/></svg><span data-i18n="tabRegression">Regression & Correlation</span></button>
+                <button type="button" class="function-nav-item" id="tab-doe" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('doe')"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6zM7 6v2M6 7h2M16 17h2"/></svg><span data-i18n="tabDOE">Design of Experiments (DOE)</span></button>
+                <button type="button" class="function-nav-item" id="tab-weibull" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('weibull')" data-i18n-tooltip="tipTabWeibull"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4M4 20h16M6 18c3-1 3-10 7-11 3-1 4 4 7 10"/></svg><span data-i18n="tabWeibull">Weibull Analysis</span></button>
+                <button type="button" class="function-nav-item" id="tab-weibayes" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('weibayes')" data-i18n-tooltip="tipTabWeibayes"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6zM8 14l3-3 2 2 3-4"/></svg><span data-i18n="tabWeibayes">Weibayes Reliability</span></button>
+                <button type="button" class="function-nav-item" id="tab-warranty" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('warranty')" data-i18n-tooltip="tipTabWarranty"><svg class="sc-app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v15H4zM4 9h16M8 3v4M16 3v4M8 15l3 2 5-5"/></svg><span data-i18n="tabWarranty">Warranty Prediction</span></button>
                 </div>
             </nav>
 

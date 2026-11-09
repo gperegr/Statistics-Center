@@ -114,3 +114,9 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
   .controls-panel { margin-top:0; padding:var(--sc-padding-panel); }
 }
 @media(prefers-reduced-motion:reduce) { .js-plotly-plot .scatterlayer .js-line { filter:none; } }
+/* Shared line icons for the application identity and navigation. */
+.sc-app-icon,.theme-icon-svg { width:18px; height:18px; flex:none; display:block; fill:none; stroke:currentColor; }
+.theme-icon-svg path { fill:none; }
+.sc-brand-mark { width:36px; height:36px; flex:none; padding:6px; border:1px solid var(--sc-border); border-radius:10px; color:var(--sc-accent); background:var(--sc-bg-secondary); }
+.function-nav-item,.header-controls > .app-btn-secondary,.language-trigger-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+.function-nav-item .sc-app-icon { width:17px; height:17px; }
