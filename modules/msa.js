@@ -30,6 +30,10 @@ window.analyzeMsa = function () {
         showError(translations[currentLang].errMsaLength);
         return;
     }
+    if (Y.some(value => !Number.isFinite(value)) || P.some(value => !value.trim()) || O.some(value => !value.trim())) {
+        showError(currentLang === 'pt' ? 'Preencha as medições numéricas, peças e operadores em todas as linhas antes de executar o MSA.' : 'Provide numeric measurements, parts and operators on every row before running MSA.');
+        return;
+    }
 
     // Group Data Structure
     // Map: Part -> Operator -> [Measurements]
@@ -68,9 +72,14 @@ window.analyzeMsa = function () {
     const nRep = totalN / (nParts * nOps);
 
     // Fix: MSA Robustness Check
-    if (!Number.isInteger(nRep)) {
-        showError(`${translations[currentLang].errMsaUnbalanced || 'Warning: Data is unbalanced'} (${nRep.toFixed(2)}).`);
-        // Continue but warn
+    const balanced = Number.isInteger(nRep) && nRep >= 2 && parts.every(p => operators.every(o => (structure[p]?.[o] || []).length === nRep));
+    if (!balanced) {
+        showError(currentLang === 'pt' ? 'O estudo deve ter o mesmo número de medições (pelo menos duas) para cada combinação de peça e operador.' : 'The study requires the same number of measurements (at least two) for every part and operator combination.');
+        return;
+    }
+    if (method === 'xbar' && (nRep > 20 || nOps > 20 || nParts > 20)) {
+        showError(currentLang === 'pt' ? 'O método média e amplitude aceita até 20 repetições, operadores e peças. Use ANOVA para este estudo.' : 'The average and range method supports up to 20 replicates, operators and parts. Use ANOVA for this study.');
+        return;
     }
 
     // Calculation Variables
