@@ -51,8 +51,8 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
 .error-msg,.error-message,.alert,.notification { border-left:1px solid var(--sc-border)!important; }
 .results-table tr.best-fit-row td,.results-table tr.violation-row td:first-child { border-left:0; }
 #mc-interpretation { border-left:0!important; }
-.function-nav-shell { position:relative; flex:0 0 auto; width:100%; min-width:0; padding:6px 24px 10px; overflow:hidden; border-bottom:1px solid var(--sc-border); background:var(--sc-bg-primary); }
-.function-nav-track { display:flex; align-items:center; gap:8px; width:100%; min-width:0; overflow-x:auto; overflow-y:hidden; padding:2px 22px 6px; scrollbar-width:none; -ms-overflow-style:none; overscroll-behavior-x:contain; scroll-behavior:auto; touch-action:pan-x; -webkit-overflow-scrolling:touch; cursor:grab; user-select:none; }
+.function-nav-shell { position:relative; flex:0 0 auto; width:100%; min-width:0; padding:6px 24px; overflow:hidden; border-bottom:1px solid var(--sc-border); background:var(--sc-bg-primary); }
+.function-nav-track { display:flex; align-items:center; gap:8px; width:100%; min-width:0; overflow-x:auto; overflow-y:hidden; padding:2px 22px; scrollbar-width:none; -ms-overflow-style:none; overscroll-behavior-x:contain; scroll-behavior:auto; touch-action:pan-x; -webkit-overflow-scrolling:touch; cursor:grab; user-select:none; }
 .function-nav-track::-webkit-scrollbar { display:none; width:0; height:0; }
 .function-nav-track:active { cursor:grabbing; }
 .function-nav-track.wheel-elastic-active > * { translate:var(--wheel-elastic-offset,0px) 0; }
@@ -110,8 +110,8 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
 @media(max-width:768px) {
   .app-container { width:100%; min-height:100vh; margin:0; border:0; border-radius:0; }
   .main-header .top-row { padding:8px 16px; gap:12px; }.title { font-size:20px; }
-  .function-nav-shell { padding:6px 8px 8px; }
-  .function-nav-track { gap:6px; padding:2px 12px 6px; }
+  .function-nav-shell { padding:6px 8px; }
+  .function-nav-track { gap:6px; padding:2px 12px; }
   .function-nav-item { min-height:40px; padding:0 12px; }
   .function-nav-shell::before,.function-nav-shell::after { width:20px; }
   .sidebar-wrapper { border-bottom:0; }
