@@ -148,6 +148,7 @@ const Hypothesis = {
         const mean = getMean(data);
         const std = getStd(data, mean);
         const stdErr = std / Math.sqrt(n);
+        if (stdErr === 0) throw new Error(currentLang === 'pt' ? 'O teste t exige variação nos dados; todos os valores são iguais.' : 'The t-test requires variation in the data; all values are equal.');
         const t = (mean - mu) / stdErr;
         const df = n - 1;
 
@@ -186,6 +187,7 @@ const Hypothesis = {
             df = (var1 / n1 + var2 / n2) ** 2 / (((var1 / n1) ** 2 / (n1 - 1)) + ((var2 / n2) ** 2 / (n2 - 1)));
         }
 
+        if (!Number.isFinite(stdErr) || stdErr === 0) throw new Error(currentLang === 'pt' ? 'O teste t exige variação nos dados das amostras.' : 'The t-test requires variation in the sample data.');
         const pValue = 2 * (1 - tCdf(Math.abs(t), df));
         const alpha = parseFloat(document.getElementById('hypoAlpha').value);
         const t_crit = inverseTCdf(1 - alpha / 2, df);

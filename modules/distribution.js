@@ -129,9 +129,17 @@ const Distribution = {
             msgEl.className = 'success-msg';
             msgEl.textContent = `${tr.msgTolNonParam || 'Data is non-normal. Non-parametric limits meet the target confidence.'} ${targetConfStr}.`;
         } else {
-            const nRequired = (propLevel > 0 && propLevel < 1)
-                ? Math.ceil(Math.log(1 - confLevel) / Math.log(propLevel))
-                : null;
+            let nRequired = null;
+            if (propLevel > 0 && propLevel < 1) {
+                let low = 2, high = 2;
+                while (calcNonParametricConfidence(high, propLevel) < confLevel && high < 10000000) high *= 2;
+                while (low < high) {
+                    const mid = Math.floor((low + high) / 2);
+                    if (calcNonParametricConfidence(mid, propLevel) >= confLevel) high = mid;
+                    else low = mid + 1;
+                }
+                nRequired = calcNonParametricConfidence(low, propLevel) >= confLevel ? low : null;
+            }
             msgEl.className = 'error-msg';
             msgEl.textContent = `${tr.msgTolInsufficient || 'Data is non-normal and sample size is insufficient for the non-parametric method.'} ${tr.msgTolNeedN || 'Estimated minimum N:'} ${nRequired !== null && isFinite(nRequired) ? nRequired : '-'}.`;
         }
