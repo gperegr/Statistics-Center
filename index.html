@@ -1504,6 +1504,7 @@
             <div class="modal-version"><span data-i18n="lblVersion">Version</span> <span id="aboutVersionNumber"></span>
             </div>
             <div class="modal-body settings-body">
+                <div class="settings-sound"><label for="uiSoundVolume" data-i18n="lblSoundVolume">Interface sounds</label><div class="settings-sound-control"><input id="uiSoundVolume" class="sc-slider" type="range" min="0" max="100" step="5" value="25" oninput="setUiSoundVolume(this.value)"><output id="uiSoundVolumeValue" for="uiSoundVolume">25%</output></div><small data-i18n="hintSoundVolume">Set to 0 to mute navigation and interaction sounds.</small></div>
                 <label class="settings-option" for="blueprintGrid"><span><strong data-i18n="lblBlueprintGrid">Background grid</strong><small data-i18n="hintBlueprintGrid">Show an engineering grid in the workspace.</small></span><input class="sc-checkbox" id="blueprintGrid" type="checkbox" onchange="setBlueprintGrid(this.checked)"></label>
             </div>
         </div>

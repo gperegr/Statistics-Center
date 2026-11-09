@@ -193,3 +193,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .settings-option { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px; border:1px solid var(--sc-border); border-radius:var(--sc-radius-compact); background:var(--sc-bg-secondary); cursor:pointer; }
 .settings-option span { display:flex; flex-direction:column; gap:4px; }
 .settings-option small { color:var(--sc-text-secondary); font-size:var(--sc-font-control); line-height:1.4; }
+.settings-sound { display:grid; gap:8px; margin-bottom:12px; padding:16px; border:1px solid var(--sc-border); border-radius:var(--sc-radius-compact); background:var(--sc-bg-secondary); }
+.settings-sound > label { font-weight:600; }
+.settings-sound-control { display:flex; align-items:center; gap:12px; }
+.settings-sound-control output { flex:none; width:3em; text-align:right; font-variant-numeric:tabular-nums; }
+.settings-sound small { color:var(--sc-text-secondary); font-size:var(--sc-font-control); line-height:1.4; }
+.settings-content { max-height:calc(100dvh - 32px); overflow-y:auto; }

@@ -1430,6 +1430,80 @@ function setBlueprintGrid(enabled) {
 document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && document.getElementById('aboutModal').classList.contains('open')) toggleAboutModal();
 });
+
+// A single persisted level controls both interface sounds and the navigation rail.
+let uiSoundVolume = 0.25;
+try {
+    const saved = localStorage.getItem('prismaUiSoundVolume');
+    if (saved !== null && Number.isFinite(Number(saved))) uiSoundVolume = Math.max(0, Math.min(1, Number(saved) / 100));
+} catch (_) {}
+let uiAudioContext = null;
+let lastUiSoundTime = 0;
+let lastScrollGesture = 0;
+const uiScrollPositions = new WeakMap();
+
+function setUiSoundVolume(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return;
+    const percent = Math.round(Math.max(0, Math.min(100, number)));
+    uiSoundVolume = percent / 100;
+    const slider = document.getElementById('uiSoundVolume');
+    const output = document.getElementById('uiSoundVolumeValue');
+    if (slider) slider.value = String(percent);
+    if (output) output.textContent = `${percent}%`;
+    try { localStorage.setItem('prismaUiSoundVolume', String(percent)); } catch (_) {}
+}
+
+function playUiSound(kind) {
+    if (!uiSoundVolume || document.visibilityState !== 'visible') return;
+    const now = performance.now();
+    const cooldown = kind === 'scroll' ? 65 : 35;
+    if (now - lastUiSoundTime < cooldown) return;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    try {
+        if (!uiAudioContext) uiAudioContext = new AudioContextClass({ latencyHint: 'interactive' });
+        if (uiAudioContext.state === 'suspended') uiAudioContext.resume().catch(() => {});
+        if (uiAudioContext.state !== 'running') return;
+        lastUiSoundTime = now;
+        const time = uiAudioContext.currentTime + 0.002;
+        const osc = uiAudioContext.createOscillator();
+        const gain = uiAudioContext.createGain();
+        const frequency = kind === 'typing' ? 780 : kind === 'scroll' ? 520 : 660;
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(frequency, time);
+        osc.frequency.exponentialRampToValueAtTime(frequency * 0.72, time + 0.018);
+        gain.gain.setValueAtTime(0.00001, time);
+        gain.gain.linearRampToValueAtTime((kind === 'typing' ? 0.012 : 0.018) * uiSoundVolume, time + 0.002);
+        gain.gain.exponentialRampToValueAtTime(0.00001, time + 0.025);
+        osc.connect(gain).connect(uiAudioContext.destination);
+        osc.start(time); osc.stop(time + 0.026);
+    } catch (_) { /* Audio is optional; interaction must remain functional. */ }
+}
+
+document.addEventListener('click', event => {
+    if (!event.isTrusted || !(event.target instanceof Element)) return;
+    const control = event.target.closest('button, input[type="checkbox"], input[type="radio"], [role="option"]');
+    if (control && !control.disabled && control.getAttribute('aria-disabled') !== 'true') playUiSound('click');
+});
+document.addEventListener('input', event => {
+    if (!event.isTrusted || !(event.target instanceof Element) || event.isComposing) return;
+    if (event.target.matches('textarea, input[type="text"], input[type="number"], input[type="search"], input[type="email"], input[type="url"]') && event.inputType !== 'insertFromPaste') playUiSound('typing');
+});
+document.addEventListener('wheel', event => {
+    if (event.isTrusted && !event.ctrlKey && !event.metaKey && event.target instanceof Element && !event.target.closest('#functionNavTrack')) lastScrollGesture = performance.now();
+}, { passive: true, capture: true });
+document.addEventListener('touchmove', event => {
+    if (event.isTrusted && event.target instanceof Element && !event.target.closest('#functionNavTrack')) lastScrollGesture = performance.now();
+}, { passive: true, capture: true });
+document.addEventListener('scroll', event => {
+    const target = event.target === document ? document.scrollingElement : event.target;
+    if (!(target instanceof Element) || target.closest('#functionNavTrack')) return;
+    const position = target.scrollTop + target.scrollLeft;
+    const previous = uiScrollPositions.get(target);
+    uiScrollPositions.set(target, position);
+    if (previous !== undefined && Math.abs(position - previous) >= 2 && performance.now() - lastScrollGesture < 350) playUiSound('scroll');
+}, { passive: true, capture: true });
 // Horizontal analysis navigation: native touch scrolling, wheel translation, and a quiet ratchet cue.
 function initFunctionNavRail() {
     const rail = document.getElementById('functionNavTrack');
@@ -1494,7 +1568,7 @@ function initFunctionNavRail() {
     };
 
     const playGearTooth = () => {
-        if (!audioContext || audioContext.state !== 'running' || document.visibilityState !== 'visible') return;
+        if (!uiSoundVolume || !audioContext || audioContext.state !== 'running' || document.visibilityState !== 'visible') return;
         const now = performance.now();
         if (now - lastToothTime < 28) return;
         lastToothTime = now;
@@ -1502,7 +1576,7 @@ function initFunctionNavRail() {
         const context = audioContext;
         const time = context.currentTime + 0.002;
         const intensity = Math.min(1, movementSpeed / 1400);
-        const level = 0.55 + intensity * 0.4;
+        const level = (0.55 + intensity * 0.4) * uiSoundVolume;
         const pitch = 0.85 + intensity * 0.35;
         const duration = 0.024;
 
@@ -2830,6 +2904,8 @@ function initApp() {
             window.history.replaceState({}, document.title, url.toString());
         }
 
+        // Restore settings before interaction.
+        setUiSoundVolume(uiSoundVolume * 100);
         // Theme Initialization
         try { setBlueprintGrid(localStorage.getItem('prismaBlueprintGrid') === 'on'); } catch (_) { setBlueprintGrid(false); }
         const savedTheme = localStorage.getItem('appTheme') || 'light';
