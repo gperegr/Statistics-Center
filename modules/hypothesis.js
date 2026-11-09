@@ -299,7 +299,7 @@ const Hypothesis = {
         const summaryTable = document.getElementById('hypothesisSummaryTable');
         let summaryHTML = `<thead><tr>
                 <th>${tr.thHypoTest}</th>
-                <th>${results.t ? 't-value' : 'F-value'}</th>
+                <th>${results.t !== undefined ? 't-value' : 'F-value'}</th>
                 <th>${tr.thHypoDf}</th>
                 <th>${tr.thHypoPval}</th>`;
         if (results.ci) summaryHTML += `<th>${tr.thHypoCI.replace('95', (1 - alpha) * 100)}</th>`;
@@ -310,7 +310,7 @@ const Hypothesis = {
         if (results.df) summaryHTML += `<td>${results.df.toFixed(2)}</td>`;
         else summaryHTML += `<td>${results.df_between}, ${results.df_within}</td>`;
         summaryHTML += `<td>${results.pValue < 0.0001 ? '<0.0001' : results.pValue.toFixed(4)}</td>`;
-        if (results.ci) summaryHTML += `<td>[${results.ci[0].toFixed(3)}; ${results.ci[1].toFixed(3)}]</td>`;
+        if (results.ci) summaryHTML += `<td>[${results.ci[0].toFixed(4)}; ${results.ci[1].toFixed(4)}]</td>`;
         summaryHTML += `<td>${conclusion}</td>`;
         summaryHTML += `</tr></tbody>`;
         summaryTable.innerHTML = summaryHTML;
@@ -328,12 +328,13 @@ const Hypothesis = {
                 `;
 
         results.groups.forEach((g, i) => {
-            const mean = getMean(g);
-            const std = getStd(g, mean);
+            const clean = g.filter(Number.isFinite);
+            const mean = getMean(clean);
+            const std = getStd(clean, mean);
             const row = groupsTableBody.insertRow();
-            let html = `<td>${results.groupNames[i]}</td><td>${g.length}</td><td>${mean.toFixed(3)}</td>`;
+            let html = `<td>${results.groupNames[i]}</td><td>${clean.length}</td><td>${mean.toFixed(4)}</td>`;
             if (results.mu !== undefined) html += `<td>${results.mu}</td>`;
-            html += `<td>${std.toFixed(3)}</td>`;
+            html += `<td>${std.toFixed(4)}</td>`;
             row.innerHTML = html;
         });
 

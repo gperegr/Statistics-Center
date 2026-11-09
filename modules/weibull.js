@@ -96,8 +96,8 @@ const Weibull = {
             <tr>
                 <td>${p.percent}%</td>
                 <td>${p.time.toPrecision(4)}</td>
-                <td>${p.lower ? p.lower.toPrecision(4) : '-'}</td>
-                <td>${p.upper ? p.upper.toPrecision(4) : '-'}</td>
+                <td>${Number.isFinite(p.lower) ? p.lower.toPrecision(4) : '-'}</td>
+                <td>${Number.isFinite(p.upper) ? p.upper.toPrecision(4) : '-'}</td>
             </tr>`).join('');
 
         this.plotChart(model);
