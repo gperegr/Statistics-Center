@@ -65,9 +65,9 @@
 .sc-slider:disabled { opacity:.5; cursor:default; }.sc-slider__ends { display:flex; justify-content:space-between; color:var(--sc-text-muted); font-size:var(--sc-font-caption); margin-top:var(--sc-space-1); }
 
 /* Floating surfaces: light shadows, opaque menu contents, no blur or bevel. */
-.sc-menu[popover] { margin:0; padding:var(--sc-space-2); border:1px solid var(--sc-border); border-radius:var(--sc-radius-field); color:var(--sc-text); background:var(--sc-bg-secondary); box-shadow:var(--sc-shadow-floating); min-width:200px; max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); overflow:auto; }
+.sc-menu[popover] { margin:0; padding:var(--sc-space-2); border:1px solid var(--sc-border); border-radius:24px; color:var(--sc-text); background:var(--sc-bg-secondary); box-shadow:var(--sc-shadow-floating); min-width:200px; max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); overflow:auto; }
 .sc-menu__title { font-size:var(--sc-font-caption); color:var(--sc-text-secondary); padding:var(--sc-padding-control); font-weight:600; }
-.sc-menu__item { display:flex; gap:var(--sc-space-2); align-items:center; width:100%; border:0; background:transparent; padding:var(--sc-padding-control); border-radius:var(--sc-radius-control); text-align:left; font-size:var(--sc-font-control); min-height:var(--sc-control-height); }
+.sc-menu__item { display:flex; gap:var(--sc-space-2); align-items:center; width:100%; border:0; background:transparent; padding:var(--sc-padding-control); border-radius:16px; text-align:left; font-size:var(--sc-font-control); min-height:var(--sc-control-height); }
 .sc-menu__item:hover,.sc-menu__item:focus-visible { background:var(--sc-bg-selection); }.sc-menu__item:disabled { opacity:.5; cursor:default; }
 .sc-menu__check { margin-left:auto; width:14px; height:14px; opacity:0; }.sc-menu__item[aria-selected="true"] .sc-menu__check,.sc-menu__item[aria-checked="true"] .sc-menu__check { opacity:1; color:var(--sc-accent); }
 .sc-dialog { color:var(--sc-text); width:min(580px,calc(100vw - 32px)); border:1px solid var(--sc-border); border-radius:var(--sc-radius-panel); padding:var(--sc-padding-panel); background:var(--sc-bg-primary); box-shadow:var(--sc-shadow-floating); max-height:85dvh; }

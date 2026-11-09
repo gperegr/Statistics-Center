@@ -78,15 +78,16 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
 .theme-icon-svg { fill:none!important; }
 .language-trigger-btn { min-height:36px; padding:7px 10px; border:1px solid transparent; border-radius:var(--sc-radius-field); color:var(--sc-text); font:500 var(--sc-font-control)/1.2 var(--sc-font-family); }
 .language-trigger-btn:hover { color:var(--sc-accent); background:var(--sc-bg-secondary); }
-.language-popup,#languagePopup { width:280px; max-width:calc(100vw - 24px); padding:12px; border:1px solid var(--sc-border); border-radius:var(--sc-radius-field); background:var(--sc-bg-primary); box-shadow:var(--sc-shadow-floating); }
+.language-popup,#languagePopup { width:280px; max-width:calc(100vw - 24px); padding:12px; border:1px solid var(--sc-border); border-radius:36px; background:var(--sc-bg-primary); box-shadow:var(--sc-shadow-floating); }
 .language-menu-container.open #languagePopup { padding:12px; }
 .language-popup-select-wrap { margin-bottom:0; }
-.language-popup-title { margin:0 36px 10px 0; }
-.language-popup-close { top:8px; right:10px; }
+.language-popup-title { margin:2px 36px 10px 8px; }
+.language-popup-close { top:10px; right:12px; }
 .language-popup::before { background:var(--sc-bg-primary); }
 .language-popup-title,.language-popup-close { color:var(--sc-text); font-family:var(--sc-font-family); }
 .language-popup-select { height:36px; padding:7px 10px; border:1px solid var(--sc-border-strong); border-radius:var(--sc-radius-field); background:var(--sc-bg-primary); color:var(--sc-text); font:var(--sc-font-control)/1.2 var(--sc-font-family); }
 .axis-scale-modal-content { background:var(--sc-bg-primary); border:1px solid var(--sc-border); border-radius:var(--sc-radius-panel); box-shadow:var(--sc-shadow-floating); }
+.excel-modal-content { border-radius:var(--sc-radius-panel); }
 .axis-scale-row input,.axis-scale-textarea { border:1px solid var(--sc-border-strong); border-radius:var(--sc-radius-field); background:var(--sc-bg-primary); color:var(--sc-text); font:var(--sc-font-control)/1.4 var(--sc-font-family); }
 .axis-scale-row input:focus,.axis-scale-textarea:focus { border:1px solid var(--sc-focus); outline:2px solid color-mix(in srgb,var(--sc-focus) 22%,transparent); }
 .axis-custom-select-trigger { height:36px; padding:7px 32px 7px 10px; border:1px solid var(--sc-border-strong); border-radius:var(--sc-radius-field); background:var(--sc-bg-primary); color:var(--sc-text); font:var(--sc-font-control)/1.2 var(--sc-font-family); }
