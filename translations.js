@@ -599,6 +599,7 @@ var translations = {
         btnLoad: "Carregar",
         btnReset: "Reiniciar",
         btnAbout: "Sobre",
+        tipAbout: "Informações sobre o aplicativo",
         btnManual: "Manual de Instruções",
         tabNormal: "Distribuição Normal",
         tabCapability: "Capacidade",
@@ -957,6 +958,7 @@ var translations = {
         btnLoad: "Laden",
         btnReset: "Zurücksetzen",
         btnAbout: "Über",
+        tipAbout: "Informationen über die Anwendung",
         btnManual: "Bedienungsanleitung",
         tabNormal: "Normalverteilung",
         tabCapability: "Fähigkeit",
@@ -2197,6 +2199,12 @@ function changeLanguage(lang) {
             el.setAttribute('data-tooltip-text', text);
             el.removeAttribute('title');
         }
+    });
+
+    // Keep icon-only controls named in the current language.
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+        const text = translations[lang][el.getAttribute('data-i18n-aria')];
+        if (text) el.setAttribute('aria-label', text);
     });
 
     // Update specific text content like analyze button

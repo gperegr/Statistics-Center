@@ -177,3 +177,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 /* Icons share the same restrained, angular stroke language. */
 .sc-app-icon,.theme-icon-svg,.icon-expand,.icon-collapse { stroke-linecap:square; stroke-linejoin:miter; }
 .sc-app-icon path,.theme-icon-svg path { stroke-linecap:round; stroke-linejoin:miter; }
+/* Keep icon-only header actions evenly sized on desktop. */
+@media(min-width:769px) {
+  .header-controls > .app-btn-secondary,.language-trigger-btn { width:40px; min-width:40px; padding:0; }
+}
