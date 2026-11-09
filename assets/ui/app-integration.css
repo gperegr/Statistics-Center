@@ -7,7 +7,7 @@
   --SolidBackgroundFillColorBase:var(--sc-bg-primary); --DividerStrokeColorDefault:var(--sc-border);
   --fontFamily:var(--sc-font-family);
 }
-:root,body {
+:root,body,[data-theme="dark"] {
   --SolidBackgroundFillColorBase:var(--sc-bg-primary); --LayerFillColorDefault:var(--sc-bg-secondary);
   --CardBackgroundFillColorDefault:var(--sc-bg-primary); --ControlFillColorDefault:var(--sc-bg-tertiary);
   --TextFillColorPrimary:var(--sc-text); --TextFillColorSecondary:var(--sc-text-secondary); --TextFillColorTertiary:var(--sc-text-muted);
@@ -42,6 +42,7 @@ body { color:var(--sc-text); background:var(--sc-bg-primary); font-family:var(--
 [data-theme="dark"] .app-btn-secondary { color:var(--sc-text); }
 #montecarlo-controls .app-btn-secondary,#grp-regression-controls .app-btn-secondary,#grp-warranty-controls .app-btn-secondary { min-height:var(--sc-control-height); height:var(--sc-control-height); border-color:var(--sc-border); color:var(--sc-text); background:var(--sc-bg-primary); }
 input[type="number"],input[type="text"],textarea,input[type="file"] { border:1px solid var(--sc-border-strong); border-radius:var(--sc-radius-field); color:var(--sc-text); background:var(--sc-bg-primary); font-family:var(--sc-font-family); font-size:var(--sc-font-control); }
+[data-theme="dark"] input[type="number"],[data-theme="dark"] input[type="text"],[data-theme="dark"] input[type="file"],[data-theme="dark"] textarea { background:var(--sc-bg-primary); color:var(--sc-text); border:1px solid var(--sc-border-strong); }
 input[type="number"],input[type="text"] { min-height:var(--sc-control-height); height:var(--sc-control-height); padding:0 10px; }
 input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px solid var(--sc-focus); outline:2px solid color-mix(in srgb,var(--sc-focus) 22%,transparent); outline-offset:1px; }
 .sc-native-select-source { display:none!important; }

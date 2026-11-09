@@ -547,7 +547,7 @@ function installPlotlyExportPatch() {
             xColor: theme.theme_primary || '#0078d4',
             yColor: theme.dangercolor || '#d13438',
             fontColor: theme.font?.color || '#201f1e',
-            annotationBgColor: bodyTheme === 'dark' ? '#1a1a1a' : 'rgba(255,255,255,0.35)'
+            annotationBgColor: bodyTheme === 'dark' ? '#1b2029' : 'rgba(255,255,255,0.35)'
         };
     };
 
