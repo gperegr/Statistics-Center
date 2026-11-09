@@ -1,6 +1,6 @@
 # Componentes de interface — Statistics Center
 
-O [programa](index.html), o [catálogo interativo](ui-components.html) e o [mockup](liquid-glass-mockup.html) usam o mesmo sistema visual. O visual é flat, com Arimo local, transparência discreta e sombras apenas em superfícies flutuantes. A integração mapeia os controles existentes para os tokens de cor, tipografia, espaçamento, botões, campos e gráficos, preservando os módulos e eventos da aplicação. Não há etapa de build.
+O [programa](index.html), o [catálogo interativo](ui-components.html) e o [mockup](liquid-glass-mockup.html) usam o mesmo sistema visual. O visual é flat, com Arimo local, transparência discreta e sombras apenas em superfícies flutuantes. A integração mapeia os controles existentes para os tokens de cor, tipografia, espaçamento, botões, campos e gráficos, preservando os módulos e eventos da aplicação. Não há etapa de build. As funções principais do app ficam numa faixa horizontal sem barra visível; roda do mouse, touch e teclado navegam entre elas, com fades nas extremidades e som de catraca discreto durante a rolagem.
 
 ## Arquivos
 
@@ -42,6 +42,8 @@ Todas as classes públicas usam `sc-`; modificadores usam `--`, partes internas 
 ```
 
 Use `disabled` para indisponibilidade nativa e `aria-busy="true"` durante processamento. Botões de ação dentro de um formulário precisam de `type="button"` para não enviar o formulário. A altura é 36 px no desktop e 44 px no celular. Ações principais usam o token `--sc-accent`; a cor da série de um gráfico tem um token independente.
+
+Botões, campos de texto e superfícies de dropdown compartilham `--sc-radius-field` (8 px). Painéis e diálogos usam o raio maior `--sc-radius-panel`.
 
 ## Fundos e padding
 

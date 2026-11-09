@@ -1378,51 +1378,142 @@ function toggleAboutModal() {
 
 // Add 'tipAbout' translation manually since it's new
 // Extra translations merged into main object
-// Dropdown Navigation Logic
-function toggleNavDropdown() {
-    const container = document.getElementById('navDropdownContainer');
-    const button = document.getElementById('navDropdownBtn');
-    if (!container) return;
-    const nextState = !container.classList.contains('open');
-    container.classList.toggle('open', nextState);
-    button?.setAttribute('aria-expanded', String(nextState));
-}
+// Horizontal analysis navigation: native touch scrolling, wheel translation, and a quiet ratchet cue.
+function initFunctionNavRail() {
+    const rail = document.getElementById('functionNavTrack');
+    const shell = document.getElementById('functionNav');
+    if (!rail || !shell || rail.dataset.initialized === 'true') return;
+    rail.dataset.initialized = 'true';
 
-function setNavDropdownOpen(open) {
-    const container = document.getElementById('navDropdownContainer');
-    const button = document.getElementById('navDropdownBtn');
-    if (!container) return;
-    container.classList.toggle('open', open);
-    button?.setAttribute('aria-expanded', String(open));
-}
+    const tabs = () => [...rail.querySelectorAll('[role="tab"]')];
+    let previousScroll = rail.scrollLeft;
+    let accumulatedDistance = 0;
+    let audioContext = null;
+    let userScrollUntil = 0;
+    let lastScrollTime = performance.now();
+    let queuedTicks = [];
+    let tickTimer = null;
+    let tickNumber = 0;
 
-document.getElementById('navDropdownBtn')?.addEventListener('keydown', function (event) {
-    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
-    event.preventDefault();
-    setNavDropdownOpen(true);
-    const items = [...document.querySelectorAll('#navDropdownMenu [role="menuitem"]')];
-    const active = items.find(item => item.classList.contains('active')) || items[0];
-    if (event.key === 'ArrowUp') items.at(-1)?.focus();
-    else active?.focus();
-});
+    const updateEdges = () => {
+        const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
+        const leadingInset = Number.parseFloat(getComputedStyle(rail).paddingLeft) || 0;
+        shell.classList.toggle('has-left-overflow', maxScroll > 2 && rail.scrollLeft > leadingInset + 2);
+        shell.classList.toggle('has-right-overflow', maxScroll > 2 && rail.scrollLeft < maxScroll - 2);
+    };
 
-document.getElementById('navDropdownMenu')?.addEventListener('keydown', function (event) {
-    const items = [...this.querySelectorAll('[role="menuitem"]')];
-    const index = items.indexOf(document.activeElement);
-    if (event.key === 'Escape') {
+    const unlockAudio = () => {
+        if (!audioContext) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return;
+            try { audioContext = new AudioContextClass(); } catch { return; }
+        }
+        if (audioContext.state === 'suspended') audioContext.resume().catch(() => {});
+    };
+
+    const playTooth = () => {
+        if (!audioContext || audioContext.state !== 'running') return;
+        const time = audioContext.currentTime + 0.004;
+        const pitch = 1450 + (tickNumber++ % 3) * 170;
+        const gear = audioContext.createOscillator();
+        const gearGain = audioContext.createGain();
+        gear.type = 'triangle';
+        gear.frequency.setValueAtTime(pitch, time);
+        gear.frequency.exponentialRampToValueAtTime(pitch * 0.48, time + 0.024);
+        gearGain.gain.setValueAtTime(0.0001, time);
+        gearGain.gain.exponentialRampToValueAtTime(0.038, time + 0.002);
+        gearGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.032);
+        gear.connect(gearGain).connect(audioContext.destination);
+        gear.start(time);
+        gear.stop(time + 0.034);
+
+        const pawl = audioContext.createOscillator();
+        const pawlGain = audioContext.createGain();
+        pawl.type = 'square';
+        pawl.frequency.setValueAtTime(260 + (tickNumber % 2) * 28, time);
+        pawl.frequency.exponentialRampToValueAtTime(105, time + 0.014);
+        pawlGain.gain.setValueAtTime(0.0001, time);
+        pawlGain.gain.exponentialRampToValueAtTime(0.012, time + 0.001);
+        pawlGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.017);
+        pawl.connect(pawlGain).connect(audioContext.destination);
+        pawl.start(time);
+        pawl.stop(time + 0.019);
+    };
+
+    const drainTickQueue = () => {
+        tickTimer = null;
+        const speed = queuedTicks.shift();
+        if (speed === undefined) return;
+        playTooth();
+        const interval = Math.max(34, Math.min(84, 78 - speed * 11));
+        if (queuedTicks.length) tickTimer = window.setTimeout(drainTickQueue, interval);
+    };
+
+    const queueTeeth = (count, speed) => {
+        const audibleSteps = Math.min(16, count);
+        for (let i = 0; i < audibleSteps && queuedTicks.length < 18; i++) queuedTicks.push(speed);
+        if (!tickTimer && queuedTicks.length) tickTimer = window.setTimeout(drainTickQueue, 0);
+    };
+
+    const onScroll = () => {
+        const now = performance.now();
+        const delta = rail.scrollLeft - previousScroll;
+        const elapsed = Math.max(8, now - lastScrollTime);
+        previousScroll = rail.scrollLeft;
+        lastScrollTime = now;
+        updateEdges();
+        if (now > userScrollUntil || Math.abs(delta) < 0.5) return;
+        accumulatedDistance += delta;
+        const speed = Math.abs(delta) / elapsed;
+        let steps = 0;
+        while (Math.abs(accumulatedDistance) >= 27 && steps < 16) {
+            accumulatedDistance -= Math.sign(accumulatedDistance) * 27;
+            steps++;
+        }
+        if (steps) queueTeeth(steps, speed);
+    };
+
+    rail.addEventListener('wheel', event => {
+        const verticalDominates = Math.abs(event.deltaY) > Math.abs(event.deltaX);
+        if (!verticalDominates || event.deltaY === 0) return;
         event.preventDefault();
-        setNavDropdownOpen(false);
-        document.getElementById('navDropdownBtn')?.focus();
-    } else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
-        event.preventDefault();
+        userScrollUntil = performance.now() + 1100;
+        unlockAudio();
+        const wheelScale = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 32 :
+            event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? rail.clientWidth : 1;
+        rail.scrollLeft += event.deltaY * wheelScale;
+    }, { passive: false });
+    rail.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'touch' || event.pointerType === 'pen') {
+            userScrollUntil = performance.now() + 1300;
+            unlockAudio();
+        }
+    }, { passive: true });
+    rail.addEventListener('pointermove', event => {
+        if (event.pointerType === 'touch' || event.pointerType === 'pen') userScrollUntil = performance.now() + 450;
+    }, { passive: true });
+    rail.addEventListener('scroll', onScroll, { passive: true });
+
+    rail.addEventListener('keydown', event => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        const items = tabs();
+        const index = items.indexOf(document.activeElement);
         const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 :
-            (index + (event.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
-        items[next]?.focus();
-    } else if (event.key === 'Enter' || event.key === ' ') {
+            (index + (event.key === 'ArrowRight' ? 1 : -1) + items.length) % items.length;
         event.preventDefault();
-        items[index]?.click();
-    }
-});
+        items[next]?.focus();
+        items[next]?.click();
+    });
+
+    const resizeObserver = new ResizeObserver(updateEdges);
+    resizeObserver.observe(rail);
+    tabs().forEach(tab => resizeObserver.observe(tab));
+    window.addEventListener('resize', updateEdges, { passive: true });
+    updateEdges();
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFunctionNavRail, { once: true });
+else initFunctionNavRail();
 
 function toggleLanguagePopup(forceOpen) {
     const container = document.getElementById('languageMenuContainer');
@@ -1440,15 +1531,6 @@ function closeLanguagePopup() {
 
 // Close dropdown when clicking outside
 window.addEventListener('click', function (e) {
-    const container = document.getElementById('navDropdownContainer');
-    const btn = document.getElementById('navDropdownBtn');
-    if (container && container.classList.contains('open')) {
-        // Check if click target is inside container or button
-        if (!container.contains(e.target) && (!btn || !btn.contains(e.target))) {
-            setNavDropdownOpen(false);
-        }
-    }
-
     const langContainer = document.getElementById('languageMenuContainer');
     if (langContainer && langContainer.classList.contains('open') && !langContainer.contains(e.target)) {
         closeLanguagePopup();
@@ -1458,7 +1540,6 @@ window.addEventListener('click', function (e) {
 window.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         closeLanguagePopup();
-        setNavDropdownOpen(false);
     }
 });
 
@@ -1849,35 +1930,25 @@ function switchTab(mode) {
         }
     }
 
-    // Update Dropdown Selection & Label
-    const dropdownItems = document.querySelectorAll('.nav-dropdown-item');
-    let selectedText = "";
+    // Keep the horizontal function rail selection in sync.
+    const dropdownItems = document.querySelectorAll('.function-nav-item');
 
     dropdownItems.forEach(item => {
-        if (item.id === `tab-${mode}`) {
-            item.classList.add('active');
-            selectedText = item.textContent; // Capture text for label
-        } else {
-            item.classList.remove('active');
-        }
+        const isActive = item.id === `tab-${mode}`;
+        item.classList.toggle('active', isActive);
+        item.setAttribute('aria-selected', String(isActive));
+        item.tabIndex = isActive ? 0 : -1;
     });
 
-    // Update Label
-    const navLabel = document.getElementById('navDropdownLabel');
-    if (navLabel && selectedText) {
-        navLabel.textContent = selectedText;
-        // Update i18n attribute for persistence if needed
-        const activeItem = document.getElementById(`tab-${mode}`);
-        if (activeItem && activeItem.hasAttribute('data-i18n')) {
-            navLabel.setAttribute('data-i18n', activeItem.getAttribute('data-i18n'));
-        }
-    }
-
-    // Close Dropdown automatically
-    const ddContainer = document.getElementById('navDropdownContainer');
-    if (ddContainer) {
-        ddContainer.classList.remove('open');
-        document.getElementById('navDropdownBtn')?.setAttribute('aria-expanded', 'false');
+    const activeTab = document.getElementById(`tab-${mode}`);
+    const rail = document.getElementById('functionNavTrack');
+    if (activeTab && rail) {
+        const tabLeft = activeTab.offsetLeft;
+        const tabRight = tabLeft + activeTab.offsetWidth;
+        const visibleLeft = rail.scrollLeft;
+        const visibleRight = visibleLeft + rail.clientWidth;
+        if (tabLeft < visibleLeft) rail.scrollTo({ left: Math.max(0, tabLeft - 12), behavior: 'smooth' });
+        else if (tabRight > visibleRight) rail.scrollTo({ left: tabRight - rail.clientWidth + 12, behavior: 'smooth' });
     }
 
     // Restore global inputs visibility (reset state)
@@ -2707,7 +2778,6 @@ window.addEventListener('beforeunload', clearSensitiveDataFromUi);
 window.toggleTheme = toggleTheme;
 window.toggleAboutModal = toggleAboutModal;
 window.toggleMobileMenu = toggleMobileMenu;
-window.toggleNavDropdown = toggleNavDropdown;
 window.switchTab = switchTab;
 window.toggleSidebar = toggleSidebar;
 
