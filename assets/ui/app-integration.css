@@ -199,3 +199,28 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .settings-sound-control output { flex:none; width:3em; text-align:right; font-variant-numeric:tabular-nums; }
 .settings-sound small { color:var(--sc-text-secondary); font-size:var(--sc-font-control); line-height:1.4; }
 .settings-content { max-height:calc(100dvh - 32px); overflow-y:auto; }
+/* Result hierarchy and quiet, consistent surfaces. */
+.results-panel { gap:var(--sc-space-5); }
+.card { min-width:0; min-height:104px; justify-content:flex-start; gap:4px; }
+.card-title { margin:0; color:var(--sc-text-secondary); font-weight:500; line-height:1.35; }
+.card-value { margin:0; font-weight:600; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; word-break:normal; }
+.card-sub { color:var(--sc-text-muted); line-height:1.4; }
+.panel-title,.cap-section-header { letter-spacing:-.015em; }
+.chart-container .chart-container,.results-table-wrapper .results-table-wrapper { border:0; padding:0; background:transparent; }
+.results-table,.preview-table { font-variant-numeric:tabular-nums; line-height:1.45; }
+.results-table th,.results-table td { padding:10px 12px; vertical-align:middle; }
+.results-table th { font-weight:600; color:var(--sc-text-secondary); }
+.results-table tbody tr:last-child td { border-bottom:0; }
+.control-group { margin-bottom:var(--sc-space-7); }
+.control-label { color:var(--sc-text); line-height:1.35; }
+.input-hint { color:var(--sc-text-secondary); line-height:1.4; }
+button:disabled,input:disabled,select:disabled { opacity:.55; cursor:not-allowed; }
+.function-nav-item.active,.function-nav-item[aria-selected="true"] { background:color-mix(in srgb,var(--sc-accent) 12%,var(--sc-bg-secondary)); }
+.header-controls { gap:var(--sc-space-2); }
+.welcome-state { max-width:460px; margin:56px auto 0; padding:24px; text-align:center; color:var(--sc-text-secondary); line-height:1.5; }
+.welcome-state h3 { color:var(--sc-text); margin:12px 0 6px; }
+.welcome-state p { margin:0; }
+.welcome-illustration { display:block; width:96px; height:64px; margin:auto; color:var(--sc-accent); opacity:.65; }
+:root { --sc-grid-line:rgba(61,80,166,.04); --sc-grid-major:rgba(61,80,166,.075); }
+:root[data-theme="dark"] { --sc-grid-line:rgba(172,186,255,.035); --sc-grid-major:rgba(172,186,255,.07); }
+@media(max-width:768px) { .welcome-state { margin-top:24px; padding:16px; } .results-table th,.results-table td { padding:8px; } }
