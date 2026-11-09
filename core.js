@@ -1381,10 +1381,48 @@ function toggleAboutModal() {
 // Dropdown Navigation Logic
 function toggleNavDropdown() {
     const container = document.getElementById('navDropdownContainer');
-    if (container) {
-        container.classList.toggle('open');
-    }
+    const button = document.getElementById('navDropdownBtn');
+    if (!container) return;
+    const nextState = !container.classList.contains('open');
+    container.classList.toggle('open', nextState);
+    button?.setAttribute('aria-expanded', String(nextState));
 }
+
+function setNavDropdownOpen(open) {
+    const container = document.getElementById('navDropdownContainer');
+    const button = document.getElementById('navDropdownBtn');
+    if (!container) return;
+    container.classList.toggle('open', open);
+    button?.setAttribute('aria-expanded', String(open));
+}
+
+document.getElementById('navDropdownBtn')?.addEventListener('keydown', function (event) {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+    event.preventDefault();
+    setNavDropdownOpen(true);
+    const items = [...document.querySelectorAll('#navDropdownMenu [role="menuitem"]')];
+    const active = items.find(item => item.classList.contains('active')) || items[0];
+    if (event.key === 'ArrowUp') items.at(-1)?.focus();
+    else active?.focus();
+});
+
+document.getElementById('navDropdownMenu')?.addEventListener('keydown', function (event) {
+    const items = [...this.querySelectorAll('[role="menuitem"]')];
+    const index = items.indexOf(document.activeElement);
+    if (event.key === 'Escape') {
+        event.preventDefault();
+        setNavDropdownOpen(false);
+        document.getElementById('navDropdownBtn')?.focus();
+    } else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+        event.preventDefault();
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 :
+            (index + (event.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+        items[next]?.focus();
+    } else if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        items[index]?.click();
+    }
+});
 
 function toggleLanguagePopup(forceOpen) {
     const container = document.getElementById('languageMenuContainer');
@@ -1407,7 +1445,7 @@ window.addEventListener('click', function (e) {
     if (container && container.classList.contains('open')) {
         // Check if click target is inside container or button
         if (!container.contains(e.target) && (!btn || !btn.contains(e.target))) {
-            container.classList.remove('open');
+            setNavDropdownOpen(false);
         }
     }
 
@@ -1420,6 +1458,7 @@ window.addEventListener('click', function (e) {
 window.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         closeLanguagePopup();
+        setNavDropdownOpen(false);
     }
 });
 
@@ -1838,6 +1877,7 @@ function switchTab(mode) {
     const ddContainer = document.getElementById('navDropdownContainer');
     if (ddContainer) {
         ddContainer.classList.remove('open');
+        document.getElementById('navDropdownBtn')?.setAttribute('aria-expanded', 'false');
     }
 
     // Restore global inputs visibility (reset state)
