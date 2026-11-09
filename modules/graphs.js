@@ -76,6 +76,7 @@ const Graphs = {
         // 2. Prepare Data Structure
         // Use rawDataset row indexes to preserve alignment across columns.
         let groupedData = {};
+        let groupedRows = {};
         let groups = {}; // map index -> groupName
         const rowCount = Object.keys(rawDataset).reduce((max, col) => Math.max(max, rawDataset[col].length), 0);
         if (groupCol) {
@@ -95,10 +96,11 @@ const Graphs = {
 
         Object.keys(groups).forEach(gKey => {
             groupedData[gKey] = {};
+            groupedRows[gKey] = {};
             selectedCols.forEach(col => {
-                let vals = groups[gKey]
-                    .map(idx => parseGraphNumber(rawDataset[col] ? rawDataset[col][idx] : undefined))
-                    .filter(v => !isNaN(v));
+                const observations = groups[gKey].map(idx => ({ index: idx + 1, value: parseGraphNumber(rawDataset[col] ? rawDataset[col][idx] : undefined) })).filter(row => Number.isFinite(row.value));
+                let vals = observations.map(row => row.value);
+                groupedRows[gKey][col] = observations.map(row => row.index);
                 if (normalize) {
                     const mean = jStat.mean(vals);
                     const std = jStat.stdev(vals, true);
@@ -218,6 +220,7 @@ const Graphs = {
 
                 if (charts.timeSeries) {
                     allTimeSeriesTraces.push({
+                        x: groupedRows[grp][col],
                         y: vals,
                         type: 'scatter',
                         mode: 'lines+markers',
@@ -284,7 +287,7 @@ const Graphs = {
 
         if (charts.timeSeries && allTimeSeriesTraces.length > 0) {
             const divId = addChartDiv('chart-timeseries-combined', (translations[currentLang].lblTimeSeriesPlot || 'Time Series Plot'));
-            Plotly.newPlot(divId, allTimeSeriesTraces, { ...baseLayout, title: "" }, { responsive: true });
+            Plotly.newPlot(divId, allTimeSeriesTraces, { ...baseLayout, title: "", xaxis: { ...baseLayout.xaxis, title: translations[currentLang].lblSampleIndex || 'Observation' } }, { responsive: true });
         }
     }
 };
