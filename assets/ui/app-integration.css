@@ -65,6 +65,7 @@ input[type="number"]:focus,input[type="text"]:focus,textarea:focus { border:1px 
 .function-nav-item.active,.function-nav-item[aria-selected="true"] { background:var(--sc-bg-tertiary); color:var(--sc-accent); font-weight:600; }
 .function-nav-item:focus-visible { outline:2px solid var(--sc-focus); outline-offset:2px; }
 .card,.results-table-wrapper { background:var(--sc-bg-primary); border:1px solid var(--sc-border); border-radius:var(--sc-radius-panel); }
+[data-theme="dark"] .card,[data-theme="dark"] .chart-container,[data-theme="dark"] .results-table-wrapper { background:var(--sc-bg-primary); border:1px solid var(--sc-border); border-radius:var(--sc-radius-panel); }
 .results-table { color:var(--sc-text); }
 .results-table th { border-bottom:1px solid var(--sc-border); background:var(--sc-bg-secondary); }
 .results-table td { border-bottom:1px solid var(--sc-border); }
