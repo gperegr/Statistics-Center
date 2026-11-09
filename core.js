@@ -1638,13 +1638,30 @@ function toggleTheme() {
     const current = body.getAttribute('data-theme');
     const newTheme = current === 'dark' ? 'light' : 'dark';
 
-    body.setAttribute('data-theme', newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    icon.innerHTML = newTheme === 'dark' ? ICON_SUN_SVG : ICON_MOON_SVG;
-    localStorage.setItem('appTheme', newTheme);
-
-    // Update Chart Layouts
-    updateChartsTheme(newTheme);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const applyTheme = () => {
+        body.setAttribute('data-theme', newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+        icon.innerHTML = newTheme === 'dark' ? ICON_SUN_SVG : ICON_MOON_SVG;
+        localStorage.setItem('appTheme', newTheme);
+        updateChartsTheme(newTheme);
+        if (!reducedMotion && icon.firstElementChild?.animate) {
+            icon.firstElementChild.animate(
+                [{ opacity: 0, transform: 'rotate(-45deg) scale(.65)' }, { opacity: 1, transform: 'rotate(0) scale(1)' }],
+                { duration: 320, easing: 'ease-out' }
+            );
+        }
+    };
+    if (!reducedMotion && document.startViewTransition) {
+        document.startViewTransition(applyTheme);
+    } else {
+        if (!reducedMotion) {
+            document.documentElement.classList.add('theme-transitioning');
+            clearTimeout(window.themeTransitionTimer);
+            window.themeTransitionTimer = setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 350);
+        }
+        applyTheme();
+    }
 }
 
 function getChartTheme(theme) {
