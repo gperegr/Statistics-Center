@@ -815,7 +815,7 @@ const Regression = {
 
         const anovaBody = document.querySelector('#reg-anova-table tbody');
         anovaBody.innerHTML = `
-                <tr><td>${tr.regRowRegression || 'Regression'}</td><td>${model.anova.dfModel}</td><td>${model.anova.SSM.toFixed(4)}</td><td>${model.anova.MSM.toFixed(4)}</td><td>${model.anova.F.toFixed(2)}</td><td>${model.anova.pValueModel.toFixed(4)}</td></tr>
+                <tr><td>${tr.regRowRegression || 'Regression'}</td><td>${model.anova.dfModel}</td><td>${model.anova.SSM.toFixed(4)}</td><td>${model.anova.MSM.toFixed(4)}</td><td>${model.anova.F.toFixed(2)}</td><td>${formatPValueHtml(model.anova.pValueModel)}</td></tr>
                 <tr><td>${tr.regRowError || 'Error'}</td><td>${model.anova.dfError}</td><td>${model.anova.SSE.toFixed(4)}</td><td>${model.anova.MSE.toFixed(4)}</td><td></td><td></td></tr>
                 <tr><td>${tr.regRowTotal || 'Total'}</td><td>${model.anova.dfTotal}</td><td>${model.anova.SST.toFixed(4)}</td><td></td><td></td><td></td></tr>`;
 
@@ -837,7 +837,7 @@ const Regression = {
                         <td>${model.Beta[i][0].toFixed(4)}</td>
                         <td>${model.SE_Beta[i].toFixed(4)}</td>
                         <td>${model.tValues[i].toFixed(2)}</td>
-                        <td>${model.pValues[i].toFixed(4)}</td>
+                        <td>${formatPValueHtml(model.pValues[i])}</td>
                         <td>${vifDisplay}</td>
                     </tr>`;
         });

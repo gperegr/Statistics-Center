@@ -86,7 +86,7 @@ const Pareto = {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                         <td>${item.cat}</td>
-                        <td>${item.val.toFixed(2)}</td>
+                        <td>${Number.isInteger(item.val) ? item.val : item.val.toFixed(4)}</td>
                         <td>${item.percent.toFixed(2)}%</td>
                         <td>${item.cumPercent.toFixed(2)}%</td>
                     `;

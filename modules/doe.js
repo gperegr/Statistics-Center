@@ -234,7 +234,7 @@ function renderDoeResults(terms, effects, coeffs, pValues, yValues) {
                 <td>${term}</td>
                 <td>${i === 0 ? '-' : effects[i].toFixed(4)}</td>
                 <td>${coeffs[i].toFixed(4)}</td>
-                <td>${isNaN(pValues[i]) ? 'N/A' : pValues[i].toFixed(4)}</td>
+                <td>${formatPValueHtml(pValues[i])}</td>
             </tr>
          `;
         tbody.innerHTML += row;

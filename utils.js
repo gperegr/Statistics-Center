@@ -24,6 +24,11 @@ function parseNumber(val) {
 }
 
 // --- BASIC STATS ---
+// Presentation only: avoid reporting a small positive p-value as exactly zero.
+function formatPValueHtml(value) {
+    if (!Number.isFinite(value) || value < 0 || value > 1) return 'N/A';
+    return value < 0.0001 ? '&lt;0.0001' : value.toFixed(4);
+}
 const getMin = (arr) => Math.min(...arr);
 const getMax = (arr) => Math.max(...arr);
 const getMean = (data) => data.reduce((a, b) => a + b, 0) / data.length;

@@ -218,9 +218,9 @@ const Weibayes = {
         this.currentBeta = beta;
         this.calculatedEta = etaNom;
 
-        document.getElementById('wb-res-eta').innerText = etaLB.toFixed(2);
+        document.getElementById('wb-res-eta').innerText = etaLB.toFixed(4);
         document.getElementById('wb-res-bx-type').innerText = lblBx;
-        document.getElementById('wb-res-bx-val').innerText = bxLife.toFixed(1);
+        document.getElementById('wb-res-bx-val').innerText = bxLife.toFixed(4);
 
         this.updateQuickCalc();
 
