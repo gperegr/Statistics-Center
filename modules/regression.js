@@ -34,7 +34,7 @@ const Regression = {
         const n = dataset[yCol].length;
         for (let i = 0; i < n; i++) {
             const row = { y: dataset[yCol][i], __observationOrder: i };
-            let valid = !isNaN(row.y);
+            let valid = Number.isFinite(row.y);
             linearXCols.forEach(col => {
                 row[col] = dataset[col][i];
                 if (typeof row[col] !== 'number' || isNaN(row[col])) valid = false;
@@ -507,7 +507,7 @@ const Regression = {
         const n = dataset[yCol].length;
         for (let i = 0; i < n; i++) {
             const row = { y: dataset[yCol][i], __observationOrder: i };
-            let valid = !isNaN(row.y);
+            let valid = Number.isFinite(row.y);
             linearXCols.forEach(col => {
                 row[col] = dataset[col][i];
                 if (typeof row[col] !== 'number' || isNaN(row[col])) valid = false;

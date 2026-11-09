@@ -5,6 +5,10 @@
 const SPC = {
     analyze: function () {
         const data = dataset[selectedColumnName];
+        if (!data || data.some(value => !Number.isFinite(value))) {
+            showError(currentLang === 'pt' ? 'Preencha ou remova as medições ausentes antes de criar a carta de controle.' : 'Fill in or remove missing measurements before creating the control chart.');
+            return;
+        }
         if (typeof Plotly !== 'undefined') {
             Plotly.purge('spcChart');
             Plotly.purge('spcChartSecondary');

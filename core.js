@@ -2723,7 +2723,7 @@ function runAnalysis(userInitiated = false) {
             // Limit is now optional
             if (dataset[selectedColumnName] && dataset[selectedColumnName].length > 1) {
                 document.getElementById('analysis-view').classList.remove('hidden');
-                analyzeMulti(dataset[selectedColumnName], limitMulti, document.getElementById('limitType').value);
+                analyzeMulti(dataset[selectedColumnName].filter(Number.isFinite), limitMulti, document.getElementById('limitType').value);
             }
             break;
         case 'pareto':
@@ -2743,13 +2743,13 @@ function runAnalysis(userInitiated = false) {
             // Limit is now optional, so we don't return on NaN
             if (dataset[selectedColumnName] && dataset[selectedColumnName].length > 1) {
                 document.getElementById('analysis-view').classList.remove('hidden');
-                analyzeNormal(dataset[selectedColumnName], limitNorm, document.getElementById('limitType').value);
+                analyzeNormal(dataset[selectedColumnName].filter(Number.isFinite), limitNorm, document.getElementById('limitType').value);
             }
             break;
         case 'tolerance':
             if (dataset[selectedColumnName] && dataset[selectedColumnName].length > 1) {
                 document.getElementById('tolerance-view').classList.remove('hidden');
-                analyzeTolerance(dataset[selectedColumnName]);
+                analyzeTolerance(dataset[selectedColumnName].filter(Number.isFinite));
             }
             break;
     }

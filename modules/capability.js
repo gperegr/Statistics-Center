@@ -10,6 +10,10 @@ const Capability = {
             showError("No data available for analysis. Please load data first.");
             return;
         }
+        if (data.some(value => !Number.isFinite(value))) {
+            showError(currentLang === 'pt' ? 'Preencha ou remova as medições ausentes antes de calcular a capacidade.' : 'Fill in or remove missing measurements before calculating capability.');
+            return;
+        }
 
         const lsl = parseFloat(document.getElementById('lslValue').value);
         const usl = parseFloat(document.getElementById('uslValue').value);

@@ -158,3 +158,4 @@ input[aria-invalid="true"] { border-color:var(--sc-danger)!important; outline:2p
 @media(prefers-reduced-motion:reduce) {
  .function-nav-item,.function-nav-shell::before,.function-nav-shell::after,.content,.action-feedback { transition:none!important; }
 }
+.content.sidebar-closed #sidebarToggle { display:flex!important; visibility:visible; pointer-events:auto; }
